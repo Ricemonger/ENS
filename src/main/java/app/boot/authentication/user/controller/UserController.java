@@ -28,16 +28,16 @@ public class UserController {
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String alreadyExists(){
-        return "User with same username already exists";
+        return "User with same username already exists, please re-enter";
     }
     @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public String doesntExist(){
-        return "User with such username doesn't exist";
+        return "User with such username doesn't exist, please re-enter";
     }
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public String wrongPassword(){
-        return "Wrong password entered, authorization is prohibited";
+        return "Wrong password entered, authorization is prohibited, please re-enter";
     }
 }
