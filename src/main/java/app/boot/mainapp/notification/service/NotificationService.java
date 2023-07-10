@@ -39,7 +39,9 @@ public class NotificationService {
         notificationRepository.delete(dbNotification);
         return dbNotification;
     }
-
+    public Notification findOneByPrimaryKey(String username, String notificationName){
+        return notificationRepository.findById(new NotificationCompositeKey(username,notificationName)).orElseThrow();
+    }
     public List<Notification> findAllByUsername(String username) {
         return notificationRepository.findAllByUsername(username);
     }
