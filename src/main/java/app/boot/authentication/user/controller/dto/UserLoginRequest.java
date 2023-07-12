@@ -1,4 +1,4 @@
-package app.boot.authentication.user.controller;
+package app.boot.authentication.user.controller.dto;
 
 import app.boot.authentication.user.model.User;
 
@@ -6,7 +6,7 @@ public record UserLoginRequest(
         String username,
         String password
 ) {
-    User toUser(){
+    public User toUser(){
         return User
                 .builder()
                 .username(username)

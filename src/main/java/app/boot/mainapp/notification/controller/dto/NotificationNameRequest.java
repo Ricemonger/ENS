@@ -1,4 +1,4 @@
-package app.boot.mainapp.notification.controller;
+package app.boot.mainapp.notification.controller.dto;
 
 public record NotificationNameRequest(String name) {
 }

@@ -3,11 +3,15 @@ package app.boot.mainapp.contact.service;
 import app.boot.mainapp.contact.controller.ContactAlreadyExistsException;
 import app.boot.mainapp.contact.model.Contact;
 import app.boot.mainapp.contact.model.ContactCompositeKey;
+import app.boot.mainapp.contact.model.Method;
 import app.boot.mainapp.contact.repository.ContactRepository;
+import app.boot.mainapp.notification.model.Notification;
+import app.boot.mainapp.notification.model.NotificationCompositeKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 @Service
@@ -48,6 +52,9 @@ public class ContactService {
                 .stream()
                 .filter(contact -> (contact.getMethod().name().equals(method) && contact.getContactId().startsWith(contactId)))
                 .toList();
+    }
+    public Contact findOneByPrimaryKey(String username, String method, String contactId){
+        return contactRepository.findById(new ContactCompositeKey(username, Method.valueOf(method.toUpperCase(Locale.ROOT)),contactId)).orElseThrow();
     }
 
     public List<Contact> findAllLikeNotificationName(String username, String notificationName) {

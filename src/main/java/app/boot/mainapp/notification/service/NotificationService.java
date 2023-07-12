@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,5 +54,10 @@ public class NotificationService {
                 .stream()
                 .filter(notification -> notification.getName().startsWith(notificationName))
                 .toList();
+    }
+
+    public Map<String, String> getMap(String username) {
+        List<Notification> notifications = notificationRepository.findAllByUsername(username);
+        return notifications.stream().collect(Collectors.toMap(Notification::getName,Notification::getText));
     }
 }

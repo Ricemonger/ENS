@@ -4,3 +4,7 @@ jwt.sign_key=
 twilio.account_sid=
 twilio.auth_token=
 twilio.trial_number=
+amazon.email.sender=
+amazon.smtp.username=
+amazon.smtp.password=
+amazon.smtp.host=email-smtp.eu-north-1.amazonaws.com

@@ -1,6 +1,8 @@
 package app.boot.mainapp.notification.controller;
 
 import app.boot.authentication.security.JwtUtil;
+import app.boot.mainapp.notification.controller.dto.NotificationCreUpdRequest;
+import app.boot.mainapp.notification.controller.dto.NotificationNameRequest;
 import app.boot.mainapp.notification.model.Notification;
 import app.boot.mainapp.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
