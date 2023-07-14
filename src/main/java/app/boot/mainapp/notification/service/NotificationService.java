@@ -3,7 +3,7 @@ package app.boot.mainapp.notification.service;
 import app.boot.mainapp.notification.controller.NotificationAlreadyExistsException;
 import app.boot.mainapp.notification.model.Notification;
 import app.boot.mainapp.notification.model.NotificationCompositeKey;
-import app.boot.mainapp.notification.repository.NotificationRepository;
+import app.boot.mainapp.notification.service.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

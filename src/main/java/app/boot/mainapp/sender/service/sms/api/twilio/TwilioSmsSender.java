@@ -1,6 +1,6 @@
-package app.boot.mainapp.sender.sms.api.twilio;
+package app.boot.mainapp.sender.service.sms.api.twilio;
 
-import app.boot.mainapp.sender.sms.service.SmsSender;
+import app.boot.mainapp.sender.service.sms.service.SmsSender;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;

@@ -1,4 +1,4 @@
-package app.boot.mainapp.notification.repository;
+package app.boot.mainapp.notification.service.repository;
 
 import app.boot.mainapp.notification.model.Notification;
 import app.boot.mainapp.notification.model.NotificationCompositeKey;

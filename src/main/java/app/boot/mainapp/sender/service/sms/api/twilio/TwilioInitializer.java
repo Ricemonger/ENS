@@ -1,4 +1,4 @@
-package app.boot.mainapp.sender.sms.api.twilio;
+package app.boot.mainapp.sender.service.sms.api.twilio;
 
 import com.twilio.Twilio;
 import org.springframework.stereotype.Component;

@@ -1,5 +1,5 @@
-bot.name=
-bot.token=
+telegram.bot.name=
+telegram.bot.token=
 jwt.sign_key=
 twilio.account_sid=
 twilio.auth_token=
@@ -8,3 +8,5 @@ amazon.email.sender=
 amazon.smtp.username=
 amazon.smtp.password=
 amazon.smtp.host=email-smtp.eu-north-1.amazonaws.com
+viber.token=
+viber.infobip.token=

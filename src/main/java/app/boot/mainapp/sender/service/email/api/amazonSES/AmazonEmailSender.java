@@ -1,6 +1,6 @@
-package app.boot.mainapp.sender.email.api.amazonSES;
+package app.boot.mainapp.sender.service.email.api.amazonSES;
 
-import app.boot.mainapp.sender.email.service.EmailSender;
+import app.boot.mainapp.sender.service.email.service.EmailSender;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;

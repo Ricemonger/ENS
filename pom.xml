@@ -26,6 +26,10 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk</artifactId>
             <version>1.12.504</version>
@@ -76,6 +80,12 @@
             <artifactId>twilio</artifactId>
             <version>9.8.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.infobip</groupId>
+            <artifactId>infobip-mobile-messaging-api-java</artifactId>
+            <version>8.3.2</version>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

@@ -1,4 +1,4 @@
-package app.boot.mainapp.sender.sms.service;
+package app.boot.mainapp.sender.service.sms.service;
 
 import app.boot.mainapp.sender.service.Sender;
 

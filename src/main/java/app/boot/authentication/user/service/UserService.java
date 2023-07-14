@@ -2,7 +2,7 @@ package app.boot.authentication.user.service;
 
 import app.boot.authentication.user.model.UserDetails;
 import app.boot.authentication.security.JwtUtil;
-import app.boot.authentication.user.repository.UserRepository;
+import app.boot.authentication.user.service.repository.UserRepository;
 import app.boot.authentication.user.controller.UserAlreadyExistsException;
 import app.boot.authentication.user.model.User;
 import lombok.RequiredArgsConstructor;

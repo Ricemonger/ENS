@@ -1,6 +1,6 @@
 package app.boot.authentication.user.service;
 
-import app.boot.authentication.user.repository.UserRepository;
+import app.boot.authentication.user.service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

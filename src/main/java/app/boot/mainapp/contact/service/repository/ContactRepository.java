@@ -1,4 +1,4 @@
-package app.boot.mainapp.contact.repository;
+package app.boot.mainapp.contact.service.repository;
 
 import app.boot.mainapp.contact.model.Contact;
 import app.boot.mainapp.contact.model.ContactCompositeKey;

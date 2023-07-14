@@ -1,4 +1,4 @@
-package app.boot.mainapp.sender.sms.api.twilio;
+package app.boot.mainapp.sender.service.sms.api.twilio;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
