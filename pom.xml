@@ -80,11 +80,6 @@
             <artifactId>twilio</artifactId>
             <version>9.8.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.infobip</groupId>
-            <artifactId>infobip-mobile-messaging-api-java</artifactId>
-            <version>8.3.2</version>
-        </dependency>
 
     </dependencies>
     <dependencyManagement>

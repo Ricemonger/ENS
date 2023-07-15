@@ -9,5 +9,5 @@ public class EmergencyNotificationSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(EmergencyNotificationSystemApplication.class, args);
     }
-    //TODO PROPER EXCEPTION HANDLING, LOGGING, TESTING
+    //TODO PROPER EXCEPTION HANDLING, LOGGING, TESTING, BULK SEND FOR MULTIPLE SENDINGS, DIVIDE INTO MICROSERVICES
 }
