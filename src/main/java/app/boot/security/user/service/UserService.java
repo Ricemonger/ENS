@@ -1,5 +1,7 @@
 package app.boot.security.user.service;
 
+import app.boot.security.user.controller.InvalidPasswordException;
+import app.boot.security.user.controller.InvalidUsernameException;
 import app.boot.security.JwtUtil;
 import app.boot.security.user.controller.UserAlreadyExistsException;
 import app.boot.security.user.model.User;
@@ -27,6 +29,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     public String register(User user) {
+        validateUsername(user.getUsername());
+        validatePassword(user.getUsername());
         try {
             userRepository.findById(user.getUsername()).orElseThrow();
         }catch(NoSuchElementException e){
@@ -43,9 +47,21 @@ public class UserService {
     }
     public String login(User user) {
         String username = user.getUsername();
+        validateUsername(username);
         String password = user.getPassword();
+        validatePassword(password);
         userRepository.findById(username).orElseThrow();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
         return jwtUtil.generateToken(new UserDetails(new User(username,password)));
+    }
+    private void validateUsername(String username){
+        String regex = ".*\\W+.*";
+        if(username.length()<6 || username.length()>24 || username.matches(regex))
+            throw new InvalidUsernameException();
+    }
+    private void validatePassword(String password){
+        String regex = ".*[\\{\\}\\[\\]\\(\\):;'\".,<>/|\\\s]+.*";
+        if(password.length()<6 || password.length()>16 || password.matches(regex))
+            throw new InvalidPasswordException();
     }
 }

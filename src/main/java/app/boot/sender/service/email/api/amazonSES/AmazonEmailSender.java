@@ -39,11 +39,11 @@ public class AmazonEmailSender implements EmailSender {
             msg.setSubject(SUBJECT);
             msg.setContent(text, "text/plain");
             Transport transport = session.getTransport();
-            transport.connect(host,username,password);
+            transport.connect(host, username, password);
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
-        } catch (MessagingException e) {
-            System.out.println("ERROR: " + e.toString());
+        }catch (MessagingException e){
+            throw new AmazonEmailException(e.getMessage());
         }
     }
 }

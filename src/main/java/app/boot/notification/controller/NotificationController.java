@@ -23,19 +23,19 @@ public class NotificationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Notification create(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request){
-        Notification notification = new Notification(jwtUtil.extractUsername(token),request.name(), request.text());
+        Notification notification = new Notification(jwtUtil.extractUsername(token),request.name().trim(), request.text().trim());
         return notificationService.create(notification);
     }
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public Notification update(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request){
-        Notification notification = new Notification(jwtUtil.extractUsername(token),request.name(), request.text());
+        Notification notification = new Notification(jwtUtil.extractUsername(token),request.name().trim(), request.text().trim());
         return notificationService.update(notification);
     }
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Notification delete(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request){
-        Notification notification = new Notification(jwtUtil.extractUsername(token), request.name());
+        Notification notification = new Notification(jwtUtil.extractUsername(token), request.name().trim());
         return notificationService.delete(notification);
     }
     @GetMapping("/getByUN")
@@ -46,7 +46,7 @@ public class NotificationController {
     @GetMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request){
-        return notificationService.findAllByPrimaryKey(jwtUtil.extractUsername(token), request.name());
+        return notificationService.findAllByPrimaryKey(jwtUtil.extractUsername(token), request.name().trim());
     }
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -55,5 +55,4 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String alreadyExists(){return "ERROR 403: Notification already exist";}
 }
-//TODO поискать аннтоацию на замену @RequestBody для одного аргумента, чтобы не создавать лишние рекорды
 

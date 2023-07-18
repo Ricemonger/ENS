@@ -37,9 +37,22 @@ public class UserController {
     public String doesntExist(){
         return "User with such username doesn't exist, please re-enter";
     }
+    @ExceptionHandler(InvalidPasswordException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String InvalidPassword(){
+        return "Invalid Password:\n"+
+                "Password's format: 6-16 symbols, without {}[]():;'\".,<>/|\\ or space symbols";
+    }
+    @ExceptionHandler(InvalidUsernameException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public String InvalidUsername(){
+        return "Invalid Username:\n"+
+                "Username's format: 6-24 symbols, only letters ,digits and \"_\" symbol allowed";
+    }
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public String wrongPassword(){
         return "Wrong password entered, authorization is prohibited, please re-enter";
     }
+
 }

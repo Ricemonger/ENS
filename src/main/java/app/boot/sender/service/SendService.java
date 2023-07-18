@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +23,29 @@ public class SendService {
     private final SmsSender smsSender;
     private final ViberSender viberSender;
 
-    public void sendOne(String username,String method, String contactId) {
-        String notificationName = contactService.findOneByPrimaryKey(username,method,contactId).getNotificationName();
-        String notificationText = notificationService.findOneByPrimaryKey(username,notificationName).getText();
+    private final String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE BY %S!!";
+
+    public void sendOne(String username,String method, String contactId, String notificationText) {
+        String notifText = String.format(DEFAULT_TEXT_PATTERN, username);
+        if(notificationText!=null) {
+            notifText = notificationText;
+        }
+        else{
+            try {
+                String notificationName = contactService.findOneByPrimaryKey(username, method, contactId).getNotificationName();
+                notifText = notificationService.findOneByPrimaryKey(username, notificationName).getText();
+            } catch (NoSuchElementException e) {
+            }
+        }
         switch (method.toUpperCase()){
             case "SMS":
-                send(smsSender,username,contactId,notificationText);
+                send(smsSender,username,contactId,notifText);
                 break;
             case "EMAIL":
-                send(emailSender,username,contactId,notificationText);
+                send(emailSender,username,contactId,notifText);
                 break;
             case "VIBER":
-                send(viberSender,username,contactId,notificationText);
+                send(viberSender,username,contactId,notifText);
             default:
                 throw new IllegalArgumentException("WRONG METHOD NAME");
         }
@@ -65,7 +77,7 @@ public class SendService {
     }
     private void send(Sender sender, String username, String contactId, String notificationText){
         if(notificationText==null || notificationText.isBlank()){
-            notificationText = String.format("EMERGENCY NOTIFICATION BY %s!",username);
+            notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
         }
         sender.send(contactId,notificationText);
     }
