@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TwilioSmsSender implements SmsSender {
+public class TwilioSmsSender extends SmsSender {
 
     private final TwilioConfiguration twilioConfiguration;
 
@@ -19,7 +19,7 @@ public class TwilioSmsSender implements SmsSender {
     }
 
     @Override
-    public void send(String sendTo, String text) throws ApiException {
+    public void send(String sendTo, String text){
         try {
             String to = sendTo;
             if (!to.startsWith("+")) {

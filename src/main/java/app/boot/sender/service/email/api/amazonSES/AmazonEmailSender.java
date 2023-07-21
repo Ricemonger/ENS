@@ -14,7 +14,7 @@ import java.util.Properties;
 
 @Service
 @PropertySource("authentication.properties")
-public class AmazonEmailSender implements EmailSender {
+public class AmazonEmailSender extends EmailSender {
     @Value("${amazon.email.sender}")
     private String sentFrom;
     private final String SUBJECT = "EMERGENCY NOTIFICATION!";

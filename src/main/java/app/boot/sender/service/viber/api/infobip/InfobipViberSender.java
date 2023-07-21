@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 @Service
 @PropertySource("authentication.properties")
 @RequiredArgsConstructor
-public class InfobipViberSender implements ViberSender {
+public class InfobipViberSender extends ViberSender {
 
     private static final String URL = "https://3vpxwv.api.infobip.com/viber/1/message/text";
 
