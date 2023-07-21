@@ -73,5 +73,11 @@ public class NotificationController {
         log.warn("NotificationAlreadyExistsException of NotificationController was thrown");
         return "ERROR 403: Notification already exist";
     }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public String unknownException(Exception e){
+        log.warn("UnknownException occurred: {}" + e.getMessage());
+        return "UnknownException occurred: {}" + e.getMessage();
+    }
 }
 

@@ -38,5 +38,11 @@ public class SendController {
         log.warn("SenderApiException was thrown with message: {}",e.getMessage());
         return e.getMessage();
     }
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public String unknownException(Exception e){
+        log.warn("UnknownException occurred: {}" + e.getMessage());
+        return "UnknownException occurred: {}" + e.getMessage();
+    }
 }
 

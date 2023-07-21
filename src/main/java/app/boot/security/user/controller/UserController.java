@@ -68,5 +68,10 @@ public class UserController {
         log.warn("BadCredentialsException of UserController was thrown");
         return "Wrong password entered, authorization is prohibited, please re-enter";
     }
-
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public String unknownException(Exception e){
+        log.warn("UnknownException occurred: {}" + e.getMessage());
+        return "UnknownException occurred: {}" + e.getMessage();
+    }
 }
