@@ -20,13 +20,17 @@ public class TwilioSmsSender implements SmsSender {
 
     @Override
     public void send(String sendTo, String text) throws ApiException {
-        String to = sendTo;
-        if(!to.startsWith("+")){
-            to = "+" + to;
+        try {
+            String to = sendTo;
+            if (!to.startsWith("+")) {
+                to = "+" + to;
+            }
+            PhoneNumber toNumber = new PhoneNumber(to);
+            PhoneNumber fromNumber = new PhoneNumber(twilioConfiguration.getTrialNumber());
+            MessageCreator creator = Message.creator(toNumber, fromNumber, text);
+            creator.create();
+        }catch (ApiException e){
+            throw new TwilioApiException(e.getMessage());
         }
-        PhoneNumber toNumber = new PhoneNumber(to);
-        PhoneNumber fromNumber = new PhoneNumber(twilioConfiguration.getTrialNumber());
-        MessageCreator creator = Message.creator(toNumber, fromNumber, text);
-        creator.create();
     }
 }

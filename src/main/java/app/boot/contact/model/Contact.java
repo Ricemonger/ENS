@@ -46,4 +46,5 @@ public class Contact {
     public void setNotificationName(String notificationName) {
         this.notificationName = notificationName.trim();
     }
+
 }

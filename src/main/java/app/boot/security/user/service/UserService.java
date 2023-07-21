@@ -1,13 +1,15 @@
 package app.boot.security.user.service;
 
-import app.boot.security.user.controller.InvalidPasswordException;
-import app.boot.security.user.controller.InvalidUsernameException;
+import app.boot.security.user.controller.exceptions.InvalidPasswordException;
+import app.boot.security.user.controller.exceptions.InvalidUsernameException;
 import app.boot.security.JwtUtil;
-import app.boot.security.user.controller.UserAlreadyExistsException;
+import app.boot.security.user.controller.exceptions.UserAlreadyExistsException;
 import app.boot.security.user.model.User;
 import app.boot.security.user.model.UserDetails;
 import app.boot.security.user.service.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,8 @@ import java.util.NoSuchElementException;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -38,6 +42,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
             user.setPassword(password);
+            log.trace("register method was executed with params:{}",user);
             return login(user);
         }
         throw new UserAlreadyExistsException();
@@ -52,7 +57,9 @@ public class UserService {
         validatePassword(password);
         userRepository.findById(username).orElseThrow();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        return jwtUtil.generateToken(new UserDetails(new User(username,password)));
+        String result = jwtUtil.generateToken(new UserDetails(new User(username,password)));
+        log.trace("login method was executed with params: username-{}, password-{} and result: {}",username,passwordEncoder.encode(password),result);
+        return result;
     }
     private void validateUsername(String username){
         String regex = ".*\\W+.*";
