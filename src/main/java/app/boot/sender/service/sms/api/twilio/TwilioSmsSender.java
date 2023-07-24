@@ -9,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TwilioSmsSender extends SmsSender {
+public class TwilioSmsSender implements SmsSender {
 
-    private final TwilioConfiguration twilioConfiguration;
+    private final TwilioAuthConfiguration twilioAuthConfiguration;
 
     @Autowired
-    public TwilioSmsSender(TwilioConfiguration twilioConfiguration) {
-        this.twilioConfiguration = twilioConfiguration;
+    public TwilioSmsSender(TwilioAuthConfiguration twilioAuthConfiguration) {
+        this.twilioAuthConfiguration = twilioAuthConfiguration;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class TwilioSmsSender extends SmsSender {
                 to = "+" + to;
             }
             PhoneNumber toNumber = new PhoneNumber(to);
-            PhoneNumber fromNumber = new PhoneNumber(twilioConfiguration.getTrialNumber());
+            PhoneNumber fromNumber = new PhoneNumber(twilioAuthConfiguration.getTrialNumber());
             MessageCreator creator = Message.creator(toNumber, fromNumber, text);
             creator.create();
         }catch (ApiException e){

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -67,25 +68,36 @@ public class SendService {
         sendAllViberMessages(username,viberContacts,notificationMap);
     }
     private void sendAllViberMessages(String username, List<Contact> contacts, Map<String, String> notificationMap) {
-        for (Contact contact : contacts){
-            send(viberSender,username,contact.getContactId(),notificationMap.get(contact.getNotificationName()));
-        }
+        viberSender.bulkSend(toSendMap(username,contacts,notificationMap));
     }
     private void sendAllSms(String username, List<Contact> contacts, Map<String, String> notificationMap){
-        for (Contact contact : contacts){
-            send(smsSender,username,contact.getContactId(),notificationMap.get(contact.getNotificationName()));
-        }
+        smsSender.bulkSend(toSendMap(username,contacts,notificationMap));
     }
     private void sendAllEmails(String username, List<Contact> contacts, Map<String, String> notificationMap){
-        for (Contact contact : contacts){
-            send(emailSender,username,contact.getContactId(),notificationMap.get(contact.getNotificationName()));
+        emailSender.bulkSend(toSendMap(username,contacts,notificationMap));
+    }
+    private Map<String, String> toSendMap(String username, List<Contact> contacts, Map<String, String> notificationMap){
+        Map<String, String> sendMap = new HashMap<>();
+        for(Contact contact: contacts){
+            String sendTo = contact.getContactId();
+            String notificationText;
+            try {
+                notificationText = notificationMap.get(contact.getNotificationName());
+            }catch (Exception e){
+                notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
+            }
+            if (notificationText==null || notificationText.isBlank()){
+                notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
+            }
+            sendMap.put(sendTo, notificationText);
         }
+        return sendMap;
     }
     private void send(Sender sender, String username, String contactId, String notificationText){
         if(notificationText==null || notificationText.isBlank()){
             notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
         }
-        sender.sendLogged(contactId,notificationText);
+        sender.send(contactId,notificationText);
         log.trace("notification was sent with params: sender-{}, username-{}, contactId-{}, notificationText-{}",sender,username,contactId,notificationText);
     }
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @PropertySource("authentication.properties")
-public class TwilioConfiguration {
+public class TwilioAuthConfiguration {
 
     @Value("${twilio.account_sid}")
     private String accountSid;

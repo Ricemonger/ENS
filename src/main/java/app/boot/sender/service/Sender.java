@@ -3,13 +3,15 @@ package app.boot.sender.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class Sender {
+import java.util.Map;
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+public  interface Sender {
+
     public abstract void send(String sendTo, String text);
 
-    public void sendLogged(String sendTo, String text){
-        send(sendTo, text);
-        log.trace("send method of Sender is executed");
+    default void bulkSend(Map<String, String> sendings){
+        for(String sendTo : sendings.keySet()){
+            send(sendTo,sendings.get(sendTo));
+        }
     }
 }

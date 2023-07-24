@@ -4,7 +4,7 @@ import com.twilio.Twilio;
 import org.springframework.stereotype.Component;
 @Component
 public class TwilioInitializer {
-    public TwilioInitializer(TwilioConfiguration twilioConfiguration) {
-      Twilio.init(twilioConfiguration.getAccountSid(), twilioConfiguration.getAuthToken());
+    public TwilioInitializer(TwilioAuthConfiguration twilioAuthConfiguration) {
+      Twilio.init(twilioAuthConfiguration.getAccountSid(), twilioAuthConfiguration.getAuthToken());
     }
 }

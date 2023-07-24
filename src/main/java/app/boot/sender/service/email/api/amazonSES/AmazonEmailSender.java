@@ -7,23 +7,20 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 import java.util.Properties;
 
 @Service
-@PropertySource("authentication.properties")
-public class AmazonEmailSender extends EmailSender {
-    @Value("${amazon.email.sender}")
-    private String sentFrom;
-    private final String SUBJECT = "EMERGENCY NOTIFICATION!";
-    @Value("${amazon.smtp.host}")
-    private String host;
-    @Value("${amazon.smtp.username}")
-    private String username;
-    @Value("${amazon.smtp.password}")
-    private String password;
+@RequiredArgsConstructor
+public class AmazonEmailSender implements EmailSender {
+
+    private final AmazonAuthConfiguration auth;
+
+    private static final String SUBJECT = "EMERGENCY NOTIFICATION!";
+
     public void send(String to, String text){
         Properties props = System.getProperties();
         props.put("mail.transport.protocol", "smtps");
@@ -34,12 +31,12 @@ public class AmazonEmailSender extends EmailSender {
         Session session = Session.getDefaultInstance(props);
         MimeMessage msg = new MimeMessage(session);
         try {
-            msg.setFrom(new InternetAddress(sentFrom));
+            msg.setFrom(new InternetAddress(auth.getSentFrom()));
             msg.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
             msg.setSubject(SUBJECT);
             msg.setContent(text, "text/plain");
             Transport transport = session.getTransport();
-            transport.connect(host, username, password);
+            transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
         }catch (MessagingException e){
