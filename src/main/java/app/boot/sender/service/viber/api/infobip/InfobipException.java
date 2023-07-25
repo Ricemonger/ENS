@@ -8,6 +8,10 @@ public class InfobipException extends SenderApiException {
         super();
     }
 
+    public InfobipException(Throwable cause){
+        super(cause);
+    }
+
     public InfobipException(String message) {
         super(message);
     }

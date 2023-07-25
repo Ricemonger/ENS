@@ -9,6 +9,5 @@ public class EmergencyNotificationSystemApplication {
     public static void main(String[] args) {
         SpringApplication.run(EmergencyNotificationSystemApplication.class, args);
     }
-    //TODO TESTING, BULK SEND FOR MULTIPLE SENDINGS, DIVIDE INTO MICROSERVICES
-    // contactId validation both in client and server
+    //TODO TESTING, fields validation, DIVIDE INTO MICROSERVICES
 }
