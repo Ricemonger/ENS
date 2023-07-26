@@ -55,17 +55,19 @@ public class ContactService {
     }
 
     public List<Contact> findAllLikePrimaryKey(String username, String method, String contactId) {
+        Method methodEnum = Method.valueOf(method.toUpperCase(Locale.ROOT).trim());
         List<Contact> byUsername = findAllByUsername(username);
         List<Contact> result = byUsername
                 .stream()
-                .filter(contact -> (contact.getMethod().name().equals(method) && contact.getContactId().startsWith(contactId)))
+                .filter(contact -> (contact.getMethod().equals(methodEnum) && contact.getContactId().startsWith(contactId)))
                 .toList();
-        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}",new Contact(username,method,contactId),result);
+        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}",new Contact(username,methodEnum,contactId),result);
         return result;
     }
     public Contact findOneByPrimaryKey(String username, String method, String contactId){
-        Contact result = contactRepository.findById(new ContactCompositeKey(username, Method.valueOf(method.toUpperCase(Locale.ROOT)),contactId)).orElseThrow();
-        log.trace("findOneByPrimaryKey method was executed with params: {} and result:{}",new Contact(username,method,contactId),result);
+        Method methodEnum = Method.valueOf(method.toUpperCase(Locale.ROOT).trim());
+        Contact result = contactRepository.findById(new ContactCompositeKey(username, methodEnum,contactId)).orElseThrow();
+        log.trace("findOneByPrimaryKey method was executed with params: {} and result:{}",new Contact(username,methodEnum,contactId),result);
         return result;
     }
 

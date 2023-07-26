@@ -5,6 +5,7 @@ import app.boot.contact.controller.dto.ContactNNRequest;
 import app.boot.contact.controller.exceptions.ContactAlreadyExistsException;
 import app.boot.contact.model.Contact;
 import app.boot.contact.controller.dto.ContactCreUpdRequest;
+import app.boot.contact.model.Method;
 import app.boot.contact.service.ContactService;
 import app.boot.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -29,21 +31,24 @@ public class ContractController {
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Contact create(@RequestHeader(name="Authorization") String token, @RequestBody ContactCreUpdRequest request){
-        Contact contact = new Contact(jwtUtil.extractUsername(token),request.method(), request.contactId(), request.notificationName());
+        Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+        Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId(), request.notificationName());
         log.trace("create method was called with params: {}",contact);
         return contactService.create(contact);
     }
     @PatchMapping
     @ResponseStatus(code = HttpStatus.OK)
     public Contact update(@RequestHeader(name="Authorization") String token, @RequestBody ContactCreUpdRequest request){
-        Contact contact = new Contact(jwtUtil.extractUsername(token),request.method(), request.contactId(), request.notificationName());
+        Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+        Contact contact = new Contact(jwtUtil.extractUsername(token),method, request.contactId(), request.notificationName());
         log.trace("update method was called with params: {}",contact);
         return contactService.update(contact);
     }
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact delete(@RequestHeader(name="Authorization") String token, @RequestBody ContactKeyRequest request){
-        Contact contact = new Contact(jwtUtil.extractUsername(token), request.method(), request.contactId());
+        Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+        Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId());
         log.trace("delete method was called with params: {}",contact);
         return contactService.delete(contact);
     }
@@ -74,14 +79,20 @@ public class ContractController {
     @ExceptionHandler(NoSuchElementException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public String notFoundException(){
-        log.warn("NoSuchElementException of ContactController was thrown");
+        log.warn("NoSuchElementException was thrown");
         return "ERROR 404: Contact doesnt exist";
     }
     @ExceptionHandler(ContactAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String alreadyExists(){
-        log.warn("ContactAlreadyExistsException of ContactController was thrown");
+        log.warn("ContactAlreadyExistsException was thrown");
         return "ERROR 403: Contact already exist";
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public String unknownException(IllegalArgumentException e){
+        log.warn("IllegalArgumentException occurred, wrong Method name: {}" + e.getMessage());
+        return "IllegalArgumentException occurred, wrong Method name: {}" + e.getMessage();
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)

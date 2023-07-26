@@ -1,11 +1,9 @@
 package app.boot.contact.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import reactor.core.publisher.Mono;
 
 @Entity
 @NoArgsConstructor
@@ -23,12 +21,10 @@ public class Contact {
 
     private String notificationName;
 
-    public Contact(String username, String method, String contactId) {
+    public Contact(String username, Method method, String contactId) {
         this(username, method, contactId, "");
     }
-    public Contact(String username, String method, String contactId, String notificationName){
-        this(username,Method.valueOf(method.toUpperCase().trim()),contactId,notificationName);
-    }
+
     public Contact(String username, Method method, String contactId, String notificationName){
         this.username = username.trim();
         this.method = method;
