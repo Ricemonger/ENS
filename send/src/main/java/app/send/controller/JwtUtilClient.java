@@ -14,7 +14,7 @@ public class JwtUtilClient {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private static final String URL = "http://localhost:8080/api/";
+    private static final String URL = "http://localhost:8080/api/security";
 
     private static final WebClient webClient = WebClient
             .builder()
@@ -30,12 +30,10 @@ public class JwtUtilClient {
         JwtTokenRequest jwtTokenRequest = new JwtTokenRequest(token);
         return webClient
                 .method(HttpMethod.GET)
-                .uri("jwt")
+                .uri("/getUsername")
                 .bodyValue(jwtTokenRequest)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
-    //TODO ОТПРАВЛЯТЬ ТОКЕН НА СЕРВЕР БЕЗОПАСНОСТИ - ЕСЛИ ВАЛИДНЫЙ ПОЛУЧАТЬ НУЖНЫЕ КЛЕИМЫ ЛИБО ОШИБКУ ПРИ НЕВАЛИДНОСТИ
-
 }
