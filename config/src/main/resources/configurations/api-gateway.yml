@@ -1,21 +1,14 @@
-application:
-  title: gateway
-  version: 0.1
-eureka:
-  client:
-    register-with-eureka: false
-
-server:
-  port: 8080
-
 spring:
   application:
-    name: gateway
+    name: api-gateway
   cloud:
+    discovery:
+      enabled: true
     gateway:
       discovery:
         locator:
           enabled: true
+          lower-case-service-id: true
       routes:
         - id: contact
           uri: http://localhost:8090
@@ -25,12 +18,22 @@ spring:
           uri: http://localhost:8091
           predicates:
             - Path=/api/notifications/**
-        - id: send
+        - id: sender
           uri: http://localhost:8092
           predicates:
             - Path=/api/send/**
         - id: security
           uri: http://localhost:8093
           predicates:
-            - Path=/api/users/**
-            - Path=/api/security/**
+            - Path=/api/users/**, /api/security/**
+
+application:
+  title: gateway
+  version: 0.1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8080
+
