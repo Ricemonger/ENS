@@ -31,7 +31,7 @@ public class JwtUtilClient {
         return webClient
                 .method(HttpMethod.GET)
                 .uri("/getUsername")
-                .bodyValue(jwtTokenRequest)
+                .header("Authorization",token)
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();

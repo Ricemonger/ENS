@@ -22,5 +22,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    database: postgresql
+    database: ens
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+logging:
+  level:
+    app:
+      security: trace

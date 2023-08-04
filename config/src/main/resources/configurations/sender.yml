@@ -19,3 +19,7 @@ application:
 spring:
   application:
     name: sender
+logging:
+  level:
+    app:
+      sender: trace
