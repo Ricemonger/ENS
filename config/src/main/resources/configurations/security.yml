@@ -2,8 +2,6 @@ application:
   title: security
   version: 0.1
 eureka:
-  instance:
-    hostname: localhost
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
@@ -20,9 +18,7 @@ spring:
     username: postgres
     password: 1234
   jpa:
-    hibernate:
-      ddl-auto: create
-    database: ens
+    database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 logging:
   level:

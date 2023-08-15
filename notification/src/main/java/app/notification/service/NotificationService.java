@@ -1,6 +1,7 @@
 package app.notification.service;
 
 import app.notification.controller.exceptions.NotificationAlreadyExistsException;
+import app.notification.controller.exceptions.NotificationDoesntExistException;
 import app.notification.model.Notification;
 import app.notification.model.NotificationCompositeKey;
 import app.notification.service.repository.NotificationRepository;
@@ -25,8 +26,8 @@ public class NotificationService {
 
     public Notification create(Notification notification) {
         try {
-            notificationRepository.findById(new NotificationCompositeKey(notification.getUsername(), notification.getName())).orElseThrow();
-        }catch (NoSuchElementException e) {
+            getByKey(notification);
+        }catch (NotificationDoesntExistException e) {
             log.trace("create method was executed with params: {}",notification);
             return notificationRepository.save(notification);
         }
@@ -34,22 +35,20 @@ public class NotificationService {
     }
 
     public Notification update(Notification notification) {
-        NotificationCompositeKey key = new NotificationCompositeKey(notification.getUsername(), notification.getName());
-        Notification dbNotification = notificationRepository.findById(key).orElseThrow();
+        Notification dbNotification = getByKey(notification);
         dbNotification.setText(notification.getText());
         log.trace("update method was executed with params: {}",notification);
         return notificationRepository.save(dbNotification);
     }
 
     public Notification delete(Notification notification) {
-        NotificationCompositeKey key = new NotificationCompositeKey(notification.getUsername(), notification.getName());
-        Notification dbNotification = notificationRepository.findById(key).orElseThrow();
+        Notification dbNotification = getByKey(notification);
         notificationRepository.delete(dbNotification);
         log.trace("delete method was executed with params: {}",notification);
         return dbNotification;
     }
     public Notification findOneByPrimaryKey(String username, String notificationName){
-        Notification result = notificationRepository.findById(new NotificationCompositeKey(username,notificationName)).orElseThrow();
+        Notification result = getByKey(username,notificationName);
         log.trace("findOneByPrimaryKey method was executed with params: username-{}, notificationName-{} and result:{}",username,notificationName,result);
         return result;
     }
@@ -73,6 +72,19 @@ public class NotificationService {
         List<Notification> notifications = notificationRepository.findAllByUsername(username);
         Map<String, String> result = notifications.stream().collect(Collectors.toMap(Notification::getName,Notification::getText));
         log.trace("getMap method was executed with params: username-{} and result:{}",username,result);
+        return result;
+    }
+    private Notification getByKey(Notification notification){
+        return getByKey(notification.getUsername(), notification.getName());
+    }
+    private Notification getByKey(String username, String notificationName){
+        Notification result;
+        try {
+            result = notificationRepository.findById(new NotificationCompositeKey(username, notificationName)).orElseThrow();
+        }
+        catch (NoSuchElementException e){
+            throw new NotificationDoesntExistException(e);
+        }
         return result;
     }
 }

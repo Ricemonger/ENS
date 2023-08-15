@@ -26,21 +26,24 @@ public class Contact {
     }
 
     public Contact(String username, Method method, String contactId, String notificationName){
-        this.username = username.trim();
+        this.username = username;
         this.method = method;
-        this.contactId = contactId.trim();
-        if (notificationName!=null) {
-            this.notificationName = notificationName.trim();
+        this.contactId = contactId;
+        if (notificationName==null) {
+            notificationName = "";
+        }
+        else {
+            this.notificationName = notificationName;
         }
     }
     public void setUsername(String username) {
-        this.username = username.trim();
+        this.username = username;
     }
     public void setContactId(String contactId) {
-        this.contactId = contactId.trim();
+        this.contactId = contactId;
     }
     public void setNotificationName(String notificationName) {
-        this.notificationName = notificationName.trim();
+        this.notificationName = notificationName;
     }
 
 }

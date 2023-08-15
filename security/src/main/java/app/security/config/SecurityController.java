@@ -1,10 +1,12 @@
 package app.security.config;
 
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import utils.ExceptionMessage;
 
 
 @RestController
@@ -23,10 +25,17 @@ public class SecurityController {
         log.trace("getUsername method's with token-{} result is {}",token,result);
         return result;
     }
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public ExceptionMessage jwtException(JwtException e){
+        log.warn("JwtException occurred: {}",e.getMessage());
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Invalid or expired jwt token provided",e);
+    }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String unknownException(Exception e){
-        log.warn("UnknownException occurred: {}" + e.getMessage());
-        return "UnknownException occurred: {}" + e.getMessage();
+    public ExceptionMessage unknownException(Exception e){
+        log.warn("UnknownException occurred: {}",e.getMessage());
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,e);
     }
 }

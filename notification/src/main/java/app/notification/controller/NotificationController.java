@@ -3,8 +3,11 @@ package app.notification.controller;
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.controller.exceptions.NotificationAlreadyExistsException;
+import app.notification.controller.exceptions.NotificationDoesntExistException;
 import app.notification.model.Notification;
 import app.notification.service.NotificationService;
+import utils.ExceptionMessage;
+import utils.JwtClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -22,7 +24,7 @@ public class NotificationController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final NotificationService notificationService;
 
-    private final JwtUtilClient jwtUtil;
+    private final JwtClient jwtUtil;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,23 +62,24 @@ public class NotificationController {
         log.trace("findByPrimaryKey method was called with params: username-{}, notificationName-{}",username,notificationName);
         return notificationService.findAllByPrimaryKey(username,notificationName);
     }
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(NotificationDoesntExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String notFoundException(){
-        log.warn("NoSuchElementException of NotificationController was thrown");
-        return "ERROR 404: Notification doesnt exist";
+    public ExceptionMessage notFoundException(NotificationDoesntExistException e){
+        log.warn("NotificationDoesntExistException of NotificationController was thrown");
+        return new ExceptionMessage(HttpStatus.NOT_FOUND,"You dont have notification with such name");
     }
     @ExceptionHandler(NotificationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String alreadyExists(){
+    public ExceptionMessage alreadyExists(NotificationAlreadyExistsException e){
         log.warn("NotificationAlreadyExistsException of NotificationController was thrown");
-        return "ERROR 403: Notification already exist";
+        return new ExceptionMessage(HttpStatus.FORBIDDEN,"Your notification with same name already exists");
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String unknownException(Exception e){
+    public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
-        return "UnknownException occurred: {}" + e.getMessage();
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,e);
     }
 }
 

@@ -2,6 +2,7 @@ package app.security.config;
 
 import app.security.user.model.UserDetails;
 import app.security.user.service.UserDetailsService;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,10 +33,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(header==null || !header.startsWith("Bearer ")){
             log.warn("No Bearer Token provided for JwtAuthFilter");
             filterChain.doFilter(request,response);
-             return;
+            return;
         }
         String token = header.substring(7);
-        String username = jwtUtil.extractUsername(token);
+        String username;
+        try {
+            username = jwtUtil.extractUsername(token);
+        } catch (JwtException e){
+            log.warn("JwtException occurred for token {}: {}",token,e.getMessage());
+            filterChain.doFilter(request,response);
+            return;
+        }
         if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){
             UserDetails userDetails = (UserDetails) userDetailsService.loadUserByUsername(username);
             if(jwtUtil.isTokenValid(token,userDetails)){

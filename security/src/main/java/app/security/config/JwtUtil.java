@@ -2,6 +2,7 @@ package app.security.config;
 
 import app.security.user.model.UserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -56,14 +57,16 @@ public class JwtUtil {
         return claimsResolver.apply(extractAllClaims(token));
     }
     private Claims extractAllClaims(String token){
-        if(token.startsWith("Bearer "))
+        if(token.startsWith("Bearer ")) {
             token = token.substring(7);
+        }
         return Jwts
                 .parserBuilder()
                 .setSigningKey(signKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
+        }
 }
+
 //TODO перределать JwtUtil под нормальную работу с токенами с Bearer и без

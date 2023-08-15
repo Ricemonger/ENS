@@ -4,6 +4,7 @@ import app.security.user.controller.exceptions.InvalidPasswordException;
 import app.security.user.controller.exceptions.InvalidUsernameException;
 import app.security.config.JwtUtil;
 import app.security.user.controller.exceptions.UserAlreadyExistsException;
+import app.security.user.controller.exceptions.UserDoesntExistException;
 import app.security.user.model.User;
 import app.security.user.model.UserDetails;
 import app.security.user.service.repository.UserRepository;
@@ -36,8 +37,8 @@ public class UserService {
         validateUsername(user.getUsername());
         validatePassword(user.getUsername());
         try {
-            userRepository.findById(user.getUsername()).orElseThrow();
-        }catch(NoSuchElementException e){
+            getById(user.getUsername());
+        }catch(UserDoesntExistException e){
             String password = user.getPassword();
             user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
@@ -55,7 +56,7 @@ public class UserService {
         validateUsername(username);
         String password = user.getPassword();
         validatePassword(password);
-        userRepository.findById(username).orElseThrow();
+        getById(username);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
         String result = jwtUtil.generateToken(new UserDetails(new User(username,password)));
         log.trace("login method was executed with params: username-{}, password-{} and result: {}",username,passwordEncoder.encode(password),result);
@@ -70,5 +71,12 @@ public class UserService {
         String regex = ".*[\\{\\}\\[\\]\\(\\):;'\".,<>/|\\\s]+.*";
         if(password.length()<6 || password.length()>16 || password.matches(regex))
             throw new InvalidPasswordException();
+    }
+    private User getById(String username){
+        try {
+            return userRepository.findById(username).orElseThrow();
+        }catch(NoSuchElementException e){
+            throw new UserDoesntExistException(e);
+        }
     }
 }

@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import utils.ExceptionMessage;
+import utils.JwtClient;
 
 @RestController
 @RequestMapping("/api/send")
@@ -18,7 +20,7 @@ public class SendController {
 
     private final SendService sendService;
 
-    private final JwtUtilClient jwtUtil;
+    private final JwtClient jwtUtil;
     @PostMapping("/one")
     public void sendOne(@RequestHeader(name="Authorization") String token, @RequestBody SendOneRequest request){
         String username = jwtUtil.extractUsername(token);
@@ -33,15 +35,15 @@ public class SendController {
     }
     @ExceptionHandler(SenderApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String senderApiException(SenderApiException e){
+    public ExceptionMessage senderApiException(SenderApiException e){
         log.warn("SenderApiException was thrown with message: {}",e.getMessage());
-        return e.getMessage();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Exception was thrown during sending operation",e);
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String unknownException(Exception e){
+    public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
-        return "UnknownException occurred: {}" + e.getMessage();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Unknown exception was thrown",e);
     }
 }
 

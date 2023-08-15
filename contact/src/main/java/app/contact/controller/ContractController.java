@@ -2,21 +2,23 @@ package app.contact.controller;
 
 import app.contact.controller.dto.ContactKeyRequest;
 import app.contact.controller.dto.ContactNNRequest;
-import app.contact.controller.exceptions.ContactAlreadyExistsException;
-import app.contact.controller.exceptions.JwtRuntimeException;
+import app.contact.controller.exceptions.*;
 import app.contact.model.Contact;
 import app.contact.controller.dto.ContactCreUpdRequest;
 import app.contact.model.Method;
 import app.contact.service.ContactService;
+import utils.ExceptionMessage;
+import utils.JwtClient;
+import utils.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -27,30 +29,43 @@ public class ContractController {
 
     private final ContactService contactService;
 
-    private final JwtUtilClient jwtUtil;
+    private final JwtClient jwtUtil;
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
     public Contact create(@RequestHeader(name="Authorization") String token, @RequestBody ContactCreUpdRequest request){
-        Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-        Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId(), request.notificationName());
-        log.trace("create method was called with params: {}",contact);
-        return contactService.create(contact);
+        try {
+            Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+            Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId(), request.notificationName());
+            log.trace("create method was called with params: {}", contact);
+            return contactService.create(contact);
+        }catch (IllegalArgumentException e){
+            throw new InvalidContactMethodException(e);
+        }
     }
     @PatchMapping
     @ResponseStatus(code = HttpStatus.OK)
     public Contact update(@RequestHeader(name="Authorization") String token, @RequestBody ContactCreUpdRequest request){
+        try{
         Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+            log.trace("update method was called with params: {}",request);
         Contact contact = new Contact(jwtUtil.extractUsername(token),method, request.contactId(), request.notificationName());
         log.trace("update method was called with params: {}",contact);
         return contactService.update(contact);
+        }catch (IllegalArgumentException e){
+            throw new InvalidContactMethodException(e);
+        }
     }
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact delete(@RequestHeader(name="Authorization") String token, @RequestBody ContactKeyRequest request){
-        Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-        Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId());
-        log.trace("delete method was called with params: {}",contact);
-        return contactService.delete(contact);
+        try {
+            Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
+            Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId());
+            log.trace("delete method was called with params: {}", contact);
+            return contactService.delete(contact);
+        }catch (IllegalArgumentException e){
+            throw new InvalidContactMethodException(e);
+        }
     }
     @GetMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
@@ -62,11 +77,15 @@ public class ContractController {
     @GetMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikePrimaryKey(@RequestHeader(name="Authorization") String token, @RequestBody ContactKeyRequest pkRequest){
+        try{
         String username = jwtUtil.extractUsername(token);
-        String method = pkRequest.method();
+        Method method = Method.valueOf(pkRequest.method().toUpperCase(Locale.ROOT).trim());
         String contactId = pkRequest.contactId();
         log.trace("findAllLikePrimaryKey method was called with params: username-{}, method-{}, contactID-{}",username,method,contactId);
         return contactService.findAllLikePrimaryKey(username, method, contactId);
+        }catch (IllegalArgumentException e){
+            throw new InvalidContactMethodException(e);
+        }
     }
     @GetMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
@@ -76,33 +95,35 @@ public class ContractController {
         log.trace("findAllLikeNotificationName method was called with params: username-{}, notificationName-{}",username,notificationName);
         return contactService.findAllLikeNotificationName(username, notificationName);
     }
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(ContactDoesntExistException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public String notFoundException(){
-        log.warn("NoSuchElementException was thrown");
-        return "ERROR 404: Contact doesnt exist";
+    public ExceptionMessage notFoundException(ContactDoesntExistException e){
+        log.warn("ContactDoesntExistException was thrown: {}",e.getMessage());
+        return new ExceptionMessage(HttpStatus.NOT_FOUND,"Contact with such method and contactId doesnt exist");
     }
     @ExceptionHandler(ContactAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public String alreadyExists(){
-        log.warn("ContactAlreadyExistsException was thrown");
-        return "ERROR 403: Contact already exist";
+    public ExceptionMessage alreadyExists(ContactAlreadyExistsException e){
+        log.warn("ContactAlreadyExistsException was thrown: {}",e.getMessage());
+        return new ExceptionMessage(HttpStatus.FORBIDDEN,"Contact with such method and contactId already exists");
     }
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(InvalidContactMethodException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String unknownException(IllegalArgumentException e){
-        log.warn("IllegalArgumentException occurred, wrong Method name: {}" + e.getMessage());
-        return "IllegalArgumentException occurred, wrong Method name: " + e.getMessage();
+    public ExceptionMessage unknownException(InvalidContactMethodException e){
+        log.warn("InvalidContactMethodException occurred, wrong Method name: {}",e.getMessage());
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Wrong method name, valid method names are: " + Arrays.toString(Method.values()));
     }
     @ExceptionHandler(JwtRuntimeException.class)
-    public String jwtException(JwtRuntimeException e){
+    @ResponseStatus(code = HttpStatus.FORBIDDEN)
+    public ExceptionMessage jwtException(JwtRuntimeException e){
         log.warn("JwtRuntimeException occurred: {}",e.getMessage());
-        return "JwtRuntimeException occurred: " + e.getMessage();
+        return new ExceptionMessage(HttpStatus.FORBIDDEN,"Invalid or expired jwt token, please get new token via users/login or users/register pages");
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public String unknownException(Exception e){
+    public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
-        return "UnknownException occurred: " + e.getMessage();
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,e);
     }
 }

@@ -1,4 +1,4 @@
-package app.contact.controller.dto;
+package utils;
 
 public record JwtTokenRequest(
         String token
