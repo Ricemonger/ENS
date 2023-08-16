@@ -40,10 +40,10 @@ public class SendController {
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Exception was thrown during sending operation",e);
     }
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Unknown exception was thrown",e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR,"Unknown exception was thrown",e);
     }
 }
 
