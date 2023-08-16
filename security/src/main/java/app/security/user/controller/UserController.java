@@ -50,21 +50,21 @@ public class UserController {
     }
     @ExceptionHandler(InvalidPasswordException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage InvalidPassword(InvalidPasswordException e){
+    public ExceptionMessage invalidPasswordException(InvalidPasswordException e){
         log.warn("InvalidPasswordException of UserController was thrown");
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Invalid Password:\n"+
                 "Password's format: 6-16 symbols, without {}[]():;'\".,<>/|\\ or space symbols");
     }
     @ExceptionHandler(InvalidUsernameException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage InvalidUsername(InvalidUsernameException e){
+    public ExceptionMessage invalidUsernameException(InvalidUsernameException e){
         log.warn("InvalidUsernameException of UserController was thrown");
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Invalid Username:\n"+
                 "Username's format: 6-24 symbols, only letters ,digits and \"_\" symbol allowed");
     }
     @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-    public ExceptionMessage wrongPassword(BadCredentialsException e){
+    public ExceptionMessage badCredentialsException(BadCredentialsException e){
         log.warn("BadCredentialsException of UserController was thrown");
         return new ExceptionMessage(HttpStatus.UNAUTHORIZED,"Wrong password entered, authorization is prohibited, please re-enter");
     }

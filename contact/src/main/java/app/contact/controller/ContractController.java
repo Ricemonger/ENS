@@ -97,25 +97,25 @@ public class ContractController {
     }
     @ExceptionHandler(ContactDoesntExistException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public ExceptionMessage notFoundException(ContactDoesntExistException e){
+    public ExceptionMessage contactDoesntExistException(ContactDoesntExistException e){
         log.warn("ContactDoesntExistException was thrown: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.NOT_FOUND,"Contact with such method and contactId doesnt exist");
     }
     @ExceptionHandler(ContactAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionMessage alreadyExists(ContactAlreadyExistsException e){
+    public ExceptionMessage contactAlreadyExistsException(ContactAlreadyExistsException e){
         log.warn("ContactAlreadyExistsException was thrown: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.FORBIDDEN,"Contact with such method and contactId already exists");
     }
     @ExceptionHandler(InvalidContactMethodException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage unknownException(InvalidContactMethodException e){
+    public ExceptionMessage invalidContactMethodException(InvalidContactMethodException e){
         log.warn("InvalidContactMethodException occurred, wrong Method name: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Wrong method name, valid method names are: " + Arrays.toString(Method.values()));
     }
     @ExceptionHandler(JwtRuntimeException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
-    public ExceptionMessage jwtException(JwtRuntimeException e){
+    public ExceptionMessage jwtRuntimeException(JwtRuntimeException e){
         log.warn("JwtRuntimeException occurred: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.FORBIDDEN,"Invalid or expired jwt token, please get new token via users/login or users/register pages");
     }

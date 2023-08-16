@@ -27,7 +27,7 @@ public class SecurityController {
     }
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
-    public ExceptionMessage jwtException(JwtException e){
+    public ExceptionMessage jwtRuntimeException(JwtException e){
         log.warn("JwtException occurred: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Invalid or expired jwt token provided",e);
     }

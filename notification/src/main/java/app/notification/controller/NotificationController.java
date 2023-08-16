@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import utils.JwtRuntimeException;
 
 import java.util.List;
 
@@ -64,15 +65,21 @@ public class NotificationController {
     }
     @ExceptionHandler(NotificationDoesntExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionMessage notFoundException(NotificationDoesntExistException e){
+    public ExceptionMessage notificationDoesntExistException(NotificationDoesntExistException e){
         log.warn("NotificationDoesntExistException of NotificationController was thrown");
         return new ExceptionMessage(HttpStatus.NOT_FOUND,"You dont have notification with such name");
     }
     @ExceptionHandler(NotificationAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ExceptionMessage alreadyExists(NotificationAlreadyExistsException e){
+    public ExceptionMessage notificationAlreadyExistsException(NotificationAlreadyExistsException e){
         log.warn("NotificationAlreadyExistsException of NotificationController was thrown");
         return new ExceptionMessage(HttpStatus.FORBIDDEN,"Your notification with same name already exists");
+    }
+    @ExceptionHandler(JwtRuntimeException.class)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ExceptionMessage jwtRuntimeException(JwtRuntimeException e){
+        log.warn("JwtRuntimeException occurred: {}" + e.getMessage());
+        return new ExceptionMessage(HttpStatus.FORBIDDEN,e);
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
