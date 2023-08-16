@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Bean;
 import reactor.netty.http.client.HttpClient;
 
 @SpringBootApplication
-public class ApiGatewayApplication {
+public class ApiGatewayServer {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApiGatewayApplication.class, args);
+        SpringApplication.run(ApiGatewayServer.class, args);
     }
 
     @Bean

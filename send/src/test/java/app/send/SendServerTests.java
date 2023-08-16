@@ -1,10 +1,10 @@
-package app.contact;
+package app.send;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ContactApplicationTests {
+class SendServerTests {
 
     @Test
     void contextLoads() {

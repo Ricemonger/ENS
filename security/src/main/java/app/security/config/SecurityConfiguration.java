@@ -1,5 +1,5 @@
 package app.security.config;
-;
+
 import app.security.user.service.UserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

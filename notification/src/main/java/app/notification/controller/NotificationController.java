@@ -75,11 +75,11 @@ public class NotificationController {
         return new ExceptionMessage(HttpStatus.FORBIDDEN,"Your notification with same name already exists");
     }
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST,e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR,e);
     }
 }
 

@@ -45,7 +45,7 @@ public class TwilioSmsSender implements SmsSender {
             }
             );
         }catch (ApiException e){
-            throw new TwilioApiException(e.getMessage());
+            throw new TwilioApiException(e);
         }
     }
 }

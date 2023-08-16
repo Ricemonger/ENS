@@ -69,10 +69,10 @@ public class UserController {
         return new ExceptionMessage(HttpStatus.UNAUTHORIZED,"Wrong password entered, authorization is prohibited, please re-enter");
     }
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e){
         log.warn("UnknownException occurred: {}" + e.getMessage());
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST,e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR,e);
     }
 }
