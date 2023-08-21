@@ -4,5 +4,33 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+# DEFAULT CONFIGURATION FOR STARTUP WITHOUT CONFIG SERVER
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/ens
+    username: postgres
+    password: 1234
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+application:
+  title: security
+  version: 0.1
+
+server:
+  port: 8093
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    app:
+      security: trace
+
 
 

@@ -27,14 +27,7 @@ public class JwtClient {
     private final WebClient webClient;
 
     public JwtClient() {
-        this.url = DEFAULT_URL;
-        this.uri = DEFAULT_EXTRACT_USERNAME_URI;
-        webClient = WebClient
-                .builder()
-                .baseUrl(url)
-                .defaultStatusHandler(Predicate.isEqual(HttpStatus.FORBIDDEN), response -> response.bodyToMono(String.class).map(JwtRuntimeException::new))
-                .defaultStatusHandler(HttpStatusCode::isError, response -> response.bodyToMono(String.class).map(JwtRuntimeException::new))
-                .build();
+        this(DEFAULT_URL,DEFAULT_EXTRACT_USERNAME_URI);
     }
 
     public JwtClient(String jwtUrl, String extractUsernameUri) {

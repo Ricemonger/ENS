@@ -4,3 +4,27 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+# DEFAULT CONFIGURATION FOR STARTUP WITHOUT CONFIG SERVER
+
+application:
+  title: sender
+  version: 0.1
+  config:
+    contact:
+      url: http://localhost:8090/api/contacts
+    notification:
+      url: http://localhost:8091/api/notifications
+
+server:
+  port: 8092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    app:
+      sender: trace
+
