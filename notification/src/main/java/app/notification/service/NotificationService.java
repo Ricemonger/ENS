@@ -58,7 +58,7 @@ public class NotificationService {
         return result;
     }
 
-    public List<Notification> findAllByPrimaryKey(String username, String notificationName) {
+    public List<Notification> findAllLikePrimaryKey(String username, String notificationName) {
         List<Notification> byUsername = findAllByUsername(username);
         List<Notification> result = byUsername
                 .stream()
@@ -68,7 +68,7 @@ public class NotificationService {
         return result;
     }
 
-    public Map<String, String> getMap(String username) {
+    private Map<String, String> getMap(String username) {
         List<Notification> notifications = notificationRepository.findAllByUsername(username);
         Map<String, String> result = notifications.stream().collect(Collectors.toMap(Notification::getName,Notification::getText));
         log.trace("getMap method was executed with params: username-{} and result:{}",username,result);

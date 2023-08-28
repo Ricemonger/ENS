@@ -57,11 +57,11 @@ public class NotificationController {
     }
     @GetMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
-    public List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request){
+    public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request){
         String username = jwtUtil.extractUsername(token);
         String notificationName = request.name().trim();
         log.trace("findByPrimaryKey method was called with params: username-{}, notificationName-{}",username,notificationName);
-        return notificationService.findAllByPrimaryKey(username,notificationName);
+        return notificationService.findAllLikePrimaryKey(username,notificationName);
     }
     @ExceptionHandler(NotificationDoesntExistException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

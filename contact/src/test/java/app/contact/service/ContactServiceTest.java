@@ -1,10 +1,10 @@
 package app.contact.service;
 
+import app.contact.controller.exceptions.ContactAlreadyExistsException;
 import app.contact.controller.exceptions.ContactDoesntExistException;
 import app.contact.model.Contact;
 import app.contact.model.Method;
 import app.contact.service.repository.ContactRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -28,15 +28,24 @@ class ContactServiceTest {
     void setUp(){
         contactService = new ContactService(contactRepository);
     }
-    @AfterEach
-    void clearDB(){
-        contactRepository.deleteAll();
-    }
 
+    @Test
+    void createThrowsExceptionIfExists() {
+        Contact contact = new Contact("username", Method.SMS,"380953766409","");
+        contactRepository.save(contact);
+        Executable executable = new Executable(){
+            @Override
+            public void execute() throws Throwable {
+                contactService.create(contact);
+            }
+        };
+        assertThrows(ContactAlreadyExistsException.class,executable);
+    }
     @Test
     void createNormalBehavior() {
         Contact contact = new Contact("username", Method.SMS,"380953766409","");
         contactService.create(contact);
+        assertTrue(contactRepository.findAll().contains(contact));
     }
 
     @Test
@@ -52,15 +61,22 @@ class ContactServiceTest {
     }
     @Test
     void updateNormalBehavior() {
-        Contact contact = new Contact("username", Method.SMS,"380953766409","");
+        String username  = "username";
+        Method method = Method.SMS;
+        String contactId = "380953766409";
+        String originalNotification = "notification";
+        String alteredNotification = "NOTIFICATION1";
+        Contact contact = new Contact(username,method,contactId,originalNotification);
+        Contact altered = new Contact(username,method,contactId,alteredNotification);
         contactRepository.save(contact);
         Executable executable = new Executable(){
             @Override
             public void execute() throws Throwable {
-                contactService.update(contact);
+                contactService.update(altered);
             }
         };
         assertDoesNotThrow(executable);
+        assertEquals(altered,contactRepository.findAll().get(0));
     }
 
 
@@ -74,6 +90,7 @@ class ContactServiceTest {
             }
         };
         assertThrows(ContactDoesntExistException.class,executable);
+        assertEquals(contactRepository.findAll(), Collections.emptyList());
     }
     @Test
     void deleteNormalBehavior() {
