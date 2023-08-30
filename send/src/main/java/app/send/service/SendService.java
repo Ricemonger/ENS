@@ -53,6 +53,7 @@ public class SendService {
                 break;
             case "VIBER":
                 send(viberSender,username,contactId,notifText);
+                break;
             default:
                 throw new IllegalArgumentException("WRONG METHOD NAME");
         }
@@ -63,27 +64,27 @@ public class SendService {
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
         List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
-        Map<String, String> notificationMap = notificationService.getMap(token);
-        sendAllSms(username,smsContacts,notificationMap);
-        sendAllEmails(username,emailContacts,notificationMap);
-        sendAllViberMessages(username,viberContacts,notificationMap);
+        Map<String, String> notifications = notificationService.getMap(token);
+        sendAllSms(username,smsContacts,notifications);
+        sendAllEmails(username,emailContacts,notifications);
+        sendAllViberMessages(username,viberContacts,notifications);
     }
-    private void sendAllViberMessages(String username, List<Contact> contacts, Map<String, String> notificationMap) {
-        viberSender.bulkSend(toSendMap(username,contacts,notificationMap));
+    private void sendAllViberMessages(String username, List<Contact> contacts, Map<String, String> notifications) {
+        viberSender.bulkSend(toSendMap(username,contacts,notifications));
     }
-    private void sendAllSms(String username, List<Contact> contacts, Map<String, String> notificationMap){
-        smsSender.bulkSend(toSendMap(username,contacts,notificationMap));
+    private void sendAllSms(String username, List<Contact> contacts, Map<String, String> notifications){
+        smsSender.bulkSend(toSendMap(username,contacts,notifications));
     }
-    private void sendAllEmails(String username, List<Contact> contacts, Map<String, String> notificationMap){
-        emailSender.bulkSend(toSendMap(username,contacts,notificationMap));
+    private void sendAllEmails(String username, List<Contact> contacts, Map<String, String> notifications){
+        emailSender.bulkSend(toSendMap(username,contacts,notifications));
     }
-    private Map<String, String> toSendMap(String username, List<Contact> contacts, Map<String, String> notificationMap){
+    private Map<String, String> toSendMap(String username, List<Contact> contacts, Map<String, String> notifications){
         Map<String, String> sendMap = new HashMap<>();
         for(Contact contact: contacts){
             String sendTo = contact.getContactId();
             String notificationText;
             try {
-                notificationText = notificationMap.get(contact.getNotificationName());
+                notificationText = notifications.get(contact.getNotificationName());
             }catch (Exception e){
                 notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
             }
@@ -95,9 +96,6 @@ public class SendService {
         return sendMap;
     }
     private void send(Sender sender, String username, String contactId, String notificationText){
-        if(notificationText==null || notificationText.isBlank()){
-            notificationText = String.format(DEFAULT_TEXT_PATTERN,username);
-        }
         sender.send(contactId,notificationText);
         log.trace("notification was sent with params: sender-{}, username-{}, contactId-{}, notificationText-{}",sender,username,contactId,notificationText);
     }

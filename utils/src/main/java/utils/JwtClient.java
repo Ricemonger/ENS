@@ -54,10 +54,13 @@ public class JwtClient {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
-            if (username == null || username.isBlank())
+            if (username == null || username.isBlank()) {
+                log.warn("Invalid or expired JWT token:" + token);
                 throw new JwtRuntimeException("Invalid or expired JWT token: " + token);
+            }
             return username;
         } catch (WebClientRequestException e) {
+            log.warn("Invalid or expired JWT token:" + token);
             throw new JwtRuntimeException(e);
         }
     }
