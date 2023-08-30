@@ -1,11 +1,10 @@
 package app.security.config;
 
 import app.security.user.model.UserDetails;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -19,13 +18,15 @@ import java.util.function.Function;
 
 @PropertySource("authentication.properties")
 @Component
+@NoArgsConstructor
 public class JwtUtil {
     @Value("${jwt.sign_key}")
     private String KEY;
-    private Key signKey(){
-        byte[] bytes = Decoders.BASE64.decode(KEY);
-        return Keys.hmacShaKeyFor(bytes);
+
+    public JwtUtil(String key){
+        this.KEY = key;
     }
+
     public String generateToken(UserDetails userDetails, Map<String,String> extraClaims){
         return Jwts
                 .builder()
@@ -40,11 +41,20 @@ public class JwtUtil {
         return generateToken(userDetails, Collections.emptyMap());
     }
     public boolean isTokenValid(String token, UserDetails userDetails){
-        String username = extractUsername(token);
-        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        try {
+            String username = extractUsername(token);
+            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+        }
+        catch (JwtException jwtException){
+            return false;
+        }
     }
     public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+        try {
+            return extractExpiration(token).before(new Date());
+        }catch (JwtException jwtException){
+            return true;
+        }
     }
     public Date extractExpiration(String token) {
         return extractClaim(token,Claims::getExpiration);
@@ -67,4 +77,8 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
         }
+    private Key signKey(){
+        byte[] bytes = Decoders.BASE64.decode(KEY);
+        return Keys.hmacShaKeyFor(bytes);
+    }
 }

@@ -34,10 +34,9 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     public String register(User user) {
-        validateUsername(user.getUsername());
-        validatePassword(user.getUsername());
+        validate(user);
         try {
-            getById(user.getUsername());
+            getByIdOrThrow(user.getUsername());
         }catch(UserDoesntExistException e){
             String password = user.getPassword();
             user.setPassword(passwordEncoder.encode(password));
@@ -48,19 +47,19 @@ public class UserService {
         }
         throw new UserAlreadyExistsException();
     }
-    public User getByUsername(String username) {
-        return userRepository.findById(username).orElseThrow();
-    }
     public String login(User user) {
+        validate(user);
         String username = user.getUsername();
-        validateUsername(username);
         String password = user.getPassword();
-        validatePassword(password);
-        getById(username);
+        getByIdOrThrow(username);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
         String result = jwtUtil.generateToken(new UserDetails(new User(username,password)));
         log.trace("login method was executed with params: username-{}, password-{} and result: {}",username,passwordEncoder.encode(password),result);
         return result;
+    }
+    private void validate(User user){
+        validateUsername(user.getUsername());
+        validatePassword(user.getPassword());
     }
     private void validateUsername(String username){
         String regex = ".*\\W+.*";
@@ -72,7 +71,7 @@ public class UserService {
         if(password.length()<6 || password.length()>16 || password.matches(regex))
             throw new InvalidPasswordException();
     }
-    private User getById(String username){
+    private User getByIdOrThrow(String username) throws UserDoesntExistException{
         try {
             return userRepository.findById(username).orElseThrow();
         }catch(NoSuchElementException e){
