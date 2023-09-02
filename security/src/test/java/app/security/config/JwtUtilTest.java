@@ -17,7 +17,7 @@ class JwtUtilTest {
 
     private JwtUtil jwtUtil = new JwtUtil("b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9eb");
 
-    //Expired token with "user" username and "pass" password
+    //Expired token with "user" username and "pass" password with b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9eb key
     private String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkzMjk3MDMyLCJleHAiOjE2OTMyOTcwMzJ9.wmA063sUsTVGsFSzig9Lr0oiO6C3dxkHH_vWfsbyqlQ";
 
     private UserDetails userDetails = new UserDetails(new User("user","pass"));

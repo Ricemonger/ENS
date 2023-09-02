@@ -3,6 +3,7 @@ package app.send.controller;
 import app.send.controller.dto.SendOneRequest;
 import app.send.controller.exceptions.SenderApiException;
 import app.send.service.SendService;
+import app.send.service.contact.Method;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import utils.ExceptionMessage;
 import utils.JwtClient;
+
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/send")
@@ -38,6 +41,12 @@ public class SendController {
     public ExceptionMessage senderApiException(SenderApiException e){
         log.warn("SenderApiException was thrown with message: {}",e.getMessage());
         return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Exception was thrown during sending operation",e);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ExceptionMessage illegalArgumentException(IllegalArgumentException e){
+        log.warn("IllegalArgumentException occurred: {}" + e.getMessage());
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST,"Wrong Method Name! Valid method names are:" + Arrays.toString(Method.values()));
     }
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
