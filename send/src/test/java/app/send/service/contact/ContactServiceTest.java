@@ -1,8 +1,5 @@
 package app.send.service.contact;
 
-import app.send.service.notification.NotificationClient;
-import app.send.service.notification.NotificationNameRequest;
-import app.send.service.notification.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -23,7 +23,7 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/contacts")
 @RequiredArgsConstructor
-public class ContractController {
+public class ContactController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
