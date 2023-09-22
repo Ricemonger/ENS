@@ -1,13 +1,31 @@
 package app.notification;
 
+import app.notification.controller.NotificationController;
+import app.notification.service.NotificationService;
+import app.notification.service.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class NotificationServerTests {
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private NotificationController notificationController;
+
     @Test
-    void contextLoads() {
+    void contextLoads() throws Exception{
+        assertNotNull(notificationRepository);
+        assertNotNull(notificationService);
+        assertNotNull(notificationController);
     }
 
 }

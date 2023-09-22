@@ -33,6 +33,6 @@ class ContactRepositoryTest {
         contacts.add(contact4);
         contactRepository.saveAll(contacts);
         assertTrue(contacts.containsAll(contactRepository.findAllByUsername(username)));
-        assertFalse(contacts.containsAll(contactRepository.findAllByUsername("username1")));
+        assertFalse(contactRepository.findAllByUsername("username1").containsAll(contacts));
     }
 }
