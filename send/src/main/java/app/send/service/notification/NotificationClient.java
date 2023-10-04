@@ -10,8 +10,8 @@ import java.util.List;
 @FeignClient(name="notification", url = "${application.config.notification.url}")
 public interface NotificationClient {
     @GetMapping("/getByUN")
-    public List<Notification> findAllByUsername(@RequestHeader("Authorization") String token);
+    List<Notification> findAllByUsername(@RequestHeader("Authorization") String token);
 
     @GetMapping("/getByPK")
-    public List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
+    List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
 }
