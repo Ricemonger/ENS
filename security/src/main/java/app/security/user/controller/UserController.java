@@ -7,7 +7,7 @@ import app.security.user.controller.exceptions.InvalidUsernameException;
 import app.security.user.controller.exceptions.UserAlreadyExistsException;
 import app.security.user.controller.exceptions.UserDoesntExistException;
 import app.security.user.service.UserService;
-import utils.ExceptionMessage;
+import app.utils.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

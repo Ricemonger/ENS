@@ -6,14 +6,14 @@ import app.notification.controller.exceptions.NotificationAlreadyExistsException
 import app.notification.controller.exceptions.NotificationDoesntExistException;
 import app.notification.model.Notification;
 import app.notification.service.NotificationService;
-import utils.ExceptionMessage;
-import utils.JwtClient;
+import app.utils.ExceptionMessage;
+import app.utils.JwtClient;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import utils.JwtRuntimeException;
+import app.utils.JwtRuntimeException;
 
 import java.util.List;
 
@@ -48,14 +48,14 @@ public class NotificationController {
         log.trace("delete method was called with params: {}",notification);
         return notificationService.delete(notification);
     }
-    @GetMapping("/getByUN")
+    @RequestMapping("/getByUN")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllByUsername(@RequestHeader("Authorization") String token){
         String username = jwtUtil.extractUsername(token);
         log.trace("findByUsername method was called with param username: {}", username);
         return notificationService.findAllByUsername(jwtUtil.extractUsername(token));
     }
-    @GetMapping("/getByPK")
+    @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request){
         String username = jwtUtil.extractUsername(token);

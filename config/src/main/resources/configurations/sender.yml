@@ -10,9 +10,9 @@ application:
   version: 0.1
   config:
     contact:
-      url: http://localhost:8090/api/contacts
+      url: http://localhost:8080/api/contacts
     notification:
-      url: http://localhost:8091/api/notifications
+      url: http://localhost:8080/api/notifications
 
 spring:
   application:

@@ -7,9 +7,9 @@ import app.contact.model.Contact;
 import app.contact.controller.dto.ContactCreUpdRequest;
 import app.contact.model.Method;
 import app.contact.service.ContactService;
-import utils.ExceptionMessage;
-import utils.JwtClient;
-import utils.JwtRuntimeException;
+import app.utils.ExceptionMessage;
+import app.utils.JwtClient;
+import app.utils.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,14 +67,14 @@ public class ContactController {
             throw new InvalidContactMethodException(e);
         }
     }
-    @GetMapping("/getByUN")
+    @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByUsername(@RequestHeader(name="Authorization") String token){
         String username = jwtUtil.extractUsername(token);
         log.trace("findAllByUsername method was called with params: username-{}",username);
         return contactService.findAllByUsername(username);
     }
-    @GetMapping("/getByPK")
+    @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikePrimaryKey(@RequestHeader(name="Authorization") String token, @RequestBody ContactKeyRequest pkRequest){
         try{
@@ -87,7 +87,7 @@ public class ContactController {
             throw new InvalidContactMethodException(e);
         }
     }
-    @GetMapping("/getByNN")
+    @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikeNotificationName(@RequestHeader(name="Authorization") String token, @RequestBody ContactNNRequest nnRequest){
         String username = jwtUtil.extractUsername(token);

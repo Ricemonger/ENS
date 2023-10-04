@@ -3,7 +3,7 @@ package app.contact;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import utils.JwtClient;
+import app.utils.JwtClient;
 
 @SpringBootApplication
 public class ContactServer {

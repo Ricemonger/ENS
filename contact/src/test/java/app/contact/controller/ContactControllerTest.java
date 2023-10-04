@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import utils.JwtClient;
+import app.utils.JwtClient;
 
 import java.util.NoSuchElementException;
 
@@ -54,16 +54,11 @@ class ContactControllerTest {
     void create() {
         String token = "token";
         ContactCreUpdRequest request = new ContactCreUpdRequest(Method.SMS.name(),"380","name");
-        Contact contact = contactController.create(token,request);
+        contactController.create(token,request);
         verify(jwtClient).extractUsername(token);
         Contact contact1 = new Contact(null,Method.SMS,request.contactId(),request.notificationName());
         assertEquals(contact1,contactRepository.findById(new ContactCompositeKey(null,Method.SMS,request.contactId())).orElseThrow());
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                contactController.create(token,request);
-            }
-        };
+        Executable executable = () -> contactController.create(token,request);
         assertThrows(ContactAlreadyExistsException.class,executable);
     }
 
@@ -71,12 +66,7 @@ class ContactControllerTest {
     void update() {
         String token = "token";
         ContactCreUpdRequest request = new ContactCreUpdRequest(Method.SMS.name(),"380","name");
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                contactController.update(token,request);
-            }
-        };
+        Executable executable = () -> contactController.update(token,request);
         assertThrows(ContactDoesntExistException.class,executable);
         contactController.create(token,request);
         ContactCreUpdRequest anotherRequest = new ContactCreUpdRequest(Method.SMS.name(),"380","anotherName");
@@ -91,21 +81,11 @@ class ContactControllerTest {
     void delete() {
         String token = "token";
         ContactKeyRequest request = new ContactKeyRequest(Method.SMS.name(),"380");
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                contactController.delete(token,request);
-            }
-        };
+        Executable executable = () -> contactController.delete(token,request);
         assertThrows(ContactDoesntExistException.class,executable);
         contactRepository.save(new Contact(null,Method.SMS,request.contactId(),"name"));
         contactController.delete(token,request);
-        Executable executableAfter = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                contactRepository.findById(new ContactCompositeKey(null,Method.SMS,request.contactId())).orElseThrow();
-            }
-        };
+        Executable executableAfter = () -> contactRepository.findById(new ContactCompositeKey(null,Method.SMS,request.contactId())).orElseThrow();
         assertThrows(NoSuchElementException.class,executableAfter);
     }
 
@@ -119,7 +99,6 @@ class ContactControllerTest {
     @Test
     void findAllLikePrimaryKey() {
         contactController = new ContactController(mockContactService,jwtClient);
-        String name = "name";
         contactController.findAllLikePrimaryKey("",new ContactKeyRequest(Method.SMS.name(),"380"));
         verify(mockContactService).findAllLikePrimaryKey(any(),eq(Method.SMS),eq("380"));
     }

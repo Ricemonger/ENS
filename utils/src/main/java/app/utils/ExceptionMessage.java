@@ -1,4 +1,4 @@
-package utils;
+package app.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ExceptionMessage {
     private HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-    private LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
     private String message;
 
     private ExceptionMessage() {
