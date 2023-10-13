@@ -34,7 +34,7 @@ public class SendService {
     public void sendOne(String token, String username,String method, String contactId, String notificationText) {
         log.trace("sendOne method is executing with params: username-{}, method-{}, contactId-{}, notificationText-{}",username,method,contactId,notificationText);
         String notifText = String.format(DEFAULT_TEXT_PATTERN, username);
-        if(notificationText!=null) {
+        if(notificationText!=null && !notificationText.isBlank()) {
             notifText = notificationText;
         }
         else{

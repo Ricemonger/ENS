@@ -9,7 +9,7 @@ import app.contact.model.Method;
 import app.contact.service.repository.ContactRepository;
 import app.notification.service.repository.NotificationRepository;
 import app.security.user.service.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -45,9 +45,7 @@ public class ContactControllerIntegrationTest {
 
     private WebClient mainUserWebClient;
 
-
     private WebClient anotherUserWebClient;
-
 
     @Autowired
     private ContactRepository contactRepository;
@@ -58,13 +56,18 @@ public class ContactControllerIntegrationTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    private static final ContactCreUpdRequest request = new ContactCreUpdRequest("sms","380","name");
-    private static final ContactCreUpdRequest updateRequest = new ContactCreUpdRequest("sms","380","new notification name");
-    private static final ContactCreUpdRequest anotherRequest = new ContactCreUpdRequest("SMS","11000","name");
-    private static final ContactCreUpdRequest anotherNotificationRequest = new ContactCreUpdRequest("SMS","8665","another notification");
-    private static final ContactCreUpdRequest wrongRequest = new ContactCreUpdRequest("smmmmmms","380","name");
-    private static final ContactNNRequest notificationNameRequest = new ContactNNRequest("name");
-    private static final ContactNNRequest notificationNameRequestBlank = new ContactNNRequest("");
+    private static final ContactCreUpdRequest REQUEST = new ContactCreUpdRequest("sms","380","name");
+    private static final ContactCreUpdRequest UPDATE_REQUEST = new ContactCreUpdRequest("sms","380","new notification name");
+    private static final ContactCreUpdRequest ANOTHER_REQUEST = new ContactCreUpdRequest("SMS","11000","name");
+    private static final ContactCreUpdRequest ANOTHER_NOTIFICATION_REQUEST = new ContactCreUpdRequest("SMS","8665","another notification");
+    private static final ContactCreUpdRequest WRONG_REQUEST = new ContactCreUpdRequest("smmmmmms","380","name");
+    private static final ContactNNRequest NOTIFICATION_NAME_REQUEST = new ContactNNRequest("name");
+    private static final ContactNNRequest NOTIFICATION_NAME_REQUEST_BLANK = new ContactNNRequest("");
+
+    private static final String FIRST_USER_NAME = "username";
+    private static final String ANOTHER_USER_NAME = "username1";
+
+    private final InvalidJwts invalidJwts = new InvalidJwts("http://localhost:8080/api/contacts");
 
     @BeforeEach
     void beforeEach(){
@@ -72,7 +75,7 @@ public class ContactControllerIntegrationTest {
         contactRepository.deleteAll();
         notificationRepository.deleteAll();
 
-        String username = "username";
+        String username = FIRST_USER_NAME;
         String password = "password";
         String token = WebClient
                 .builder()
@@ -89,8 +92,8 @@ public class ContactControllerIntegrationTest {
                 .defaultHeader("Authorization","Bearer " + token)
                 .build();
 
-        String username1 = "username1";
-        String password1 = "password1";
+        String username1 = ANOTHER_USER_NAME;
+        String password1 = "password";
         String token1 = WebClient
                 .builder()
                 .baseUrl("http://localhost:8080/api/users/register")
@@ -109,16 +112,16 @@ public class ContactControllerIntegrationTest {
 
     @Test
     void createNormalBehavior(){
-        Contact firstUserContact = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(anotherRequest).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserContact = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(ANOTHER_REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         Set<Contact> contacts = new HashSet<>();
         contacts.add(firstUserContact);
         contacts.add(firstUserAnotherContact);
 
-        assertEquals(firstUserContact,contactRepository.findById(new ContactCompositeKey("username", Method.SMS,"380")).orElseThrow());
+        assertEquals(firstUserContact,contactRepository.findById(new ContactCompositeKey(FIRST_USER_NAME, Method.SMS,"380")).orElseThrow());
 
-        assertEquals(contacts, Set.copyOf(contactRepository.findAllByUsername("username")));
+        assertEquals(contacts, Set.copyOf(contactRepository.findAllByUsername(FIRST_USER_NAME)));
 
         contacts.add(anotherUserContact);
         assertEquals(contacts,Set.copyOf(contactRepository.findAll()));
@@ -126,24 +129,32 @@ public class ContactControllerIntegrationTest {
 
     @Test
     void createThrowsExceptionsOnWrongMethod() {
-        Executable wrongMethodExecutable = () -> mainUserWebClient.post().bodyValue(wrongRequest).retrieve().bodyToMono(Contact.class).block();
+        Executable wrongMethodExecutable = () -> mainUserWebClient.post().bodyValue(WRONG_REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.BadRequest.class,wrongMethodExecutable);
     }
 
     @Test
     void createThrowsExceptionsOnAlreadyExisting() {
-        mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Executable alreadyExistsExecutable = () -> mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Executable alreadyExistsExecutable = () -> mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.Forbidden.class, alreadyExistsExecutable);
     }
 
     @Test
+    void createThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
+    }
+
+    @Test
     void updateNormalBehavior(){
-        Contact initial = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUser = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact updated = mainUserWebClient.patch().bodyValue(updateRequest).retrieve().bodyToMono(Contact.class).block();
-        Contact inDb = contactRepository.findById(new ContactCompositeKey("username",Method.SMS,request.contactId())).orElseThrow();
-        Contact anotherUserInDb = contactRepository.findById(new ContactCompositeKey("username1",Method.SMS,request.contactId())).orElseThrow();
+        Contact initial = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUser = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact updated = mainUserWebClient.patch().bodyValue(UPDATE_REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact inDb = contactRepository.findById(new ContactCompositeKey(FIRST_USER_NAME,Method.SMS, REQUEST.contactId())).orElseThrow();
+        Contact anotherUserInDb = contactRepository.findById(new ContactCompositeKey(ANOTHER_USER_NAME,Method.SMS, REQUEST.contactId())).orElseThrow();
 
         assertNotEquals(initial,inDb);
         assertEquals(updated,inDb);
@@ -152,23 +163,31 @@ public class ContactControllerIntegrationTest {
 
     @Test
     void updateThrowsExceptionsOnWrongMethod(){
-        Executable wrongMethodExecutable = () -> mainUserWebClient.patch().bodyValue(wrongRequest).retrieve().bodyToMono(Contact.class).block();
+        Executable wrongMethodExecutable = () -> mainUserWebClient.patch().bodyValue(WRONG_REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.BadRequest.class,wrongMethodExecutable);
     }
 
     @Test
     void updateThrowsExceptionsOnNotExisting() {
-        Executable notExistExecutable = () -> mainUserWebClient.patch().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        Executable notExistExecutable = () -> mainUserWebClient.patch().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.NotFound.class, notExistExecutable);
     }
 
     @Test
+    void updateThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.patch().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
+    }
+
+    @Test
     void deleteNormalBehavior(){
-        Contact initial = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUser = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact deleted = mainUserWebClient.method(HttpMethod.DELETE).bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUserInDb = contactRepository.findById(new ContactCompositeKey("username1",Method.SMS,request.contactId())).orElseThrow();
-        Executable executable = () ->contactRepository.findById(new ContactCompositeKey("username",Method.SMS,request.contactId())).orElseThrow();
+        Contact initial = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUser = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact deleted = mainUserWebClient.method(HttpMethod.DELETE).bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUserInDb = contactRepository.findById(new ContactCompositeKey("username1",Method.SMS, REQUEST.contactId())).orElseThrow();
+        Executable executable = () ->contactRepository.findById(new ContactCompositeKey("username",Method.SMS, REQUEST.contactId())).orElseThrow();
 
         assertEquals(new Contact(initial.getUsername(),initial.getMethod(),initial.getContactId()),deleted);
         assertThrows(NoSuchElementException.class,executable);
@@ -177,23 +196,31 @@ public class ContactControllerIntegrationTest {
 
     @Test
     void deleteThrowsExceptionsOnWrongMethod() {
-        Executable wrongMethodExecutable = () -> mainUserWebClient.method(HttpMethod.DELETE).bodyValue(wrongRequest).retrieve().bodyToMono(Contact.class).block();
+        Executable wrongMethodExecutable = () -> mainUserWebClient.method(HttpMethod.DELETE).bodyValue(WRONG_REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.BadRequest.class, wrongMethodExecutable);
     }
 
     @Test
     void deleteThrowsExceptionsOnNotExisting(){
-        Executable notExistExecutable = () -> mainUserWebClient.method(HttpMethod.DELETE).bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        Executable notExistExecutable = () -> mainUserWebClient.method(HttpMethod.DELETE).bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         assertThrows(WebClientResponseException.NotFound.class,notExistExecutable);
+    }
+
+    @Test
+    void deleteThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.method(HttpMethod.DELETE).bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
     }
 
     @Test
     void findAllByUsernameNormalBehavior(){
         assertEquals(mainUserWebClient.method(HttpMethod.GET).uri("/getByUN").retrieve().bodyToMono(List.class).block(),Collections.emptyList());
 
-        Contact firstUserContact = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(anotherRequest).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserContact = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(ANOTHER_REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         List<Contact> contacts = new ArrayList<>();
         contacts.add(firstUserContact);
         contacts.add(firstUserAnotherContact);
@@ -202,13 +229,21 @@ public class ContactControllerIntegrationTest {
     }
 
     @Test
+    void findAllByUsernameThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.method(HttpMethod.GET).uri("/getByUN").bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
+    }
+
+    @Test
     void findAllLikePrimaryKeyNormalBehavior(){
-        assertEquals(mainUserWebClient.method(HttpMethod.GET).uri("/getByPK").bodyValue(request).retrieve().bodyToMono(List.class).block(),Collections.emptyList());
+        assertEquals(mainUserWebClient.method(HttpMethod.GET).uri("/getByPK").bodyValue(REQUEST).retrieve().bodyToMono(List.class).block(),Collections.emptyList());
 
         List<Contact> contacts = new ArrayList<>();
-        Contact firstUserContact = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(anotherRequest).retrieve().bodyToMono(Contact.class).block();
-        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserContact = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(ANOTHER_REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
         ContactKeyRequest resultingOneRequest = new ContactKeyRequest(Method.SMS.name(),"38");
         ContactKeyRequest resultingTwoRequest = new ContactKeyRequest(Method.SMS.name(),"");
 
@@ -222,20 +257,28 @@ public class ContactControllerIntegrationTest {
     }
 
     @Test
-    void findAllLikeNotificationNameNormalBehavior(){
-        assertEquals(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(request).retrieve().bodyToMono(List.class).block(),Collections.emptyList());
+    void findAllLikePrimaryKeyThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.method(HttpMethod.GET).uri("/getByPK").bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
+    }
 
-        Contact firstUserContact = mainUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(anotherRequest).retrieve().bodyToMono(Contact.class).block();
+    @Test
+    void findAllLikeNotificationNameNormalBehavior(){
+        assertEquals(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(REQUEST).retrieve().bodyToMono(List.class).block(),Collections.emptyList());
+
+        Contact firstUserContact = mainUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        Contact firstUserAnotherContact = mainUserWebClient.post().bodyValue(ANOTHER_REQUEST).retrieve().bodyToMono(Contact.class).block();
         List<Contact> mainUserContacts = new ArrayList<>();
         mainUserContacts.add(firstUserContact);
         mainUserContacts.add(firstUserAnotherContact);
-        Contact firstUserAnotherNotificationContact = mainUserWebClient.post().bodyValue(anotherNotificationRequest).retrieve().bodyToMono(Contact.class).block();
-        List<Contact> returnedMainUserListName = toContactList(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(notificationNameRequest).retrieve().bodyToMono(List.class).block());
-        List<Contact> returnedMainUserListAll = toContactList(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(notificationNameRequestBlank).retrieve().bodyToMono(List.class).block());
+        Contact firstUserAnotherNotificationContact = mainUserWebClient.post().bodyValue(ANOTHER_NOTIFICATION_REQUEST).retrieve().bodyToMono(Contact.class).block();
+        List<Contact> returnedMainUserListName = toContactList(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(NOTIFICATION_NAME_REQUEST).retrieve().bodyToMono(List.class).block());
+        List<Contact> returnedMainUserListAll = toContactList(mainUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(NOTIFICATION_NAME_REQUEST_BLANK).retrieve().bodyToMono(List.class).block());
 
-        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(request).retrieve().bodyToMono(Contact.class).block();
-        List<Contact> returnedAnotherUserList = toContactList(anotherUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(notificationNameRequest).retrieve().bodyToMono(List.class).block());
+        Contact anotherUserContact = anotherUserWebClient.post().bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+        List<Contact> returnedAnotherUserList = toContactList(anotherUserWebClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(NOTIFICATION_NAME_REQUEST).retrieve().bodyToMono(List.class).block());
 
 
         assertEquals(Collections.singletonList(anotherUserContact),returnedAnotherUserList);
@@ -243,6 +286,14 @@ public class ContactControllerIntegrationTest {
         assertTrue(returnedMainUserListName.equals(mainUserContacts) && !returnedMainUserListName.contains(firstUserAnotherNotificationContact));
         mainUserContacts.add(firstUserAnotherNotificationContact);
         assertEquals(mainUserContacts,returnedMainUserListAll);
+    }
+
+    @Test
+    void findAllLikeNotificationNameThrowsExceptionsOnInvalidJwt(){
+        for(WebClient webClient : invalidJwts.getInvalidWebClientList()){
+            Executable executable = () -> webClient.method(HttpMethod.GET).uri("/getByNN").bodyValue(REQUEST).retrieve().bodyToMono(Contact.class).block();
+            assertThrows(JwtException.class,executable);
+        }
     }
 
     private List<Contact> toContactList(List<LinkedHashMap<String,String>> list){
