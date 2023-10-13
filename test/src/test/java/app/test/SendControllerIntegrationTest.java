@@ -113,13 +113,13 @@ public class SendControllerIntegrationTest {
         System.out.printf("%s message sent to phone number +%s with message:%s\n",request.method(),request.contactId(),request.notificationText());
     }
 
-    //Text - test message
+    //Text - test message bull
     @Test
     void sendAll(){
         contactRepository.save(new Contact("username", Method.EMAIL,"leskotr23@gmail.com","notificationName"));
         contactRepository.save(new Contact("username", Method.VIBER,"380953766409","notificationName"));
         contactRepository.save(new Contact("username", Method.SMS,"380953766409","notificationName"));
-        notificationRepository.save(new Notification("username","notificationName","test message"));
+        notificationRepository.save(new Notification("username","notificationName","test message bulk"));
         mainUserWebClient.post().uri("/all").retrieve().toBodilessEntity().block();
     }
 }
