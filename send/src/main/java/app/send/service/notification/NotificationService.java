@@ -19,16 +19,17 @@ public class NotificationService {
 
     public Notification findOneByPrimaryKey(String token, String notificationName) {
         List<Notification> list = notificationClient.findAllByPrimaryKey(token, new NotificationNameRequest(notificationName));
-        log.trace("NotificationClient's method findAllByPrimaryKey was executed with params: jwt-{}, notification's name-{} and result:{}",token,notificationName,list);
-        Notification result = list.stream().filter(l->l.getName().equals(notificationName)).findFirst().orElseThrow();
-        log.trace("findOneByPrimaryKey method was executed with params: jwt-{}, notification's name-{} and result:{}",token,notificationName,result);
+        log.trace("NotificationClient's method findAllByPrimaryKey was executed with params: jwt-{}, notification's name-{} and result:{}", token, notificationName, list);
+        Notification result = list.stream().filter(l -> l.getName().equals(notificationName)).findFirst().orElseThrow();
+        log.trace("findOneByPrimaryKey method was executed with params: jwt-{}, notification's name-{} and result:{}", token, notificationName, result);
         return result;
     }
+
     public Map<String, String> getMap(String token) {
         List<Notification> list = notificationClient.findAllByUsername(token);
-        log.trace("NotificationClient's method findAllByUsername was executed with params: jwt-{} and result:{}",token,list);
-        Map<String, String> result = list.stream().collect(Collectors.toMap(Notification::getName,Notification::getText));
-        log.trace("getMap method was executed with params: jwt-{} and result:{}",token,result);
+        log.trace("NotificationClient's method findAllByUsername was executed with params: jwt-{} and result:{}", token, list);
+        Map<String, String> result = list.stream().collect(Collectors.toMap(Notification::getName, Notification::getText));
+        log.trace("getMap method was executed with params: jwt-{} and result:{}", token, result);
         return result;
     }
 }

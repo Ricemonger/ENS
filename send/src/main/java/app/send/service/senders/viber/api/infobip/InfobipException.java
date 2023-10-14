@@ -4,11 +4,11 @@ import app.send.controller.exceptions.SenderApiException;
 
 public class InfobipException extends SenderApiException {
 
-    public InfobipException(){
+    public InfobipException() {
         super();
     }
 
-    public InfobipException(Throwable cause){
+    public InfobipException(Throwable cause) {
         super(cause);
     }
 

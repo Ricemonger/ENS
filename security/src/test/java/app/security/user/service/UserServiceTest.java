@@ -24,7 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
@@ -34,46 +34,37 @@ class UserServiceTest {
     @Mock
     private AuthenticationManager authenticationManager;
 
-    private PasswordEncoder passwordEncoder = new Configuration().passwordEncoder();
+    private final PasswordEncoder passwordEncoder = new Configuration().passwordEncoder();
 
     @Autowired
     private UserRepository userRepository;
 
-    private JwtUtil jwtUtil = new JwtUtil("b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9eb");
+    private final JwtUtil jwtUtil = new JwtUtil("b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9eb");
 
     private UserService userService;
+
     @BeforeEach
-    void setUp(){
-        userService = new UserService(userRepository,passwordEncoder,authenticationManager,jwtUtil);
+    void setUp() {
+        userService = new UserService(userRepository, passwordEncoder, authenticationManager, jwtUtil);
     }
 
     @Test
     void registerThrowsExceptionOnInvalidCredentials() {
         Map<String, String> invalidUsername = new HashMap<>();
-        invalidUsername.put("user","password");
-        invalidUsername.put("user12 ","password");
-        invalidUsername.put("uuuuuuuuaaaaaaaa11111111111","password");
-        for (Map.Entry<String, String> entry : invalidUsername.entrySet()){
-            Executable executable = new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    userService.register(new User(entry.getKey(),entry.getValue()));
-                }
-            };
-            assertThrows(InvalidUsernameException.class,executable);
+        invalidUsername.put("user", "password");
+        invalidUsername.put("user12 ", "password");
+        invalidUsername.put("uuuuuuuuaaaaaaaa11111111111", "password");
+        for (Map.Entry<String, String> entry : invalidUsername.entrySet()) {
+            Executable executable = () -> userService.register(new User(entry.getKey(), entry.getValue()));
+            assertThrows(InvalidUsernameException.class, executable);
         }
         Map<String, String> invalidPassword = new HashMap<>();
-        invalidPassword.put("username","pass");
-        invalidPassword.put("validUser","password1234567890-=12345678");
-        invalidPassword.put("username12","password ");
-        for (Map.Entry<String, String> entry : invalidPassword.entrySet()){
-            Executable executable = new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    userService.register(new User(entry.getKey(),entry.getValue()));
-                }
-            };
-            assertThrows(InvalidPasswordException.class,executable);
+        invalidPassword.put("username", "pass");
+        invalidPassword.put("validUser", "password1234567890-=12345678");
+        invalidPassword.put("username12", "password ");
+        for (Map.Entry<String, String> entry : invalidPassword.entrySet()) {
+            Executable executable = () -> userService.register(new User(entry.getKey(), entry.getValue()));
+            assertThrows(InvalidPasswordException.class, executable);
         }
     }
 
@@ -81,73 +72,59 @@ class UserServiceTest {
     void registerThrowsExceptionIfUserAlreadyExists() {
         String username = "username";
         String password = "password";
-        User user = new User(username,password);
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userService.register(user);
-                userService.register(user);
-            }
+        User user = new User(username, password);
+        Executable executable = () -> {
+            userService.register(user);
+            userService.register(user);
         };
-        assertThrows(UserAlreadyExistsException.class,executable);
+        assertThrows(UserAlreadyExistsException.class, executable);
     }
+
     @Test
     void registerNormalBehavior() {
         String username = "username";
         String password = "password";
-        User user = new User(username,password);
+        User user = new User(username, password);
         userService.register(user);
-        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username,password));
+        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
+
     @Test
     void loginThrowsExceptionOnInvalidCredentials() {
         Map<String, String> invalidUsername = new HashMap<>();
-        invalidUsername.put("user","password");
-        invalidUsername.put("user12 ","password");
-        invalidUsername.put("uuuuuuuuaaaaaaaa11111111111","password");
-        for (Map.Entry<String, String> entry : invalidUsername.entrySet()){
-            Executable executable = new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    userService.login(new User(entry.getKey(),entry.getValue()));
-                }
-            };
-            assertThrows(InvalidUsernameException.class,executable);
+        invalidUsername.put("user", "password");
+        invalidUsername.put("user12 ", "password");
+        invalidUsername.put("uuuuuuuuaaaaaaaa11111111111", "password");
+        for (Map.Entry<String, String> entry : invalidUsername.entrySet()) {
+            Executable executable = () -> userService.login(new User(entry.getKey(), entry.getValue()));
+            assertThrows(InvalidUsernameException.class, executable);
         }
         Map<String, String> invalidPassword = new HashMap<>();
-        invalidPassword.put("username","pass");
-        invalidPassword.put("validUser","password1234567890-=12345678");
-        invalidPassword.put("username12","password ");
-        for (Map.Entry<String, String> entry : invalidPassword.entrySet()){
-            Executable executable = new Executable() {
-                @Override
-                public void execute() throws Throwable {
-                    userService.login(new User(entry.getKey(),entry.getValue()));
-                }
-            };
-            assertThrows(InvalidPasswordException.class,executable);
+        invalidPassword.put("username", "pass");
+        invalidPassword.put("validUser", "password1234567890-=12345678");
+        invalidPassword.put("username12", "password ");
+        for (Map.Entry<String, String> entry : invalidPassword.entrySet()) {
+            Executable executable = () -> userService.login(new User(entry.getKey(), entry.getValue()));
+            assertThrows(InvalidPasswordException.class, executable);
         }
     }
+
     @Test
     void loginThrowsExceptionIfUserDoesntExist() {
         String username = "username";
         String password = "password";
-        User user = new User(username,password);
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                userService.login(user);
-            }
-        };
-        assertThrows(UserDoesntExistException.class,executable);
+        User user = new User(username, password);
+        Executable executable = () -> userService.login(user);
+        assertThrows(UserDoesntExistException.class, executable);
     }
+
     @Test
     void loginNormalBehavior() {
         String username = "username";
         String password = "password";
-        User user = new User(username,password);
-        userRepository.save(new User(username,passwordEncoder.encode(password)));
+        User user = new User(username, password);
+        userRepository.save(new User(username, passwordEncoder.encode(password)));
         userService.login(user);
-        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username,password));
+        verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }

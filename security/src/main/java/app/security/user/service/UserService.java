@@ -1,8 +1,8 @@
 package app.security.user.service;
 
+import app.security.config.JwtUtil;
 import app.security.user.controller.exceptions.InvalidPasswordException;
 import app.security.user.controller.exceptions.InvalidUsernameException;
-import app.security.config.JwtUtil;
 import app.security.user.controller.exceptions.UserAlreadyExistsException;
 import app.security.user.controller.exceptions.UserDoesntExistException;
 import app.security.user.model.User;
@@ -37,44 +37,49 @@ public class UserService {
         validate(user);
         try {
             getByIdOrThrow(user.getUsername());
-        }catch(UserDoesntExistException e){
+        } catch (UserDoesntExistException e) {
             String password = user.getPassword();
             user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
             user.setPassword(password);
-            log.trace("register method was executed with params:{}",user);
+            log.trace("register method was executed with params:{}", user);
             return login(user);
         }
         throw new UserAlreadyExistsException();
     }
+
     public String login(User user) {
         validate(user);
         String username = user.getUsername();
         String password = user.getPassword();
         getByIdOrThrow(username);
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
-        String result = jwtUtil.generateToken(new UserDetails(new User(username,password)));
-        log.trace("login method was executed with params: username-{}, password-{} and result: {}",username,passwordEncoder.encode(password),result);
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        String result = jwtUtil.generateToken(new UserDetails(new User(username, password)));
+        log.trace("login method was executed with params: username-{}, password-{} and result: {}", username, passwordEncoder.encode(password), result);
         return result;
     }
-    private void validate(User user){
+
+    private void validate(User user) {
         validateUsername(user.getUsername());
         validatePassword(user.getPassword());
     }
-    private void validateUsername(String username){
+
+    private void validateUsername(String username) {
         String regex = ".*\\W+.*";
-        if(username.length()<6 || username.length()>24 || username.matches(regex))
+        if (username.length() < 6 || username.length() > 24 || username.matches(regex))
             throw new InvalidUsernameException();
     }
-    private void validatePassword(String password){
+
+    private void validatePassword(String password) {
         String regex = ".*[\\{\\}\\[\\]\\(\\):;'\".,<>/|\\\s]+.*";
-        if(password.length()<6 || password.length()>16 || password.matches(regex))
+        if (password.length() < 6 || password.length() > 16 || password.matches(regex))
             throw new InvalidPasswordException();
     }
-    private User getByIdOrThrow(String username) throws UserDoesntExistException{
+
+    private User getByIdOrThrow(String username) throws UserDoesntExistException {
         try {
             return userRepository.findById(username).orElseThrow();
-        }catch(NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new UserDoesntExistException(e);
         }
     }

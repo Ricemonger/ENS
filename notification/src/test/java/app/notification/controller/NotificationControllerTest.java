@@ -8,6 +8,7 @@ import app.notification.model.Notification;
 import app.notification.model.NotificationCompositeKey;
 import app.notification.service.NotificationService;
 import app.notification.service.repository.NotificationRepository;
+import app.utils.JwtClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import app.utils.JwtClient;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -43,61 +45,62 @@ class NotificationControllerTest {
     private NotificationService mockNotificationService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         notificationService = new NotificationService(notificationRepository);
-        notificationController = new NotificationController(notificationService,jwtClient);
+        notificationController = new NotificationController(notificationService, jwtClient);
     }
+
     @Test
     void create() {
         String token = "token";
-        NotificationCreUpdRequest request = new NotificationCreUpdRequest("name","text");
-        notificationController.create(token,request);
+        NotificationCreUpdRequest request = new NotificationCreUpdRequest("name", "text");
+        notificationController.create(token, request);
         verify(jwtClient).extractUsername(token);
-        Notification notification1 = new Notification(null,request.name(),request.text());
-        assertEquals(notification1,notificationRepository.findById(new NotificationCompositeKey(null,request.name())).orElseThrow());
-        Executable executable = () -> notificationController.create(token,request);
-        assertThrows(NotificationAlreadyExistsException.class,executable);
+        Notification notification1 = new Notification(null, request.name(), request.text());
+        assertEquals(notification1, notificationRepository.findById(new NotificationCompositeKey(null, request.name())).orElseThrow());
+        Executable executable = () -> notificationController.create(token, request);
+        assertThrows(NotificationAlreadyExistsException.class, executable);
     }
 
     @Test
     void update() {
         String token = "token";
-        NotificationCreUpdRequest request = new NotificationCreUpdRequest("name","text");
-        Executable executable = () -> notificationController.update(token,request);
-        assertThrows(NotificationDoesntExistException.class,executable);
-        notificationController.create(token,request);
-        NotificationCreUpdRequest anotherRequest = new NotificationCreUpdRequest("name","newNotificationText");
-        Notification anotherNotification = new Notification(null,"name","newNotificationText");
+        NotificationCreUpdRequest request = new NotificationCreUpdRequest("name", "text");
+        Executable executable = () -> notificationController.update(token, request);
+        assertThrows(NotificationDoesntExistException.class, executable);
+        notificationController.create(token, request);
+        NotificationCreUpdRequest anotherRequest = new NotificationCreUpdRequest("name", "newNotificationText");
+        Notification anotherNotification = new Notification(null, "name", "newNotificationText");
         reset(jwtClient);
-        notificationController.update(token,anotherRequest);
+        notificationController.update(token, anotherRequest);
         verify(jwtClient).extractUsername(token);
-        assertEquals(notificationRepository.findById(new NotificationCompositeKey(null,anotherRequest.name())).orElseThrow(),anotherNotification);
+        assertEquals(notificationRepository.findById(new NotificationCompositeKey(null, anotherRequest.name())).orElseThrow(), anotherNotification);
     }
 
     @Test
     void delete() {
         String token = "token";
         NotificationNameRequest request = new NotificationNameRequest("name");
-        Executable executable = () -> notificationController.delete(token,request);
-        assertThrows(NotificationDoesntExistException.class,executable);
-        notificationRepository.save(new Notification(null,request.name()));
-        notificationController.delete(token,request);
-        Executable executableAfter = () -> notificationRepository.findById(new NotificationCompositeKey(null,request.name())).orElseThrow();
-        assertThrows(NoSuchElementException.class,executableAfter);
+        Executable executable = () -> notificationController.delete(token, request);
+        assertThrows(NotificationDoesntExistException.class, executable);
+        notificationRepository.save(new Notification(null, request.name()));
+        notificationController.delete(token, request);
+        Executable executableAfter = () -> notificationRepository.findById(new NotificationCompositeKey(null, request.name())).orElseThrow();
+        assertThrows(NoSuchElementException.class, executableAfter);
     }
 
     @Test
     void findAllByUsername() {
-        notificationController = new NotificationController(mockNotificationService,jwtClient);
+        notificationController = new NotificationController(mockNotificationService, jwtClient);
         notificationController.findAllByUsername("");
         verify(mockNotificationService).findAllByUsername(any());
     }
 
     @Test
     void findAllLikePrimaryKey() {
-        notificationController = new NotificationController(mockNotificationService,jwtClient);
+        notificationController = new NotificationController(mockNotificationService, jwtClient);
         String name = "name";
-        notificationController.findAllLikePrimaryKey("",new NotificationNameRequest(name));
-        verify(mockNotificationService).findAllLikePrimaryKey(any(),eq(name));
+        notificationController.findAllLikePrimaryKey("", new NotificationNameRequest(name));
+        verify(mockNotificationService).findAllLikePrimaryKey(any(), eq(name));
     }
 }

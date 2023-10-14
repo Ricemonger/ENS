@@ -1,13 +1,15 @@
 package app.send.controller.exceptions;
 
-public class SenderApiException extends RuntimeException{
-    public SenderApiException(){
+public class SenderApiException extends RuntimeException {
+    public SenderApiException() {
         super();
     }
-    public SenderApiException(Throwable cause){
+
+    public SenderApiException(Throwable cause) {
         super(cause);
     }
-    public SenderApiException(String message){
+
+    public SenderApiException(String message) {
         super(message);
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.NoSuchElementException;
 
 import static org.mockito.Mockito.verify;
@@ -18,7 +19,7 @@ class NotificationServiceTest {
     private NotificationService notificationService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         notificationService = new NotificationService(notificationClient);
     }
 
@@ -29,8 +30,9 @@ class NotificationServiceTest {
         NotificationNameRequest request = new NotificationNameRequest(notificationName);
         try {
             notificationService.findOneByPrimaryKey(token, notificationName);
-        }catch (NoSuchElementException e){}
-        verify(notificationClient).findAllByPrimaryKey(token,request);
+        } catch (NoSuchElementException e) {
+        }
+        verify(notificationClient).findAllByPrimaryKey(token, request);
     }
 
     @Test

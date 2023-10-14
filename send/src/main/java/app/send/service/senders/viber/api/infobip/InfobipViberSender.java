@@ -17,7 +17,8 @@ public class InfobipViberSender implements ViberSender {
     private final String AUTH_TOKEN;
 
     private final WebClient WEB_CLIENT;
-    public InfobipViberSender(InfobipAuthConfigurer infobipConfig){
+
+    public InfobipViberSender(InfobipAuthConfigurer infobipConfig) {
         URL = infobipConfig.getViberUrl();
         FROM = infobipConfig.getCompanyName();
         AUTH_TOKEN = infobipConfig.getAuthToken();
@@ -26,6 +27,7 @@ public class InfobipViberSender implements ViberSender {
                 .baseUrl(URL)
                 .build();
     }
+
     @Override
     public void send(String sendTo, String text) {
         try {
@@ -41,9 +43,8 @@ public class InfobipViberSender implements ViberSender {
                     .bodyToMono(String.class)
                     .block();
             System.out.println(response);
-        }
-        catch (WebClientResponseException e){
-            throw  new InfobipException(e.getMessage());
+        } catch (WebClientResponseException e) {
+            throw new InfobipException(e.getMessage());
         }
     }
 

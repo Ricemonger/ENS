@@ -32,7 +32,7 @@ public class AmazonEmailSender implements EmailSender {
         PROPERTIES.put("mail.smtp.starttls.required", "true");
     }
 
-    public void send(String to, String text){
+    public void send(String to, String text) {
         Session session = Session.getDefaultInstance(PROPERTIES);
         MimeMessage msg = new MimeMessage(session);
         try {
@@ -44,10 +44,11 @@ public class AmazonEmailSender implements EmailSender {
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
             transport.sendMessage(msg, msg.getAllRecipients());
             transport.close();
-        }catch (MessagingException e){
+        } catch (MessagingException e) {
             throw new AmazonEmailException(e);
         }
     }
+
     @Override
     public void bulkSend(Map<String, String> sendings) {
         Session session;
@@ -59,7 +60,7 @@ public class AmazonEmailSender implements EmailSender {
         } catch (MessagingException e) {
             throw new AmazonEmailException(e);
         }
-        if(sendings.size()<50) {
+        if (sendings.size() < 50) {
             for (String sendTo : sendings.keySet()) {
                 try {
                     MimeMessage msg = new MimeMessage(session);
@@ -72,19 +73,19 @@ public class AmazonEmailSender implements EmailSender {
                     throw new AmazonEmailException(e);
                 }
             }
-        }else{
+        } else {
             Map<String, List<String>> revertMap = new HashMap<>();
-            for(Map.Entry<String,String> entry : sendings.entrySet()){
+            for (Map.Entry<String, String> entry : sendings.entrySet()) {
                 String revertKey = entry.getValue();
-                List<String> revertValue = revertMap.getOrDefault(revertKey, new ArrayList<String>());
+                List<String> revertValue = revertMap.getOrDefault(revertKey, new ArrayList<>());
                 revertValue.add(entry.getKey());
-                revertMap.put(revertKey,revertValue);
+                revertMap.put(revertKey, revertValue);
             }
-            for(Map.Entry<String,List<String>> entry : revertMap.entrySet()){
-                   String text = entry.getKey();
-                   List<String> sendTo = entry.getValue();
+            for (Map.Entry<String, List<String>> entry : revertMap.entrySet()) {
+                String text = entry.getKey();
+                List<String> sendTo = entry.getValue();
                 try {
-                    InternetAddress[] addresses = (InternetAddress[])sendTo.stream().map(address -> {
+                    InternetAddress[] addresses = (InternetAddress[]) sendTo.stream().map(address -> {
                         try {
                             return new InternetAddress(address);
                         } catch (AddressException e) {

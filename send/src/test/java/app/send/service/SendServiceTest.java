@@ -13,7 +13,7 @@ import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -35,51 +35,49 @@ class SendServiceTest {
     private SendService sendService;
 
     @BeforeEach
-    void setUp(){
-        sendService = new SendService(contactService, notificationService,emailSender,smsSender,viberSender);
+    void setUp() {
+        sendService = new SendService(contactService, notificationService, emailSender, smsSender, viberSender);
     }
 
     @Test
     void sendOneEmail() {
         String id = "contactId";
         String text = "text";
-        sendService.sendOne("token","username", Method.EMAIL.name(),id,text);
-        verify(emailSender).send(id,text);
-        verifyNoInteractions(smsSender,viberSender);
+        sendService.sendOne("token", "username", Method.EMAIL.name(), id, text);
+        verify(emailSender).send(id, text);
+        verifyNoInteractions(smsSender, viberSender);
     }
+
     @Test
     void sendOneSMS() {
         String id = "contactId";
         String text = "text";
-        sendService.sendOne("token","username", Method.SMS.name(),id,text);
-        verify(smsSender).send(id,text);
-        verifyNoInteractions(emailSender,viberSender);
+        sendService.sendOne("token", "username", Method.SMS.name(), id, text);
+        verify(smsSender).send(id, text);
+        verifyNoInteractions(emailSender, viberSender);
     }
+
     @Test
     void sendOneViber() {
         String id = "contactId";
         String text = "text";
-        sendService.sendOne("token","username", Method.VIBER.name(),id,text);
-        verify(viberSender).send(id,text);
-        verifyNoInteractions(emailSender,smsSender);
+        sendService.sendOne("token", "username", Method.VIBER.name(), id, text);
+        verify(viberSender).send(id, text);
+        verifyNoInteractions(emailSender, smsSender);
     }
+
     @Test
-    void sendWrongMethod(){
+    void sendWrongMethod() {
         String id = "contactId";
         String text = "text";
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                sendService.sendOne("token","username", "wrongMethodName",id,text);
-            }
-        };
-        assertThrows(IllegalArgumentException.class,executable);
-        verifyNoInteractions(emailSender,smsSender,viberSender);
+        Executable executable = () -> sendService.sendOne("token", "username", "wrongMethodName", id, text);
+        assertThrows(IllegalArgumentException.class, executable);
+        verifyNoInteractions(emailSender, smsSender, viberSender);
     }
 
     @Test
     void sendAll() {
-        sendService.sendAll("token","username");
+        sendService.sendAll("token", "username");
         verify(smsSender).bulkSend(anyMap());
         verify(emailSender).bulkSend(anyMap());
         verify(viberSender).bulkSend(anyMap());

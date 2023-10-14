@@ -1,13 +1,15 @@
 package app.contact.controller.exceptions;
 
 public class ContactAlreadyExistsException extends RuntimeException {
-    public ContactAlreadyExistsException(){
+    public ContactAlreadyExistsException() {
         super();
     }
-    public ContactAlreadyExistsException(Throwable cause){
+
+    public ContactAlreadyExistsException(Throwable cause) {
         super(cause);
     }
-    public ContactAlreadyExistsException(String message){
+
+    public ContactAlreadyExistsException(String message) {
         super(message);
     }
 }

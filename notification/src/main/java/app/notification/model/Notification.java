@@ -20,7 +20,8 @@ public class Notification {
     @Id
     private String name;
     private String text;
-    public Notification(String username, String name){
+
+    public Notification(String username, String name) {
         this.username = username;
         this.name = name;
         this.text = "";

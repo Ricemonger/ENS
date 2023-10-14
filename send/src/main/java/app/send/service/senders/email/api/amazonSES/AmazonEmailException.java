@@ -4,10 +4,11 @@ import app.send.controller.exceptions.SenderApiException;
 
 public class AmazonEmailException extends SenderApiException {
 
-    public AmazonEmailException(Throwable cause){
+    public AmazonEmailException(Throwable cause) {
         super(cause);
     }
-    public AmazonEmailException(){
+
+    public AmazonEmailException() {
         super();
     }
 

@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name="contact", url = "${application.config.contact.url}")
+@FeignClient(name = "contact", url = "${application.config.contact.url}")
 public interface ContactClient {
     @GetMapping("/getByPK")
-    List<Contact> findAllLikePrimaryKey(@RequestHeader(name="Authorization") String token,@RequestBody ContactPKRequest request);
+    List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactPKRequest request);
+
     @GetMapping("/getByUN")
-    List<Contact> findAllByUsername(@RequestHeader(name="Authorization") String token);
+    List<Contact> findAllByUsername(@RequestHeader(name = "Authorization") String token);
 }

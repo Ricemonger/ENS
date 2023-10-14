@@ -17,7 +17,7 @@ public class TwilioSmsSender implements SmsSender {
     private final TwilioAuthConfiguration twilioAuthConfiguration;
 
     @Override
-    public void send(String sendTo, String text){
+    public void send(String sendTo, String text) {
         try {
             String to = sendTo;
             if (!to.startsWith("+")) {
@@ -27,7 +27,7 @@ public class TwilioSmsSender implements SmsSender {
             PhoneNumber fromNumber = new PhoneNumber(twilioAuthConfiguration.getTrialNumber());
             MessageCreator creator = Message.creator(toNumber, fromNumber, text);
             creator.create();
-        }catch (ApiException e){
+        } catch (ApiException e) {
             throw new TwilioApiException(e.getMessage());
         }
     }
@@ -36,15 +36,15 @@ public class TwilioSmsSender implements SmsSender {
     public void bulkSend(Map<String, String> sendings) {
         PhoneNumber from = new PhoneNumber(twilioAuthConfiguration.getTrialNumber());
         try {
-            sendings.entrySet().stream().parallel().forEach(entry->{
-                String to = entry.getKey();
-                if(!to.startsWith("+")){
-                    to = "+" + to;
-                }
-                Message.creator(new PhoneNumber(to),from,entry.getValue()).create();
-            }
+            sendings.entrySet().stream().parallel().forEach(entry -> {
+                        String to = entry.getKey();
+                        if (!to.startsWith("+")) {
+                            to = "+" + to;
+                        }
+                        Message.creator(new PhoneNumber(to), from, entry.getValue()).create();
+                    }
             );
-        }catch (ApiException e){
+        } catch (ApiException e) {
             throw new TwilioApiException(e);
         }
     }

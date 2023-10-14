@@ -1,13 +1,15 @@
 package app.notification.controller.exceptions;
 
 public class NotificationDoesntExistException extends RuntimeException {
-    public NotificationDoesntExistException(){
+    public NotificationDoesntExistException() {
         super();
     }
-    public NotificationDoesntExistException(Throwable cause){
+
+    public NotificationDoesntExistException(Throwable cause) {
         super(cause);
     }
-    public NotificationDoesntExistException(String message){
+
+    public NotificationDoesntExistException(String message) {
         super(message);
     }
 }

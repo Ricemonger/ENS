@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
-@FeignClient(name="notification", url = "${application.config.notification.url}")
+@FeignClient(name = "notification", url = "${application.config.notification.url}")
 public interface NotificationClient {
     @GetMapping("/getByUN")
     List<Notification> findAllByUsername(@RequestHeader("Authorization") String token);

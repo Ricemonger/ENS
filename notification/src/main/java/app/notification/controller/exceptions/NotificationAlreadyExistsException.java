@@ -1,13 +1,15 @@
 package app.notification.controller.exceptions;
 
 public class NotificationAlreadyExistsException extends RuntimeException {
-    public NotificationAlreadyExistsException(){
+    public NotificationAlreadyExistsException() {
         super();
     }
-    public NotificationAlreadyExistsException(Throwable cause){
+
+    public NotificationAlreadyExistsException(Throwable cause) {
         super(cause);
     }
-    public NotificationAlreadyExistsException(String message){
+
+    public NotificationAlreadyExistsException(String message) {
         super(message);
     }
 }

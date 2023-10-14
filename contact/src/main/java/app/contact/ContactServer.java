@@ -1,9 +1,9 @@
 package app.contact;
 
+import app.utils.JwtClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import app.utils.JwtClient;
 
 @SpringBootApplication
 public class ContactServer {
@@ -13,7 +13,7 @@ public class ContactServer {
     }
 
     @Bean
-    public JwtClient jwtClient(){
+    public JwtClient jwtClient() {
         return new JwtClient();
     }
 }

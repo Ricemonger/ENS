@@ -27,7 +27,7 @@ public class JwtClient {
     private final WebClient webClient;
 
     public JwtClient() {
-        this(DEFAULT_URL,DEFAULT_EXTRACT_USERNAME_URI);
+        this(DEFAULT_URL, DEFAULT_EXTRACT_USERNAME_URI);
     }
 
     public JwtClient(String jwtUrl, String extractUsernameUri) {

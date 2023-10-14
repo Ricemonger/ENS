@@ -25,133 +25,108 @@ class NotificationServiceTest {
     private NotificationService notificationService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         notificationService = new NotificationService(notificationRepository);
     }
 
     @Test
     void createThrowsExceptionIfExists() {
-        Notification notification = new Notification("username", "name","text");
+        Notification notification = new Notification("username", "name", "text");
         notificationRepository.save(notification);
-        Executable executable = new Executable(){
-            @Override
-            public void execute() throws Throwable {
-                notificationService.create(notification);
-            }
-        };
-        assertThrows(NotificationAlreadyExistsException.class,executable);
+        Executable executable = () -> notificationService.create(notification);
+        assertThrows(NotificationAlreadyExistsException.class, executable);
     }
+
     @Test
     void createNormalBehavior() {
-        Notification notification = new Notification("username", "name","text");
+        Notification notification = new Notification("username", "name", "text");
         notificationService.create(notification);
         assertTrue(notificationRepository.findAll().contains(notification));
     }
 
     @Test
     void updateThrowsExceptionIfNotExists() {
-        Notification notification = new Notification("username", "name","text");
-        Executable executable = new Executable(){
-            @Override
-            public void execute() throws Throwable {
-                notificationService.update(notification);
-            }
-        };
-        assertThrows(NotificationDoesntExistException.class,executable);
+        Notification notification = new Notification("username", "name", "text");
+        Executable executable = () -> notificationService.update(notification);
+        assertThrows(NotificationDoesntExistException.class, executable);
     }
+
     @Test
     void updateNormalBehavior() {
         String username = "username";
         String name = "name";
         String originalText = "text";
         String alteredText = "TEXT1";
-        Notification notification = new Notification(username,name,originalText);
-        Notification altered = new Notification(username,name,alteredText);
+        Notification notification = new Notification(username, name, originalText);
+        Notification altered = new Notification(username, name, alteredText);
         notificationRepository.save(notification);
-        Executable executable = new Executable(){
-            @Override
-            public void execute() throws Throwable {
-                notificationService.update(altered);
-            }
-        };
+        Executable executable = () -> notificationService.update(altered);
         assertDoesNotThrow(executable);
-        assertEquals(altered,notificationRepository.findAll().get(0));
+        assertEquals(altered, notificationRepository.findAll().get(0));
     }
 
 
     @Test
     void deleteThrowsExceptionIfNotExists() {
-        Notification notification = new Notification("username", "name","text");
-        Executable executable = new Executable(){
-            @Override
-            public void execute() throws Throwable {
-                notificationService.delete(notification);
-            }
-        };
-        assertThrows(NotificationDoesntExistException.class,executable);
+        Notification notification = new Notification("username", "name", "text");
+        Executable executable = () -> notificationService.delete(notification);
+        assertThrows(NotificationDoesntExistException.class, executable);
     }
+
     @Test
     void deleteNormalBehavior() {
-        Notification notification = new Notification("username", "name","text");
+        Notification notification = new Notification("username", "name", "text");
         notificationRepository.save(notification);
-        Executable executable = new Executable(){
-            @Override
-            public void execute() throws Throwable {
-                notificationService.delete(notification);
-            }
-        };
+        Executable executable = () -> notificationService.delete(notification);
         assertDoesNotThrow(executable);
         assertEquals(notificationRepository.findAll(), Collections.emptyList());
     }
 
     @Test
     void findOneByPrimaryKeyNormalBehavior() {
-        Notification not = new Notification("username","name","text");
+        Notification not = new Notification("username", "name", "text");
         notificationRepository.save(not);
-        notificationRepository.save(new Notification("username","name1","text"));
-        notificationRepository.save(new Notification("username1","name","text"));
-        Notification notification = notificationService.findOneByPrimaryKey("username","name");
-        assertEquals(notification,not);
+        notificationRepository.save(new Notification("username", "name1", "text"));
+        notificationRepository.save(new Notification("username1", "name", "text"));
+        Notification notification = notificationService.findOneByPrimaryKey("username", "name");
+        assertEquals(notification, not);
     }
 
     @Test
     void findOneByPrimaryKeyThrowsExceptionIfNotExists() {
-        notificationRepository.save(new Notification("username","name1","text"));
-        notificationRepository.save(new Notification("username1","name","text"));
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                Notification notification = notificationService.findOneByPrimaryKey("username","name");
-            }
+        notificationRepository.save(new Notification("username", "name1", "text"));
+        notificationRepository.save(new Notification("username1", "name", "text"));
+        Executable executable = () -> {
+            notificationService.findOneByPrimaryKey("username", "name");
         };
-        assertThrows(NotificationDoesntExistException.class,executable);
+        assertThrows(NotificationDoesntExistException.class, executable);
     }
 
     @Test
     void findAllByUsername() {
-        Notification not1 = new Notification("username","name","text");
-        Notification not2 = new Notification("username","name1","text");
+        Notification not1 = new Notification("username", "name", "text");
+        Notification not2 = new Notification("username", "name1", "text");
         notificationRepository.save(not1);
         notificationRepository.save(not2);
-        notificationRepository.save(new Notification("username1","name","text"));
+        notificationRepository.save(new Notification("username1", "name", "text"));
         List<Notification> result = new ArrayList<>();
         result.add(not1);
         result.add(not2);
-        assertEquals(result,notificationService.findAllByUsername("username"));
+        assertEquals(result, notificationService.findAllByUsername("username"));
     }
 
     @Test
     void findAllLikePrimaryKey() {
-            Notification not1 = new Notification("username","name","text");
-            Notification not2 = new Notification("username","name1","text");
-            notificationRepository.save(not1);
-            notificationRepository.save(not2);
-            notificationRepository.save(new Notification("username1","name","text"));
-            notificationRepository.save(new Notification("username1","nam","text"));
-            notificationRepository.save(new Notification("usern","name","text"));
-            List<Notification> result = new ArrayList<>();
-            result.add(not1);
-            result.add(not2);
-            assertEquals(result,notificationService.findAllLikePrimaryKey("username","name"));
-        }
+        Notification not1 = new Notification("username", "name", "text");
+        Notification not2 = new Notification("username", "name1", "text");
+        notificationRepository.save(not1);
+        notificationRepository.save(not2);
+        notificationRepository.save(new Notification("username1", "name", "text"));
+        notificationRepository.save(new Notification("username1", "nam", "text"));
+        notificationRepository.save(new Notification("usern", "name", "text"));
+        List<Notification> result = new ArrayList<>();
+        result.add(not1);
+        result.add(not2);
+        assertEquals(result, notificationService.findAllLikePrimaryKey("username", "name"));
+    }
 }

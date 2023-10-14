@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 @Data
 @Builder
 @NoArgsConstructor

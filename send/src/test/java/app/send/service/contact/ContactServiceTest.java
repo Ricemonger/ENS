@@ -21,7 +21,7 @@ class ContactServiceTest {
     private ContactService contactService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         contactService = new ContactService(contactClient);
     }
 
@@ -30,27 +30,26 @@ class ContactServiceTest {
         String token = "token";
         String method = "method";
         String id = "contactId";
-        ContactPKRequest request = new ContactPKRequest(method,id);
+        ContactPKRequest request = new ContactPKRequest(method, id);
         try {
-            contactService.findOneByPrimaryKey(token,method,id);
-        }catch (Exception e){}
-        verify(contactClient).findAllLikePrimaryKey(token,request);
+            contactService.findOneByPrimaryKey(token, method, id);
+        } catch (Exception e) {
+        }
+        verify(contactClient).findAllLikePrimaryKey(token, request);
     }
+
     @Test
     void findOneByPrimaryKeyThrowsExceptionOnInvalidMethod() {
         String token = "token";
         String method = "method";
         String id = "contactId";
-        ContactPKRequest request = new ContactPKRequest(method,id);
-        Executable executable = new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                try {
-                    contactService.findOneByPrimaryKey(token,method,id);
-                }catch (NoSuchElementException e){}
+        Executable executable = () -> {
+            try {
+                contactService.findOneByPrimaryKey(token, method, id);
+            } catch (NoSuchElementException e) {
             }
         };
-        assertThrows(IllegalArgumentException.class,executable);
+        assertThrows(IllegalArgumentException.class, executable);
     }
 
     @Test

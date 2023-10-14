@@ -7,7 +7,7 @@ public record UserLoginRequest(
         String username,
         String password
 ) {
-    public User toUser(){
+    public User toUser() {
         return User
                 .builder()
                 .username(username)

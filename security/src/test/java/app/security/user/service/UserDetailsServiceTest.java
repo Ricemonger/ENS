@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class UserDetailsServiceTest {
@@ -19,7 +19,7 @@ class UserDetailsServiceTest {
     private UserDetailsService userDetailsService;
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         userDetailsService = new UserDetailsService(userRepository);
     }
 
@@ -27,9 +27,9 @@ class UserDetailsServiceTest {
     void loadUserByUsername() {
         String username = "username";
         String password = "password";
-        User user = new User(username,password);
+        User user = new User(username, password);
         UserDetails userDetails = new UserDetails(user);
         userRepository.save(user);
-        assertEquals(userDetails,userDetailsService.loadUserByUsername(username));
+        assertEquals(userDetails, userDetailsService.loadUserByUsername(username));
     }
 }
