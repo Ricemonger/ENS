@@ -6,5 +6,5 @@ amazon.smtp.username=
 amazon.smtp.password=
 amazon.smtp.host=email-smtp.eu-north-1.amazonaws.com
 infobip.viber.url="https://3vpxwv.api.infobip.com/viber/1/message/text"
-infobip.viber.company="DemoCompany"
+infobip.viber.company=DemoCompany
 infobip.viber.token=

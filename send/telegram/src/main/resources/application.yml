@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: telegram
+  config:
+    import: optional:configserver:http://localhost:8888
+
+# DEFAULT CONFIGURATION FOR STARTUP WITHOUT CONFIG SERVER
+
+application:
+  title: telegram
+  version: 0.1
+  config:
+    contact:
+      url: http://localhost:8080/api/contacts
+    notification:
+      url: http://localhost:8080/api/notifications
+
+server:
+  port: 8094
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    app:
+      sender: trace
