@@ -8,7 +8,7 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("authentication.properties")
 @Getter
-public class TelegramBotConfiguration {
+public class TelegramBotAuthorizationConfiguration {
 
     @Value("${telegram.bot.token}")
     private String API_TOKEN;

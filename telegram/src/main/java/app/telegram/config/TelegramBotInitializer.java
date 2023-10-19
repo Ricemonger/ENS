@@ -1,6 +1,6 @@
 package app.telegram.config;
 
-import app.telegram.service.TelegramBot;
+import app.telegram.mytgbot.MyTelegramLongPollingBot;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -15,13 +15,13 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @AllArgsConstructor
 public class TelegramBotInitializer {
 
-    private final TelegramBot telegramBot;
+    private final MyTelegramLongPollingBot myTelegramLongPollingBot;
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(telegramBot);
+            telegramBotsApi.registerBot(myTelegramLongPollingBot);
         } catch (TelegramApiException e) {
             log.warn("Exception {} was thrown", e);
             e.printStackTrace();
