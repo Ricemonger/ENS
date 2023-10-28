@@ -1,6 +1,5 @@
-package app.telegram.config;
+package app.telegram.mytgbot;
 
-import app.telegram.mytgbot.MyTelegramLongPollingBot;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;

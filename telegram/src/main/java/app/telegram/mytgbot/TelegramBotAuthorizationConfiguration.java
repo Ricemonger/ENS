@@ -1,4 +1,4 @@
-package app.telegram.config;
+package app.telegram.mytgbot;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;

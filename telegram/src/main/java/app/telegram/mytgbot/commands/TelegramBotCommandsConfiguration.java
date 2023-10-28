@@ -1,4 +1,4 @@
-package app.telegram.config;
+package app.telegram.mytgbot.commands;
 
 import lombok.Getter;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Configuration
 @Getter
-public class TelegramBotConfiguration {
+public class TelegramBotCommandsConfiguration {
 
     public static final String HELP_MESSAGE = "HELP_MESSAGE";
 
