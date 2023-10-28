@@ -5,14 +5,14 @@ import app.telegram.service.BotService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class ClearNoBotCommand extends AbstractBotCommand {
+public class NotificationRemoveOneBotCommand extends AbstractBotCommand {
 
-    public ClearNoBotCommand(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public NotificationRemoveOneBotCommand(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void execute() {
-        sendOperationCancelledMessage();
+        //TODO ASK NOTIFICATIONS
     }
 }

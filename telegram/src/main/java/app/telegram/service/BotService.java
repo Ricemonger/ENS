@@ -18,11 +18,11 @@ public class BotService {
     }
 
     public boolean doesUserExists(String chatId) {
-        return telegramUserService.doesUserExists(chatId);
+        return telegramUserService.doesUserExist(chatId);
     }
 
     public boolean doesUserExists(Long chatId) {
-        return telegramUserService.doesUserExists(chatId);
+        return telegramUserService.doesUserExist(chatId);
     }
 
     public void clear(Long chatId) {
@@ -31,5 +31,25 @@ public class BotService {
 
     public void sendAll(Long chatId) {
         //TODO SEND ALL
+    }
+
+    public void link(Long chatId, String username, String password) {
+        //TODO LINKING
+    }
+
+    public void unlink(Long chatId) {
+
+    }
+
+    public void removeAllData(Long chatId) {
+
+    }
+
+    public void removeMostData(Long chatId) {
+
+    }
+
+    public String getUserData() {
+        return null;
     }
 }

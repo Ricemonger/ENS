@@ -1,5 +1,6 @@
 package app.telegram.service;
 
+import app.telegram.service.database.TelegramUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +23,11 @@ public class TelegramUserService {
             throw new TelegramUserAlreadyExistsException();
     }
 
-    public boolean doesUserExists(String chatId) {
+    public boolean doesUserExist(String chatId) {
         return telegramUserRepository.existsById(chatId);
     }
 
-    public boolean doesUserExists(Long chatId) {
+    public boolean doesUserExist(Long chatId) {
         return telegramUserRepository.existsById(String.valueOf(chatId));
     }
 }

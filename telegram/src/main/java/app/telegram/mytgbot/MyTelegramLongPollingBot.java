@@ -1,6 +1,5 @@
 package app.telegram.mytgbot;
 
-import app.telegram.mytgbot.commands.TelegramBotCommandsConfiguration;
 import app.telegram.mytgbot.commands.callbackCommand.*;
 import app.telegram.mytgbot.commands.directCommand.*;
 import app.telegram.service.BotService;
@@ -70,12 +69,10 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case "REGISTER_YES" -> new RegisterYesBotCommand(this, update, botService).execute();
             case "REGISTER_NO" -> new RegisterNoBotCommand(this, update, botService).execute();
             case "SEND_ALL_YES" -> new SendAllYesBotCommand(this, update, botService).execute();
-            case "SEND_ALL_NO" -> new SendAllNoBotCommand(this, update, botService).execute();
             case "CLEAR_YES" -> new ClearYesBotCommand(this, update, botService).execute();
-            case "CLEAR_NO" -> new ClearNoBotCommand(this, update, botService).execute();
+            case "SEND_ALL_NO", "CLEAR_NO" -> new CancelBotCommand(this, update, botService).execute();
             default -> new InvalidCallbackBotCommand(this, update, botService).execute();
         }
-
     }
 }
 

@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractBotCommand {
@@ -48,7 +47,13 @@ public abstract class AbstractBotCommand {
     }
 
     protected final void askYesOrNoFromInlineKeyboard(String yesCallbackData, String noCallbackData) {
-        InlineKeyboardMarkup inlineKeyboardMarkup = createYesOrNoInlineKeyboardMarkup(yesCallbackData, noCallbackData);
+        CallbackButton yesButton = new CallbackButton("Yes", yesCallbackData);
+        CallbackButton noButton = new CallbackButton("No", noCallbackData);
+        askFromInlineKeyboard(2, yesButton, noButton);
+    }
+
+    protected final void askFromInlineKeyboard(int buttonsInLine, CallbackButton... buttons) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = createInlineKeyboardMarkup(buttonsInLine, buttons);
 
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
@@ -56,17 +61,26 @@ public abstract class AbstractBotCommand {
         executeMessage(sendMessage);
     }
 
-    protected final InlineKeyboardMarkup createYesOrNoInlineKeyboardMarkup(String yesCallbackData, String noCallbackData) {
-        InlineKeyboardButton inlineYesButton = new InlineKeyboardButton("Yes");
-        inlineYesButton.setCallbackData(yesCallbackData);
-        InlineKeyboardButton inlineNoButton = new InlineKeyboardButton("No");
-        inlineNoButton.setCallbackData(noCallbackData);
-
+    private InlineKeyboardMarkup createInlineKeyboardMarkup(int buttonsInLine,
+                                                            CallbackButton... callbackButtons) {
         List<InlineKeyboardButton> inlineButtonsList = new ArrayList<>();
-        inlineButtonsList.add(inlineYesButton);
-        inlineButtonsList.add(inlineNoButton);
+        List<List<InlineKeyboardButton>> inlineButtonRowsList = new ArrayList<>();
 
-        List<List<InlineKeyboardButton>> inlineButtonRowsList = Collections.singletonList(inlineButtonsList);
+        int counter = 0;
+        for (CallbackButton button : callbackButtons) {
+            counter++;
+            InlineKeyboardButton inlineButton = new InlineKeyboardButton(button.text());
+            inlineButton.setCallbackData(button.data());
+            inlineButtonsList.add(inlineButton);
+            if (counter % buttonsInLine == 0) {
+                inlineButtonRowsList.add(inlineButtonsList);
+                inlineButtonsList.clear();
+            }
+        }
+        if (!inlineButtonsList.isEmpty()) {
+            inlineButtonRowsList.add(inlineButtonsList);
+        }
+
         return new InlineKeyboardMarkup(inlineButtonRowsList);
     }
 
@@ -83,11 +97,6 @@ public abstract class AbstractBotCommand {
 
     protected final boolean isUserInDb(Long chatId) {
         return botService.doesUserExists(chatId);
-    }
-
-    protected final void sendOperationCancelledMessage() {
-        String answer = "Operation was cancelled";
-        sendAnswer(answer);
     }
 
     protected final void sendAnswer(String answer) {

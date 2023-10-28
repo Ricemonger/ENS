@@ -13,9 +13,13 @@ public class LinkBotCommand extends AbstractBotCommand {
 
     @Override
     public void execute() {
-        MyFunctionalInterface function = () -> {
-            //TODO LINKING
-        };
-        executeCommandIfUserExistsOrAskToRegister(function);
+        if (!isAccountLinked()) {
+            sendAnswer("Would tou like to link your telegram account to existing ENS account?");
+            askYesOrNoFromInlineKeyboard("LINK_ADD_YES", "LINK_ADD_NO");
+        }
+    }
+
+    private boolean isAccountLinked() {
+        return botService.isLinked(chatId);
     }
 }

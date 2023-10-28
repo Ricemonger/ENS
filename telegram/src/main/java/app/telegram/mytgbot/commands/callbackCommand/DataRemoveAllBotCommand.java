@@ -5,17 +5,15 @@ import app.telegram.service.BotService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class SendAllYesBotCommand extends AbstractBotCommand {
+public class DataRemoveAllBotCommand extends AbstractBotCommand {
 
-    public SendAllYesBotCommand(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public DataRemoveAllBotCommand(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void execute() {
-        botService.sendAll(chatId);
-        String answer = "All notifications were successfully send";
-        sendAnswer(answer);
-        //TODO SEND ALL NO SUCCESS MESSAGE
+        botService.removeAllData(chatId);
+        sendAnswer("All your data was removed");
     }
 }
