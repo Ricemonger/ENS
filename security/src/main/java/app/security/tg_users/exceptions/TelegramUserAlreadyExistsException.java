@@ -1,4 +1,4 @@
-package app.telegram.service;
+package app.security.tg_users.exceptions;
 
 public class TelegramUserAlreadyExistsException extends RuntimeException {
 
