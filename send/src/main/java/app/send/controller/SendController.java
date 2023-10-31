@@ -27,14 +27,14 @@ public class SendController {
 
     @PostMapping("/one")
     public void sendOne(@RequestHeader(name = "Authorization") String token, @RequestBody SendOneRequest request) {
-        String username = jwtUtil.extractUsername(token);
+        String username = jwtUtil.extractAccountId(token);
         log.trace("sendOne method was called with params: username-{}, request-{}", username, request);
         sendService.sendOne(token, username, request.method(), request.contactId(), request.notificationText());
     }
 
     @PostMapping("/all")
     public void sendAll(@RequestHeader(name = "Authorization") String token) {
-        String username = jwtUtil.extractUsername(token);
+        String username = jwtUtil.extractAccountId(token);
         log.trace("sendAll method was called with params: username-{}", username);
         sendService.sendAll(token, username);
     }

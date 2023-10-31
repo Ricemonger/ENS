@@ -1,4 +1,4 @@
-package app.contact.controller.exceptions;
+package app.contact.exceptions;
 
 public class InvalidContactMethodException extends RuntimeException {
     public InvalidContactMethodException() {

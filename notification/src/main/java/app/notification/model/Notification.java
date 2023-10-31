@@ -19,6 +19,7 @@ public class Notification {
     private String username;
     @Id
     private String name;
+
     private String text;
 
     public Notification(String username, String name) {

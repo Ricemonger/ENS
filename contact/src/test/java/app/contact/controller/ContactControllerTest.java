@@ -3,13 +3,13 @@ package app.contact.controller;
 import app.contact.controller.dto.ContactCreUpdRequest;
 import app.contact.controller.dto.ContactKeyRequest;
 import app.contact.controller.dto.ContactNNRequest;
-import app.contact.controller.exceptions.ContactAlreadyExistsException;
-import app.contact.controller.exceptions.ContactDoesntExistException;
-import app.contact.model.Contact;
-import app.contact.model.ContactCompositeKey;
-import app.contact.model.Method;
+import app.contact.exceptions.ContactAlreadyExistsException;
+import app.contact.exceptions.ContactDoesntExistException;
+import app.contact.service.Contact;
+import app.contact.service.ContactCompositeKey;
 import app.contact.service.ContactService;
-import app.contact.service.repository.ContactRepository;
+import app.contact.service.Method;
+import app.contact.service.db.ContactRepository;
 import app.utils.JwtClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class ContactControllerTest {
         String token = "token";
         ContactCreUpdRequest request = new ContactCreUpdRequest(Method.SMS.name(), "380", "name");
         contactController.create(token, request);
-        verify(jwtClient).extractUsername(token);
+        verify(jwtClient).extractAccountId(token);
         Contact contact1 = new Contact(null, Method.SMS, request.contactId(), request.notificationName());
         assertEquals(contact1, contactRepository.findById(new ContactCompositeKey(null, Method.SMS, request.contactId())).orElseThrow());
         Executable executable = () -> contactController.create(token, request);
@@ -74,7 +74,7 @@ class ContactControllerTest {
         Contact anotherContact = new Contact(null, Method.SMS, "380", "anotherName");
         reset(jwtClient);
         contactController.update(token, anotherRequest);
-        verify(jwtClient).extractUsername(token);
+        verify(jwtClient).extractAccountId(token);
         assertEquals(contactRepository.findById(new ContactCompositeKey(null, Method.SMS, "380")).orElseThrow().getNotificationName(), anotherContact.getNotificationName());
     }
 
@@ -91,10 +91,10 @@ class ContactControllerTest {
     }
 
     @Test
-    void findAllByUsername() {
+    void findAllByAccountId() {
         contactController = new ContactController(mockContactService, jwtClient);
-        contactController.findAllByUsername("");
-        verify(mockContactService).findAllByUsername(any());
+        contactController.findAllByAccountId("");
+        verify(mockContactService).findAllByAccountId(any());
     }
 
     @Test

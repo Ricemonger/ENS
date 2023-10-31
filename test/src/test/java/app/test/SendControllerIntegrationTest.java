@@ -1,8 +1,8 @@
 package app.test;
 
-import app.contact.model.Contact;
-import app.contact.model.Method;
-import app.contact.service.repository.ContactRepository;
+import app.contact.service.Contact;
+import app.contact.service.Method;
+import app.contact.service.db.ContactRepository;
 import app.notification.model.Notification;
 import app.notification.service.repository.NotificationRepository;
 import app.security.user.service.repository.UserRepository;

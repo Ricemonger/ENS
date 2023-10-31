@@ -1,4 +1,4 @@
-package app.contact.model;
+package app.contact.service;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,8 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class ContactCompositeKey implements Serializable {
-
-    private String username;
+    private String accountId;
     private Method method;
     private String contactId;
 }

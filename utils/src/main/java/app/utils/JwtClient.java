@@ -18,21 +18,18 @@ public class JwtClient {
 
     private final static String DEFAULT_URL = "http://localhost:8080/api/security";
 
-    private final static String DEFAULT_EXTRACT_USERNAME_URI = "/getUsername";
+    private final static String DEFAULT_EXTRACT_ACCOUNT_ID_URI = "/getAccountId";
 
     private final String url;
-
-    private final String uri;
 
     private final WebClient webClient;
 
     public JwtClient() {
-        this(DEFAULT_URL, DEFAULT_EXTRACT_USERNAME_URI);
+        this(DEFAULT_URL);
     }
 
-    public JwtClient(String jwtUrl, String extractUsernameUri) {
+    public JwtClient(String jwtUrl) {
         this.url = jwtUrl;
-        this.uri = extractUsernameUri;
         webClient = WebClient
                 .builder()
                 .baseUrl(url)
@@ -41,7 +38,11 @@ public class JwtClient {
                 .build();
     }
 
-    public String extractUsername(String token) {
+    public String extractAccountId(String token) {
+        return extractString(token, DEFAULT_EXTRACT_ACCOUNT_ID_URI);
+    }
+
+    public String extractString(String token, String uri) {
         if (!token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }

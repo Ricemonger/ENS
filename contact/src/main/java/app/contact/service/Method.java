@@ -1,4 +1,4 @@
-package app.contact.model;
+package app.contact.service;
 
 public enum Method {
     TELEGRAM,

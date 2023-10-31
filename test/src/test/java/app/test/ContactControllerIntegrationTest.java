@@ -3,10 +3,10 @@ package app.test;
 import app.contact.controller.dto.ContactCreUpdRequest;
 import app.contact.controller.dto.ContactKeyRequest;
 import app.contact.controller.dto.ContactNNRequest;
-import app.contact.model.Contact;
-import app.contact.model.ContactCompositeKey;
-import app.contact.model.Method;
-import app.contact.service.repository.ContactRepository;
+import app.contact.service.Contact;
+import app.contact.service.ContactCompositeKey;
+import app.contact.service.Method;
+import app.contact.service.db.ContactRepository;
 import app.notification.service.repository.NotificationRepository;
 import app.security.user.service.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
@@ -121,7 +121,7 @@ public class ContactControllerIntegrationTest {
 
         assertEquals(firstUserContact, contactRepository.findById(new ContactCompositeKey(FIRST_USER_NAME, Method.SMS, "380")).orElseThrow());
 
-        assertEquals(contacts, Set.copyOf(contactRepository.findAllByUsername(FIRST_USER_NAME)));
+        assertEquals(contacts, Set.copyOf(contactRepository.findAllByAccountId(FIRST_USER_NAME)));
 
         contacts.add(anotherUserContact);
         assertEquals(contacts, Set.copyOf(contactRepository.findAll()));
@@ -189,7 +189,7 @@ public class ContactControllerIntegrationTest {
         Contact anotherUserInDb = contactRepository.findById(new ContactCompositeKey("username1", Method.SMS, REQUEST.contactId())).orElseThrow();
         Executable executable = () -> contactRepository.findById(new ContactCompositeKey("username", Method.SMS, REQUEST.contactId())).orElseThrow();
 
-        assertEquals(new Contact(initial.getUsername(), initial.getMethod(), initial.getContactId()), deleted);
+        assertEquals(new Contact(initial.getAccountId(), initial.getMethod(), initial.getContactId()), deleted);
         assertThrows(NoSuchElementException.class, executable);
         assertEquals(anotherUser, anotherUserInDb);
     }

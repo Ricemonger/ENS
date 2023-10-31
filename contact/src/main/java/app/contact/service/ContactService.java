@@ -1,11 +1,8 @@
 package app.contact.service;
 
-import app.contact.controller.exceptions.ContactAlreadyExistsException;
-import app.contact.controller.exceptions.ContactDoesntExistException;
-import app.contact.model.Contact;
-import app.contact.model.ContactCompositeKey;
-import app.contact.model.Method;
-import app.contact.service.repository.ContactRepository;
+import app.contact.exceptions.ContactAlreadyExistsException;
+import app.contact.exceptions.ContactDoesntExistException;
+import app.contact.service.db.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,46 +46,46 @@ public class ContactService {
         return result;
     }
 
-    public List<Contact> findAllByUsername(String username) {
-        List<Contact> result = contactRepository.findAllByUsername(username);
-        log.trace("findAllByUsername method was executed with params: username-{} and result:{}", username, result);
-        return result;
-    }
-
-    public List<Contact> findAllLikePrimaryKey(String username, Method method, String contactId) {
-        List<Contact> byUsername = findAllByUsername(username);
-        List<Contact> result = byUsername
-                .stream()
-                .filter(contact -> (contact.getMethod().equals(method) && contact.getContactId().startsWith(contactId)))
-                .toList();
-        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}", new Contact(username, method, contactId), result);
-        return result;
-    }
-
-    public Contact findOneByPrimaryKey(String username, Method method, String contactId) {
-        Contact result = getByKey(username, method, contactId);
-        log.trace("findOneByPrimaryKey method was executed with params: {} and result:{}", new Contact(username, method, contactId), result);
-        return result;
-    }
-
-    public List<Contact> findAllLikeNotificationName(String username, String notificationName) {
-        List<Contact> byUsername = findAllByUsername(username);
-        List<Contact> result = byUsername
+    public List<Contact> findAllLikeNotificationName(String accountId, String notificationName) {
+        List<Contact> byAccountId = findAllByAccountId(accountId);
+        List<Contact> result = byAccountId
                 .stream()
                 .filter(contact -> contact.getNotificationName().startsWith(notificationName))
                 .toList();
-        log.trace("findAllLikeNotificationName method was executed with params: username-{}, notificationName-{} and result:{}", username, notificationName, result);
+        log.trace("findAllLikeNotificationName method was executed with params: accountId-{}, notificationName-{} and result:{}", accountId, notificationName, result);
+        return result;
+    }
+
+    public List<Contact> findAllLikePrimaryKey(String accountId, Method method, String contactId) {
+        List<Contact> byAccountId = findAllByAccountId(accountId);
+        List<Contact> result = byAccountId
+                .stream()
+                .filter(contact -> (contact.getMethod().equals(method) && contact.getContactId().startsWith(contactId)))
+                .toList();
+        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
+        return result;
+    }
+
+    public Contact findOneByPrimaryKey(String accountId, Method method, String contactId) {
+        Contact result = getByKey(accountId, method, contactId);
+        log.trace("findOneByPrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
+        return result;
+    }
+
+    public List<Contact> findAllByAccountId(String accountId) {
+        List<Contact> result = contactRepository.findAllByAccountId(accountId);
+        log.trace("findAllByUsername method was executed with params: accountId-{} and result:{}", accountId, result);
         return result;
     }
 
     private Contact getByKey(Contact contact) {
-        return getByKey(contact.getUsername(), contact.getMethod(), contact.getContactId());
+        return getByKey(contact.getAccountId(), contact.getMethod(), contact.getContactId());
     }
 
-    private Contact getByKey(String username, Method method, String contactId) {
+    private Contact getByKey(String accountId, Method method, String contactId) {
         Contact result;
         try {
-            result = contactRepository.findById(new ContactCompositeKey(username, method, contactId)).orElseThrow();
+            result = (Contact) contactRepository.findById(new ContactCompositeKey(accountId, method, contactId)).orElseThrow();
         } catch (NoSuchElementException e) {
             throw new ContactDoesntExistException(e);
         }

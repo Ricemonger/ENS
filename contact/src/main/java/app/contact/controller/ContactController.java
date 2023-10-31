@@ -3,12 +3,12 @@ package app.contact.controller;
 import app.contact.controller.dto.ContactCreUpdRequest;
 import app.contact.controller.dto.ContactKeyRequest;
 import app.contact.controller.dto.ContactNNRequest;
-import app.contact.controller.exceptions.ContactAlreadyExistsException;
-import app.contact.controller.exceptions.ContactDoesntExistException;
-import app.contact.controller.exceptions.InvalidContactMethodException;
-import app.contact.model.Contact;
-import app.contact.model.Method;
+import app.contact.exceptions.ContactAlreadyExistsException;
+import app.contact.exceptions.ContactDoesntExistException;
+import app.contact.exceptions.InvalidContactMethodException;
+import app.contact.service.Contact;
 import app.contact.service.ContactService;
+import app.contact.service.Method;
 import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
@@ -38,7 +38,7 @@ public class ContactController {
     public Contact create(@RequestHeader(name = "Authorization") String token, @RequestBody ContactCreUpdRequest request) {
         try {
             Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-            Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId(), request.notificationName());
+            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId(), request.notificationName());
             log.trace("create method was called with params: {}", contact);
             return contactService.create(contact);
         } catch (IllegalArgumentException e) {
@@ -52,7 +52,7 @@ public class ContactController {
         try {
             Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
             log.trace("update method was called with params: {}", request);
-            Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId(), request.notificationName());
+            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId(), request.notificationName());
             log.trace("update method was called with params: {}", contact);
             return contactService.update(contact);
         } catch (IllegalArgumentException e) {
@@ -65,7 +65,7 @@ public class ContactController {
     public Contact delete(@RequestHeader(name = "Authorization") String token, @RequestBody ContactKeyRequest request) {
         try {
             Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-            Contact contact = new Contact(jwtUtil.extractUsername(token), method, request.contactId());
+            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId());
             log.trace("delete method was called with params: {}", contact);
             return contactService.delete(contact);
         } catch (IllegalArgumentException e) {
@@ -75,21 +75,27 @@ public class ContactController {
 
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Contact> findAllByUsername(@RequestHeader(name = "Authorization") String token) {
-        String username = jwtUtil.extractUsername(token);
-        log.trace("findAllByUsername method was called with params: username-{}", username);
-        return contactService.findAllByUsername(username);
+    public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String token) {
+        return findAllByAccountId(token);
+    }
+
+    @RequestMapping("/getByAI")
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String token) {
+        String accountId = jwtUtil.extractAccountId(token);
+        log.trace("findAllByUsername method was called with params: accountId-{}", accountId);
+        return contactService.findAllByAccountId(accountId);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactKeyRequest pkRequest) {
         try {
-            String username = jwtUtil.extractUsername(token);
+            String accountId = jwtUtil.extractAccountId(token);
             Method method = Method.valueOf(pkRequest.method().toUpperCase(Locale.ROOT).trim());
             String contactId = pkRequest.contactId();
-            log.trace("findAllLikePrimaryKey method was called with params: username-{}, method-{}, contactID-{}", username, method, contactId);
-            return contactService.findAllLikePrimaryKey(username, method, contactId);
+            log.trace("findAllLikePrimaryKey method was called with params: accountId-{}, method-{}, contactID-{}", accountId, method, contactId);
+            return contactService.findAllLikePrimaryKey(accountId, method, contactId);
         } catch (IllegalArgumentException e) {
             throw new InvalidContactMethodException(e);
         }
@@ -98,10 +104,10 @@ public class ContactController {
     @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String token, @RequestBody ContactNNRequest nnRequest) {
-        String username = jwtUtil.extractUsername(token);
+        String accountId = jwtUtil.extractAccountId(token);
         String notificationName = nnRequest.notificationName();
-        log.trace("findAllLikeNotificationName method was called with params: username-{}, notificationName-{}", username, notificationName);
-        return contactService.findAllLikeNotificationName(username, notificationName);
+        log.trace("findAllLikeNotificationName method was called with params: accountId-{}, notificationName-{}", accountId, notificationName);
+        return contactService.findAllLikeNotificationName(accountId, notificationName);
     }
 
     @ExceptionHandler(ContactDoesntExistException.class)

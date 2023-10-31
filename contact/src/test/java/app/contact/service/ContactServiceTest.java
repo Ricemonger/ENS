@@ -1,10 +1,8 @@
 package app.contact.service;
 
-import app.contact.controller.exceptions.ContactAlreadyExistsException;
-import app.contact.controller.exceptions.ContactDoesntExistException;
-import app.contact.model.Contact;
-import app.contact.model.Method;
-import app.contact.service.repository.ContactRepository;
+import app.contact.exceptions.ContactAlreadyExistsException;
+import app.contact.exceptions.ContactDoesntExistException;
+import app.contact.service.db.ContactRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -22,6 +20,7 @@ class ContactServiceTest {
 
     @Autowired
     private ContactRepository contactRepository;
+
     private ContactService contactService;
 
     @BeforeEach
@@ -84,30 +83,30 @@ class ContactServiceTest {
     }
 
     @Test
-    void findAllByUsername() {
-        String username = "username";
+    void findAllByAccountId() {
+        String accountId = "accountId";
         String invalidUsername = "";
-        Contact contact1 = new Contact(username, Method.SMS, "380953766409", "notification");
-        Contact contact2 = new Contact(username, Method.TELEGRAM, "380953766409", "notification");
-        Contact contact3 = new Contact(username, Method.VIBER, "380953766409", "notification");
-        Contact contact4 = new Contact(username, Method.EMAIL, "leskotr23@gmail.com");
+        Contact contact1 = new Contact(accountId, Method.SMS, "380953766409", "notification");
+        Contact contact2 = new Contact(accountId, Method.TELEGRAM, "380953766409", "notification");
+        Contact contact3 = new Contact(accountId, Method.VIBER, "380953766409", "notification");
+        Contact contact4 = new Contact(accountId, Method.EMAIL, "leskotr23@gmail.com");
         List<Contact> contacts = new ArrayList<>();
         contacts.add(contact1);
         contacts.add(contact2);
         contacts.add(contact3);
         contacts.add(contact4);
         contactRepository.saveAll(contacts);
-        assertTrue(contactService.findAllByUsername(username).containsAll(contacts));
-        assertFalse(contactService.findAllByUsername(invalidUsername).containsAll(contacts));
+        assertTrue(contactService.findAllByAccountId(accountId).containsAll(contacts));
+        assertFalse(contactService.findAllByAccountId(invalidUsername).containsAll(contacts));
     }
 
     @Test
     void findAllLikePrimaryKey() {
-        String username = "username";
-        Contact contact1 = new Contact(username, Method.SMS, "380953766409", "");
-        Contact contact2 = new Contact(username, Method.SMS, "380953", "notifation");
-        Contact contact3 = new Contact(username, Method.SMS, "38", "tion");
-        Contact contact4 = new Contact(username, Method.EMAIL, "38095375590");
+        String accountId = "accountId";
+        Contact contact1 = new Contact(accountId, Method.SMS, "380953766409", "");
+        Contact contact2 = new Contact(accountId, Method.SMS, "380953", "notifation");
+        Contact contact3 = new Contact(accountId, Method.SMS, "38", "tion");
+        Contact contact4 = new Contact(accountId, Method.EMAIL, "38095375590");
         List<Contact> contacts = new ArrayList<>();
         contacts.add(contact1);
         contacts.add(contact2);
@@ -117,9 +116,9 @@ class ContactServiceTest {
         List<Contact> result = new ArrayList<>();
         result.add(contact1);
         result.add(contact2);
-        assertTrue(contactService.findAllLikePrimaryKey(username, Method.SMS, "380").containsAll(result));
-        assertFalse(contactService.findAllLikePrimaryKey(username, Method.SMS, "380").contains(contact3));
-        assertFalse(contactService.findAllLikePrimaryKey(username, Method.SMS, "380").contains(contact4));
+        assertTrue(contactService.findAllLikePrimaryKey(accountId, Method.SMS, "380").containsAll(result));
+        assertFalse(contactService.findAllLikePrimaryKey(accountId, Method.SMS, "380").contains(contact3));
+        assertFalse(contactService.findAllLikePrimaryKey(accountId, Method.SMS, "380").contains(contact4));
     }
 
     @Test

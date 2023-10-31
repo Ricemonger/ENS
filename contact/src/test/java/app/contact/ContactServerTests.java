@@ -2,7 +2,7 @@ package app.contact;
 
 import app.contact.controller.ContactController;
 import app.contact.service.ContactService;
-import app.contact.service.repository.ContactRepository;
+import app.contact.service.db.ContactRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
