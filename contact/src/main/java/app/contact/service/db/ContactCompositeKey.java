@@ -1,5 +1,6 @@
-package app.contact.service;
+package app.contact.service.db;
 
+import app.contact.service.Method;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

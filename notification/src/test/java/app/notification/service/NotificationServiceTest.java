@@ -1,9 +1,9 @@
 package app.notification.service;
 
-import app.notification.controller.exceptions.NotificationAlreadyExistsException;
-import app.notification.controller.exceptions.NotificationDoesntExistException;
-import app.notification.model.Notification;
-import app.notification.service.repository.NotificationRepository;
+import app.notification.exceptions.NotificationAlreadyExistsException;
+import app.notification.exceptions.NotificationDoesntExistException;
+import app.notification.service.db.NotificationRepository;
+import app.notification.service.db.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -53,12 +53,12 @@ class NotificationServiceTest {
 
     @Test
     void updateNormalBehavior() {
-        String username = "username";
+        String accountId = "accountId";
         String name = "name";
         String originalText = "text";
         String alteredText = "TEXT1";
-        Notification notification = new Notification(username, name, originalText);
-        Notification altered = new Notification(username, name, alteredText);
+        Notification notification = new Notification(accountId, name, originalText);
+        Notification altered = new Notification(accountId, name, alteredText);
         notificationRepository.save(notification);
         Executable executable = () -> notificationService.update(altered);
         assertDoesNotThrow(executable);
@@ -103,7 +103,7 @@ class NotificationServiceTest {
     }
 
     @Test
-    void findAllByUsername() {
+    void findAllByAccountId() {
         Notification not1 = new Notification("username", "name", "text");
         Notification not2 = new Notification("username", "name1", "text");
         notificationRepository.save(not1);
@@ -112,7 +112,7 @@ class NotificationServiceTest {
         List<Notification> result = new ArrayList<>();
         result.add(not1);
         result.add(not2);
-        assertEquals(result, notificationService.findAllByUsername("username"));
+        assertEquals(result, notificationService.findAllByAccountId("username"));
     }
 
     @Test

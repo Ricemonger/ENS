@@ -1,8 +1,9 @@
-package app.contact.service;
+package app.contact.service.db;
 
 import app.contact.exceptions.ContactAlreadyExistsException;
 import app.contact.exceptions.ContactDoesntExistException;
-import app.contact.service.db.ContactRepository;
+import app.contact.service.Contact;
+import app.contact.service.Method;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ public class ContactService {
     private Contact getByKey(String accountId, Method method, String contactId) {
         Contact result;
         try {
-            result = (Contact) contactRepository.findById(new ContactCompositeKey(accountId, method, contactId)).orElseThrow();
+            result = contactRepository.findById(new ContactCompositeKey(accountId, method, contactId)).orElseThrow();
         } catch (NoSuchElementException e) {
             throw new ContactDoesntExistException(e);
         }

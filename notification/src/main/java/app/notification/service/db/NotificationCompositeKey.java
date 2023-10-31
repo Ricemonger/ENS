@@ -1,4 +1,4 @@
-package app.notification.model;
+package app.notification.service.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class NotificationCompositeKey implements Serializable {
-    private String username;
+    private String accountId;
     private String name;
 }

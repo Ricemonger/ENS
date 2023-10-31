@@ -1,8 +1,8 @@
 package app.notification;
 
 import app.notification.controller.NotificationController;
-import app.notification.service.NotificationService;
-import app.notification.service.repository.NotificationRepository;
+import app.notification.service.db.NotificationRepository;
+import app.notification.service.db.NotificationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

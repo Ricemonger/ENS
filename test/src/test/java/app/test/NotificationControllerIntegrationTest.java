@@ -3,9 +3,9 @@ package app.test;
 import app.contact.service.db.ContactRepository;
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
-import app.notification.model.Notification;
-import app.notification.model.NotificationCompositeKey;
-import app.notification.service.repository.NotificationRepository;
+import app.notification.service.Notification;
+import app.notification.service.db.NotificationCompositeKey;
+import app.notification.service.db.NotificationRepository;
 import app.security.user.service.repository.UserRepository;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,7 +115,7 @@ public class NotificationControllerIntegrationTest {
 
         assertEquals(firstUserNotification, notificationRepository.findById(new NotificationCompositeKey(FIRST_USER_NAME, REQUEST.name())).orElseThrow());
 
-        assertEquals(notifications, Set.copyOf(notificationRepository.findAllByUsername(FIRST_USER_NAME)));
+        assertEquals(notifications, Set.copyOf(notificationRepository.findAllByAccountId(FIRST_USER_NAME)));
 
         notifications.add(anotherUserNotification);
         assertEquals(notifications, Set.copyOf(notificationRepository.findAll()));

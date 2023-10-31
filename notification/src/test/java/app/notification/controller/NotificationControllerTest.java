@@ -2,12 +2,12 @@ package app.notification.controller;
 
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
-import app.notification.controller.exceptions.NotificationAlreadyExistsException;
-import app.notification.controller.exceptions.NotificationDoesntExistException;
-import app.notification.model.Notification;
-import app.notification.model.NotificationCompositeKey;
-import app.notification.service.NotificationService;
-import app.notification.service.repository.NotificationRepository;
+import app.notification.exceptions.NotificationAlreadyExistsException;
+import app.notification.exceptions.NotificationDoesntExistException;
+import app.notification.service.Notification;
+import app.notification.service.db.NotificationCompositeKey;
+import app.notification.service.db.NotificationRepository;
+import app.notification.service.db.NotificationService;
 import app.utils.JwtClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,10 +90,10 @@ class NotificationControllerTest {
     }
 
     @Test
-    void findAllByUsername() {
+    void findAllByAccountId() {
         notificationController = new NotificationController(mockNotificationService, jwtClient);
-        notificationController.findAllByUsername("");
-        verify(mockNotificationService).findAllByUsername(any());
+        notificationController.findAllByAccountId("");
+        verify(mockNotificationService).findAllByAccountId(any());
     }
 
     @Test

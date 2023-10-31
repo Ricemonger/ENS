@@ -1,5 +1,6 @@
-package app.notification.model;
+package app.notification.service;
 
+import app.notification.service.db.NotificationCompositeKey;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -16,14 +17,14 @@ import lombok.NoArgsConstructor;
 @IdClass(NotificationCompositeKey.class)
 public class Notification {
     @Id
-    private String username;
+    private String accountId;
     @Id
     private String name;
 
     private String text;
 
-    public Notification(String username, String name) {
-        this.username = username;
+    public Notification(String accountId, String name) {
+        this.accountId = accountId;
         this.name = name;
         this.text = "";
     }

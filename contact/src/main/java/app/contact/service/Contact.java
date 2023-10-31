@@ -1,5 +1,6 @@
 package app.contact.service;
 
+import app.contact.service.db.ContactCompositeKey;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

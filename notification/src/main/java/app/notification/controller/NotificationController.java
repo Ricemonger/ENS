@@ -2,10 +2,10 @@ package app.notification.controller;
 
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
-import app.notification.controller.exceptions.NotificationAlreadyExistsException;
-import app.notification.controller.exceptions.NotificationDoesntExistException;
-import app.notification.model.Notification;
-import app.notification.service.NotificationService;
+import app.notification.exceptions.NotificationAlreadyExistsException;
+import app.notification.exceptions.NotificationDoesntExistException;
+import app.notification.service.Notification;
+import app.notification.service.db.NotificationService;
 import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
@@ -23,6 +23,7 @@ import java.util.List;
 public class NotificationController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final NotificationService notificationService;
 
     private final JwtClient jwtUtil;
@@ -53,19 +54,19 @@ public class NotificationController {
 
     @RequestMapping("/getByUN")
     @ResponseStatus(HttpStatus.OK)
-    public List<Notification> findAllByUsername(@RequestHeader("Authorization") String token) {
-        String username = jwtUtil.extractAccountId(token);
-        log.trace("findByUsername method was called with param username: {}", username);
-        return notificationService.findAllByUsername(jwtUtil.extractAccountId(token));
+    public List<Notification> findAllByAccountId(@RequestHeader("Authorization") String token) {
+        String accountId = jwtUtil.extractAccountId(token);
+        log.trace("findByAccountId method was called with param accountId: {}", accountId);
+        return notificationService.findAllByAccountId(jwtUtil.extractAccountId(token));
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request) {
-        String username = jwtUtil.extractAccountId(token);
+        String accountId = jwtUtil.extractAccountId(token);
         String notificationName = request.name().trim();
-        log.trace("findByPrimaryKey method was called with params: username-{}, notificationName-{}", username, notificationName);
-        return notificationService.findAllLikePrimaryKey(username, notificationName);
+        log.trace("findByPrimaryKey method was called with params: accountId-{}, notificationName-{}", accountId, notificationName);
+        return notificationService.findAllLikePrimaryKey(accountId, notificationName);
     }
 
     @ExceptionHandler(NotificationDoesntExistException.class)
