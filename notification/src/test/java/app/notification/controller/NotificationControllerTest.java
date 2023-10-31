@@ -55,7 +55,7 @@ class NotificationControllerTest {
         String token = "token";
         NotificationCreUpdRequest request = new NotificationCreUpdRequest("name", "text");
         notificationController.create(token, request);
-        verify(jwtClient).extractUsername(token);
+        verify(jwtClient).extractAccountId(token);
         Notification notification1 = new Notification(null, request.name(), request.text());
         assertEquals(notification1, notificationRepository.findById(new NotificationCompositeKey(null, request.name())).orElseThrow());
         Executable executable = () -> notificationController.create(token, request);
@@ -73,7 +73,7 @@ class NotificationControllerTest {
         Notification anotherNotification = new Notification(null, "name", "newNotificationText");
         reset(jwtClient);
         notificationController.update(token, anotherRequest);
-        verify(jwtClient).extractUsername(token);
+        verify(jwtClient).extractAccountId(token);
         assertEquals(notificationRepository.findById(new NotificationCompositeKey(null, anotherRequest.name())).orElseThrow(), anotherNotification);
     }
 

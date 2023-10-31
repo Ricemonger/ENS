@@ -96,7 +96,7 @@ public abstract class AbstractBotCommand {
     }
 
     protected final boolean isUserInDb(Long chatId) {
-        return botService.doesUserExists(chatId);
+        return botService.doesUserExist(chatId);
     }
 
     protected final void sendAnswer(String answer) {

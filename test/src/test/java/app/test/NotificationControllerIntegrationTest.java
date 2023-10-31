@@ -1,6 +1,6 @@
 package app.test;
 
-import app.contact.service.repository.ContactRepository;
+import app.contact.service.db.ContactRepository;
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;

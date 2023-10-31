@@ -13,20 +13,13 @@ public class BotService {
         return telegramUserService.create(chatId);
     }
 
-    public TelegramUser create(String chatId) {
-        return telegramUserService.create(chatId);
-    }
-
-    public boolean doesUserExists(String chatId) {
-        return telegramUserService.doesUserExist(chatId);
-    }
-
-    public boolean doesUserExists(Long chatId) {
+    public boolean doesUserExist(Long chatId) {
         return telegramUserService.doesUserExist(chatId);
     }
 
     public void clear(Long chatId) {
-        //TODO CLEAR
+        contactService.clear(chatId);
+        notificationService.clear(chatId);
     }
 
     public void sendAll(Long chatId) {
@@ -51,5 +44,9 @@ public class BotService {
 
     public String getUserData() {
         return null;
+    }
+
+    public boolean isLinked(Long chatId) {
+        return false;
     }
 }

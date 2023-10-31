@@ -30,7 +30,7 @@ public class NotificationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Notification create(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request) {
-        Notification notification = new Notification(jwtUtil.extractUsername(token), request.name().trim(), request.text().trim());
+        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim(), request.text().trim());
         log.trace("create method was called with params: {}", notification);
         return notificationService.create(notification);
     }
@@ -38,7 +38,7 @@ public class NotificationController {
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public Notification update(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request) {
-        Notification notification = new Notification(jwtUtil.extractUsername(token), request.name().trim(), request.text().trim());
+        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim(), request.text().trim());
         log.trace("update method was called with params: {}", notification);
         return notificationService.update(notification);
     }
@@ -46,7 +46,7 @@ public class NotificationController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Notification delete(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request) {
-        Notification notification = new Notification(jwtUtil.extractUsername(token), request.name().trim());
+        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim());
         log.trace("delete method was called with params: {}", notification);
         return notificationService.delete(notification);
     }
@@ -54,15 +54,15 @@ public class NotificationController {
     @RequestMapping("/getByUN")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllByUsername(@RequestHeader("Authorization") String token) {
-        String username = jwtUtil.extractUsername(token);
+        String username = jwtUtil.extractAccountId(token);
         log.trace("findByUsername method was called with param username: {}", username);
-        return notificationService.findAllByUsername(jwtUtil.extractUsername(token));
+        return notificationService.findAllByUsername(jwtUtil.extractAccountId(token));
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request) {
-        String username = jwtUtil.extractUsername(token);
+        String username = jwtUtil.extractAccountId(token);
         String notificationName = request.name().trim();
         log.trace("findByPrimaryKey method was called with params: username-{}, notificationName-{}", username, notificationName);
         return notificationService.findAllLikePrimaryKey(username, notificationName);
