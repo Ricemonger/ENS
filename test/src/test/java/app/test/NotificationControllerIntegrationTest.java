@@ -6,7 +6,7 @@ import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.service.Notification;
 import app.notification.service.db.NotificationCompositeKey;
 import app.notification.service.db.NotificationRepository;
-import app.security.user.service.ens_user.db.EnsUserRepository;
+import app.security.ens_users.service.db.EnsUserRepository;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

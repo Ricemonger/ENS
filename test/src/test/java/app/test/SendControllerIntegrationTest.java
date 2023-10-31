@@ -5,7 +5,7 @@ import app.contact.service.Method;
 import app.contact.service.db.ContactRepository;
 import app.notification.service.Notification;
 import app.notification.service.db.NotificationRepository;
-import app.security.user.service.ens_user.db.EnsUserRepository;
+import app.security.ens_users.service.db.EnsUserRepository;
 import app.send.controller.dto.SendOneRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

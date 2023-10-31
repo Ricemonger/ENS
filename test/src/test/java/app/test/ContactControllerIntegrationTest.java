@@ -8,7 +8,7 @@ import app.contact.service.Method;
 import app.contact.service.db.ContactCompositeKey;
 import app.contact.service.db.ContactRepository;
 import app.notification.service.db.NotificationRepository;
-import app.security.user.service.ens_user.db.EnsUserRepository;
+import app.security.ens_users.service.db.EnsUserRepository;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
