@@ -23,10 +23,15 @@ import java.util.NoSuchElementException;
 public class SendService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final ContactService contactService;
+
     private final NotificationService notificationService;
+
     private final EmailSender emailSender;
+
     private final SmsSender smsSender;
+
     private final ViberSender viberSender;
 
     private final String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE BY %S!!";
@@ -60,26 +65,36 @@ public class SendService {
 
     public void sendAll(String token, String username) {
         log.trace("sendAll method is executing with params: username-{}", username);
-        List<Contact> contacts = contactService.findAllByUsername(token);
+        List<Contact> contacts = contactService.findAllByAccountId(token);
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
         List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
-        Map<String, String> notifications = notificationService.getMap(token);
+        Map<String, String> notifications = notificationService.getMapByAccountId(token);
         sendAllSms(username, smsContacts, notifications);
         sendAllEmails(username, emailContacts, notifications);
         sendAllViberMessages(username, viberContacts, notifications);
     }
 
     private void sendAllViberMessages(String username, List<Contact> contacts, Map<String, String> notifications) {
-        viberSender.bulkSend(toSendMap(username, contacts, notifications));
+        bulkSend(viberSender, username, contacts, notifications);
     }
 
     private void sendAllSms(String username, List<Contact> contacts, Map<String, String> notifications) {
-        smsSender.bulkSend(toSendMap(username, contacts, notifications));
+        bulkSend(smsSender, username, contacts, notifications);
     }
 
     private void sendAllEmails(String username, List<Contact> contacts, Map<String, String> notifications) {
-        emailSender.bulkSend(toSendMap(username, contacts, notifications));
+        bulkSend(emailSender, username, contacts, notifications);
+    }
+
+    private void bulkSend(Sender sender, String username, List<Contact> contacts, Map<String, String> notifications) {
+        sender.bulkSend(toSendMap(username, contacts, notifications));
+        log.trace("bulk send notifications were sent with params: sender-{}, contacts-{}, notifications-{}", sender, contacts, notifications);
+    }
+
+    private void send(Sender sender, String username, String contactId, String notificationText) {
+        sender.send(contactId, notificationText);
+        log.trace("notification was sent with params: sender-{}, username-{}, contactId-{}, notificationText-{}", sender, username, contactId, notificationText);
     }
 
     private Map<String, String> toSendMap(String username, List<Contact> contacts, Map<String, String> notifications) {
@@ -98,10 +113,5 @@ public class SendService {
             sendMap.put(sendTo, notificationText);
         }
         return sendMap;
-    }
-
-    private void send(Sender sender, String username, String contactId, String notificationText) {
-        sender.send(contactId, notificationText);
-        log.trace("notification was sent with params: sender-{}, username-{}, contactId-{}, notificationText-{}", sender, username, contactId, notificationText);
     }
 }

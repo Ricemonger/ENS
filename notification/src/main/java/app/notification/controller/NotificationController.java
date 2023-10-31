@@ -54,6 +54,12 @@ public class NotificationController {
 
     @RequestMapping("/getByUN")
     @ResponseStatus(HttpStatus.OK)
+    public List<Notification> findAllByAccountIdUN(@RequestHeader("Authorization") String token) {
+        return findAllByAccountId(token);
+    }
+
+    @RequestMapping("/getByAI")
+    @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllByAccountId(@RequestHeader("Authorization") String token) {
         String accountId = jwtUtil.extractAccountId(token);
         log.trace("findByAccountId method was called with param accountId: {}", accountId);

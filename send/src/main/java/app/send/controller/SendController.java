@@ -1,7 +1,7 @@
 package app.send.controller;
 
 import app.send.controller.dto.SendOneRequest;
-import app.send.controller.exceptions.SenderApiException;
+import app.send.exceptions.SenderApiException;
 import app.send.service.SendService;
 import app.send.service.contact.Method;
 import app.utils.ExceptionMessage;

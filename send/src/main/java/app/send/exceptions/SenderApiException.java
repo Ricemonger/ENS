@@ -1,4 +1,4 @@
-package app.send.controller.exceptions;
+package app.send.exceptions;
 
 public class SenderApiException extends RuntimeException {
     public SenderApiException() {

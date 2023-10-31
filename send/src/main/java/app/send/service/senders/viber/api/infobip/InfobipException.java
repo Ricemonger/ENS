@@ -1,6 +1,6 @@
 package app.send.service.senders.viber.api.infobip;
 
-import app.send.controller.exceptions.SenderApiException;
+import app.send.exceptions.SenderApiException;
 
 public class InfobipException extends SenderApiException {
 

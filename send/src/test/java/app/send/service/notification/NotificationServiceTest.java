@@ -38,7 +38,7 @@ class NotificationServiceTest {
     @Test
     void getMap() {
         String token = "token";
-        notificationService.getMap(token);
-        verify(notificationClient).findAllByUsername(token);
+        notificationService.getMapByAccountId(token);
+        verify(notificationClient).findAllByAccountId(token);
     }
 }

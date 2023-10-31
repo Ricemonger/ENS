@@ -13,6 +13,7 @@ import java.util.Locale;
 public class ContactService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     private final ContactClient contactClient;
 
     public Contact findOneByPrimaryKey(String token, String method, String contactId) {
@@ -25,9 +26,10 @@ public class ContactService {
         return result;
     }
 
-    public List<Contact> findAllByUsername(String token) {
-        List<Contact> result = contactClient.findAllByUsername(token);
-        log.trace("ContactClient's and Service's method findAllByUsername was executed with params: jwt-{},result:{}", token, result);
+    public List<Contact> findAllByAccountId(String token) {
+        List<Contact> result = contactClient.findAllByAccountId(token);
+        log.trace("ContactClient's and Service's method findAllByAccountId was executed with params: jwt-{},result:{}",
+                token, result);
         return result;
     }
 }

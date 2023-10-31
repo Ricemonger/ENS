@@ -55,7 +55,7 @@ class ContactServiceTest {
     @Test
     void findAllByUsername() {
         String token = "token";
-        contactService.findAllByUsername(token);
-        verify(contactClient).findAllByUsername(token);
+        contactService.findAllByAccountId(token);
+        verify(contactClient).findAllByAccountId(token);
     }
 }

@@ -12,6 +12,6 @@ public interface ContactClient {
     @GetMapping("/getByPK")
     List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactPKRequest request);
 
-    @GetMapping("/getByUN")
-    List<Contact> findAllByUsername(@RequestHeader(name = "Authorization") String token);
+    @GetMapping("/getByAI")
+    List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String token);
 }
