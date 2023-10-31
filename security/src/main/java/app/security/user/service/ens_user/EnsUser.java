@@ -1,8 +1,7 @@
-package app.security.user.model;
+package app.security.user.service.ens_user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import app.security.user.service.any_user.AnyUser;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +9,16 @@ import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
 @Entity
-@Table(name = "users")
+@Table(name = "ens-users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class EnsUser extends AnyUser {
+    @Column(unique = true)
+    @NonNull
+    @JoinColumn
+    private String accountId;
     @Id
     @NonNull
     private String username;

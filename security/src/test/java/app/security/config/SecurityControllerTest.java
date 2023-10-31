@@ -1,7 +1,9 @@
 package app.security.config;
 
-import app.security.user.model.User;
-import app.security.user.model.UserDetails;
+import app.security.security.JwtUtil;
+import app.security.security.SecurityController;
+import app.security.user.service.ens_user.EnsUser;
+import app.security.user.service.ens_user.EnsUserDetails;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,17 +34,17 @@ class SecurityControllerTest {
     void getUsernameNormalBehavior() {
         String username = "username";
         String password = "password";
-        UserDetails userDetails = new UserDetails(new User(username, password));
-        String token = jwtUtil.generateToken(userDetails);
-        assertEquals(jwtUtil.extractUsername(token), securityController.getUsername(token));
+        EnsUserDetails ensUserDetails = new EnsUserDetails(new EnsUser(username, password));
+        String token = jwtUtil.generateToken(ensUserDetails);
+        assertEquals(jwtUtil.extractAccountId(token), securityController.getUsername(token));
     }
 
     @Test
     void getUsernameThrowsExceptionOnInvalidTokens() {
         String username = "username";
         String password = "password";
-        UserDetails userDetails = new UserDetails(new User(username, password));
-        String validToken = jwtUtil.generateToken(userDetails);
+        EnsUserDetails ensUserDetails = new EnsUserDetails(new EnsUser(username, password));
+        String validToken = jwtUtil.generateToken(ensUserDetails);
         List<String> invalidTokens = new ArrayList<>();
         invalidTokens.add(EXPIRED_TOKEN);
         invalidTokens.add(validToken.substring(1));

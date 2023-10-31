@@ -1,6 +1,6 @@
-package app.security.config;
+package app.security.security;
 
-import app.security.user.model.UserDetails;
+import app.security.user.service.any_user.AbstractUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -23,6 +23,7 @@ import java.util.function.Function;
 @Component
 @NoArgsConstructor
 public class JwtUtil {
+
     @Value("${jwt.sign_key}")
     private String KEY;
 
@@ -30,25 +31,25 @@ public class JwtUtil {
         this.KEY = key;
     }
 
-    public String generateToken(UserDetails userDetails, Map<String, String> extraClaims) {
+    public String generateToken(AbstractUserDetails abstractUserDetails) {
+        return generateToken(abstractUserDetails, Collections.emptyMap());
+    }
+
+    public String generateToken(AbstractUserDetails abstractUserDetails, Map<String, String> extraClaims) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(abstractUserDetails.getAccountId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 3_600_000))
                 .signWith(signKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, Collections.emptyMap());
-    }
-
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    public boolean isTokenValid(String token, AbstractUserDetails abstractUserDetails) {
         try {
-            String username = extractUsername(token);
-            return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+            String username = extractAccountId(token);
+            return username.equals(abstractUserDetails.getUsername()) && !isTokenExpired(token);
         } catch (JwtException jwtException) {
             return false;
         }
@@ -66,7 +67,7 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    public String extractUsername(String token) {
+    public String extractAccountId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 

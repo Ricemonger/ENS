@@ -1,7 +1,8 @@
 package app.security.config;
 
-import app.security.user.model.User;
-import app.security.user.model.UserDetails;
+import app.security.security.JwtUtil;
+import app.security.user.service.ens_user.EnsUser;
+import app.security.user.service.ens_user.EnsUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,8 @@ class JwtUtilTest {
     private final String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9" +
             ".eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkzMjk3MDMyLCJleHAiOjE2OTMyOTcwMzJ9.wmA063sUsTVGsFSzig9Lr0oiO6C3dxkHH_vWfsbyqlQ";
 
-    private final UserDetails userDetails = new UserDetails(new User("user", "pass"));
-    private final String token = jwtUtil.generateToken(userDetails);
+    private final EnsUserDetails ensUserDetails = new EnsUserDetails(new EnsUser("user", "pass"));
+    private final String token = jwtUtil.generateToken(ensUserDetails);
 
     @Test
     void generateToken() {
@@ -33,14 +34,14 @@ class JwtUtilTest {
 
     @Test
     void isTokenValid() {
-        assertTrue(jwtUtil.isTokenValid(token, userDetails));
+        assertTrue(jwtUtil.isTokenValid(token, ensUserDetails));
         String username1 = "user1";
         String password1 = "pass1";
-        UserDetails userDetails1 = new UserDetails(new User(username1, password1));
-        String token1 = jwtUtil.generateToken(userDetails1);
-        assertFalse(jwtUtil.isTokenValid(token1, userDetails));
-        assertFalse(jwtUtil.isTokenValid(token, userDetails1));
-        assertFalse(jwtUtil.isTokenValid(EXPIRED_TOKEN, userDetails));
+        EnsUserDetails ensUserDetails1 = new EnsUserDetails(new EnsUser(username1, password1));
+        String token1 = jwtUtil.generateToken(ensUserDetails1);
+        assertFalse(jwtUtil.isTokenValid(token1, ensUserDetails));
+        assertFalse(jwtUtil.isTokenValid(token, ensUserDetails1));
+        assertFalse(jwtUtil.isTokenValid(EXPIRED_TOKEN, ensUserDetails));
     }
 
     @Test
@@ -59,7 +60,7 @@ class JwtUtilTest {
 
     @Test
     void extractUsername() {
-        assertEquals("user", jwtUtil.extractUsername(token));
+        assertEquals("user", jwtUtil.extractAccountId(token));
     }
 
     @Test
@@ -69,7 +70,7 @@ class JwtUtilTest {
         invalidTokens.add(EXPIRED_TOKEN);
         invalidTokens.add(token.substring(0, token.length() - 5));
         invalidTokens.add(token.substring(5));
-        invalidTokens.add(invalidJwtUtil.generateToken(userDetails));
+        invalidTokens.add(invalidJwtUtil.generateToken(ensUserDetails));
         invalidTokens.add(token.substring(token.indexOf(".") + 1));
         for (String invalidToken : invalidTokens) {
             Executable executableExpired = () -> jwtUtil.extractClaim(invalidToken, Claims::getSubject);

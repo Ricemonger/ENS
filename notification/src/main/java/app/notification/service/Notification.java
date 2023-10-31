@@ -4,6 +4,7 @@ import app.notification.service.db.NotificationCompositeKey;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 @IdClass(NotificationCompositeKey.class)
 public class Notification {
     @Id
+    @JoinColumn
     private String accountId;
     @Id
     private String name;

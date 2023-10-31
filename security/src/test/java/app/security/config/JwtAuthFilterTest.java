@@ -1,8 +1,10 @@
 package app.security.config;
 
-import app.security.user.model.User;
-import app.security.user.model.UserDetails;
-import app.security.user.service.UserDetailsService;
+import app.security.security.JwtAuthFilter;
+import app.security.security.JwtUtil;
+import app.security.user.service.ens_user.EnsUser;
+import app.security.user.service.ens_user.EnsUserDetails;
+import app.security.user.service.ens_user.db.EnsUserDetailsService;
 import jakarta.servlet.FilterChain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,7 @@ class JwtAuthFilterTest {
             ".eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNjkzMjk3MDMyLCJleHAiOjE2OTMyOTcwMzJ9.wmA063sUsTVGsFSzig9Lr0oiO6C3dxkHH_vWfsbyqlQ";
 
     @Mock
-    private UserDetailsService userDetailsService;
+    private EnsUserDetailsService ensUserDetailsService;
 
     private MockHttpServletRequest request;
 
@@ -40,7 +42,7 @@ class JwtAuthFilterTest {
 
     @BeforeEach
     void setUp() {
-        jwtAuthFilter = new JwtAuthFilter(jwtUtil, userDetailsService);
+        jwtAuthFilter = new JwtAuthFilter(jwtUtil, ensUserDetailsService);
     }
 
     @Test
@@ -49,14 +51,14 @@ class JwtAuthFilterTest {
         response = new MockHttpServletResponse();
         String username = "username";
         String password = "password";
-        String token = jwtUtil.generateToken(new UserDetails(new User(username, password)));
+        String token = jwtUtil.generateToken(new EnsUserDetails(new EnsUser(username, password)));
         request.addHeader("Authorization", "Bearer " + token);
         try {
             jwtAuthFilter.doFilterInternal(request, response, filterChain);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        verify(userDetailsService).loadUserByUsername(username);
+        verify(ensUserDetailsService).loadUserByUsername(username);
     }
 
     @Test
@@ -65,8 +67,8 @@ class JwtAuthFilterTest {
         JwtUtil invalidJwtUtil = new JwtUtil("b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9aa");
         String username = "username";
         String password = "password";
-        String token = jwtUtil.generateToken(new UserDetails(new User(username, password)));
-        String invalidToken = invalidJwtUtil.generateToken(new UserDetails(new User(username, password)));
+        String token = jwtUtil.generateToken(new EnsUserDetails(new EnsUser(username, password)));
+        String invalidToken = invalidJwtUtil.generateToken(new EnsUserDetails(new EnsUser(username, password)));
         List<String> invalidList = new ArrayList<>();
         invalidList.add("Bearer " + EXPIRED_TOKEN);
         invalidList.add("Bearer " + invalidToken);
@@ -82,9 +84,9 @@ class JwtAuthFilterTest {
             try {
                 jwtAuthFilter.doFilterInternal(request, response, filterChain);
                 verify(filterChain).doFilter(request, response);
-                verifyNoInteractions(userDetailsService);
+                verifyNoInteractions(ensUserDetailsService);
                 reset(filterChain);
-                reset(userDetailsService);
+                reset(ensUserDetailsService);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,9 +97,9 @@ class JwtAuthFilterTest {
         try {
             jwtAuthFilter.doFilterInternal(request, response, filterChain);
             verify(filterChain).doFilter(request, response);
-            verifyNoInteractions(userDetailsService);
+            verifyNoInteractions(ensUserDetailsService);
             reset(filterChain);
-            reset(userDetailsService);
+            reset(ensUserDetailsService);
         } catch (Exception e) {
             e.printStackTrace();
         }

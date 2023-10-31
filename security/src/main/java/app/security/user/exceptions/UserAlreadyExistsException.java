@@ -1,4 +1,4 @@
-package app.security.user.controller.exceptions;
+package app.security.user.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException() {

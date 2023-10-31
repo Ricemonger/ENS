@@ -1,12 +1,12 @@
 package app.security.user.controller;
 
-import app.security.config.JwtUtil;
+import app.security.security.JwtUtil;
 import app.security.user.controller.dto.UserLoginRequest;
 import app.security.user.controller.dto.UserRegisterRequest;
-import app.security.user.model.User;
-import app.security.user.model.UserDetails;
-import app.security.user.service.UserService;
-import app.security.user.service.repository.UserRepository;
+import app.security.user.service.ens_user.EnsUser;
+import app.security.user.service.ens_user.EnsUserDetails;
+import app.security.user.service.ens_user.db.EnsUserRepository;
+import app.security.user.service.ens_user.db.EnsUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,19 +37,19 @@ class UserControllerTest {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    private UserRepository userRepository;
+    private EnsUserRepository ensUserRepository;
 
     @Mock
     private AuthenticationManager authenticationManager;
 
-    private UserService userService;
+    private EnsUserService ensUserService;
 
     private UserController userController;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, passwordEncoder, authenticationManager, jwtUtil);
-        userController = new UserController(userService);
+        ensUserService = new EnsUserService(ensUserRepository, passwordEncoder, authenticationManager, jwtUtil);
+        userController = new UserController(ensUserService);
     }
 
     @Test
@@ -58,7 +58,7 @@ class UserControllerTest {
         String password = "password";
         UserRegisterRequest request = new UserRegisterRequest(username, password);
         String result = userController.register(request);
-        assertTrue(jwtUtil.isTokenValid(result, new UserDetails(new User(username, password))));
+        assertTrue(jwtUtil.isTokenValid(result, new EnsUserDetails(new EnsUser(username, password))));
         verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
@@ -85,10 +85,10 @@ class UserControllerTest {
     void loginNormalBehavior() {
         String username = "username";
         String password = "password";
-        userRepository.save(new User(username, password));
+        ensUserRepository.save(new EnsUser(username, password));
         UserLoginRequest request = new UserLoginRequest(username, password);
         String result = userController.login(request);
-        assertTrue(jwtUtil.isTokenValid(result, new UserDetails(new User(username, password))));
+        assertTrue(jwtUtil.isTokenValid(result, new EnsUserDetails(new EnsUser(username, password))));
         verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 

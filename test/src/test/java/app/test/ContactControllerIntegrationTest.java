@@ -8,7 +8,7 @@ import app.contact.service.Method;
 import app.contact.service.db.ContactCompositeKey;
 import app.contact.service.db.ContactRepository;
 import app.notification.service.db.NotificationRepository;
-import app.security.user.service.repository.UserRepository;
+import app.security.user.service.ens_user.db.EnsUserRepository;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableJpaRepositories({"app.test"
         , "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
-        , "app.security.user.model", "app.security.user.service.repository"})
+        , "app.security.user.model", "app.security.user.service.ens_user.db"})
 @ComponentScan(basePackages = {"app.test"
         , "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
-        , "app.security.user.model", "app.security.user.service.repository"})
+        , "app.security.user.model", "app.security.user.service.ens_user.db"})
 @EntityScan({
         "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
@@ -51,7 +51,7 @@ public class ContactControllerIntegrationTest {
     private ContactRepository contactRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EnsUserRepository ensUserRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -71,7 +71,7 @@ public class ContactControllerIntegrationTest {
 
     @BeforeEach
     void beforeEach() {
-        userRepository.deleteAll();
+        ensUserRepository.deleteAll();
         contactRepository.deleteAll();
         notificationRepository.deleteAll();
 

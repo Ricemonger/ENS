@@ -1,13 +1,14 @@
 package app.security.user.service;
 
-import app.security.config.Configuration;
-import app.security.config.JwtUtil;
-import app.security.user.controller.exceptions.InvalidPasswordException;
-import app.security.user.controller.exceptions.InvalidUsernameException;
-import app.security.user.controller.exceptions.UserAlreadyExistsException;
-import app.security.user.controller.exceptions.UserDoesntExistException;
-import app.security.user.model.User;
-import app.security.user.service.repository.UserRepository;
+import app.security.security.Configuration;
+import app.security.security.JwtUtil;
+import app.security.user.exceptions.InvalidPasswordException;
+import app.security.user.exceptions.InvalidUsernameException;
+import app.security.user.exceptions.UserAlreadyExistsException;
+import app.security.user.exceptions.UserDoesntExistException;
+import app.security.user.service.ens_user.EnsUser;
+import app.security.user.service.ens_user.db.EnsUserRepository;
+import app.security.user.service.ens_user.db.EnsUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith({MockitoExtension.class, SpringExtension.class})
 @DataJpaTest
-class UserServiceTest {
+class EnsEnsUserServiceTest {
 
     @Mock
     private AuthenticationManager authenticationManager;
@@ -37,15 +38,15 @@ class UserServiceTest {
     private final PasswordEncoder passwordEncoder = new Configuration().passwordEncoder();
 
     @Autowired
-    private UserRepository userRepository;
+    private EnsUserRepository ensUserRepository;
 
     private final JwtUtil jwtUtil = new JwtUtil("b7221331a051cdc4cafcab5884a0d9723d6ed94eaab70233b000442b1302c9eb");
 
-    private UserService userService;
+    private EnsUserService ensUserService;
 
     @BeforeEach
     void setUp() {
-        userService = new UserService(userRepository, passwordEncoder, authenticationManager, jwtUtil);
+        ensUserService = new EnsUserService(ensUserRepository, passwordEncoder, authenticationManager, jwtUtil);
     }
 
     @Test
@@ -55,7 +56,7 @@ class UserServiceTest {
         invalidUsername.put("user12 ", "password");
         invalidUsername.put("uuuuuuuuaaaaaaaa11111111111", "password");
         for (Map.Entry<String, String> entry : invalidUsername.entrySet()) {
-            Executable executable = () -> userService.register(new User(entry.getKey(), entry.getValue()));
+            Executable executable = () -> ensUserService.register(new EnsUser(entry.getKey(), entry.getValue()));
             assertThrows(InvalidUsernameException.class, executable);
         }
         Map<String, String> invalidPassword = new HashMap<>();
@@ -63,7 +64,7 @@ class UserServiceTest {
         invalidPassword.put("validUser", "password1234567890-=12345678");
         invalidPassword.put("username12", "password ");
         for (Map.Entry<String, String> entry : invalidPassword.entrySet()) {
-            Executable executable = () -> userService.register(new User(entry.getKey(), entry.getValue()));
+            Executable executable = () -> ensUserService.register(new EnsUser(entry.getKey(), entry.getValue()));
             assertThrows(InvalidPasswordException.class, executable);
         }
     }
@@ -72,10 +73,10 @@ class UserServiceTest {
     void registerThrowsExceptionIfUserAlreadyExists() {
         String username = "username";
         String password = "password";
-        User user = new User(username, password);
+        EnsUser ensUser = new EnsUser(username, password);
         Executable executable = () -> {
-            userService.register(user);
-            userService.register(user);
+            ensUserService.register(ensUser);
+            ensUserService.register(ensUser);
         };
         assertThrows(UserAlreadyExistsException.class, executable);
     }
@@ -84,8 +85,8 @@ class UserServiceTest {
     void registerNormalBehavior() {
         String username = "username";
         String password = "password";
-        User user = new User(username, password);
-        userService.register(user);
+        EnsUser ensUser = new EnsUser(username, password);
+        ensUserService.register(ensUser);
         verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
@@ -96,7 +97,7 @@ class UserServiceTest {
         invalidUsername.put("user12 ", "password");
         invalidUsername.put("uuuuuuuuaaaaaaaa11111111111", "password");
         for (Map.Entry<String, String> entry : invalidUsername.entrySet()) {
-            Executable executable = () -> userService.login(new User(entry.getKey(), entry.getValue()));
+            Executable executable = () -> ensUserService.login(new EnsUser(entry.getKey(), entry.getValue()));
             assertThrows(InvalidUsernameException.class, executable);
         }
         Map<String, String> invalidPassword = new HashMap<>();
@@ -104,7 +105,7 @@ class UserServiceTest {
         invalidPassword.put("validUser", "password1234567890-=12345678");
         invalidPassword.put("username12", "password ");
         for (Map.Entry<String, String> entry : invalidPassword.entrySet()) {
-            Executable executable = () -> userService.login(new User(entry.getKey(), entry.getValue()));
+            Executable executable = () -> ensUserService.login(new EnsUser(entry.getKey(), entry.getValue()));
             assertThrows(InvalidPasswordException.class, executable);
         }
     }
@@ -113,8 +114,8 @@ class UserServiceTest {
     void loginThrowsExceptionIfUserDoesntExist() {
         String username = "username";
         String password = "password";
-        User user = new User(username, password);
-        Executable executable = () -> userService.login(user);
+        EnsUser ensUser = new EnsUser(username, password);
+        Executable executable = () -> ensUserService.login(ensUser);
         assertThrows(UserDoesntExistException.class, executable);
     }
 
@@ -122,9 +123,9 @@ class UserServiceTest {
     void loginNormalBehavior() {
         String username = "username";
         String password = "password";
-        User user = new User(username, password);
-        userRepository.save(new User(username, passwordEncoder.encode(password)));
-        userService.login(user);
+        EnsUser ensUser = new EnsUser(username, password);
+        ensUserRepository.save(new EnsUser(username, passwordEncoder.encode(password)));
+        ensUserService.login(ensUser);
         verify(authenticationManager).authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 }

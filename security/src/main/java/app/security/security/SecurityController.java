@@ -1,4 +1,4 @@
-package app.security.config;
+package app.security.security;
 
 import app.utils.ExceptionMessage;
 import io.jsonwebtoken.JwtException;
@@ -21,8 +21,16 @@ public class SecurityController {
     @GetMapping("/getUsername")
     public String getUsername(@RequestHeader(name = "Authorization") String token) {
         log.trace("getUsername method was called with token-{}", token);
-        String result = jwtUtil.extractUsername(token);
+        String result = jwtUtil.extractAccountId(token);
         log.trace("getUsername method's with token-{} result is {}", token, result);
+        return result;
+    }
+
+    @GetMapping("/getAccountId")
+    public String getAccountId(@RequestHeader(name = "Authorization") String token) {
+        log.trace("getAccountId method was called with token-{}", token);
+        String result = jwtUtil.extractAccountId(token);
+        log.trace("getAccountId method's with token-{} result is {}", token, result);
         return result;
     }
 

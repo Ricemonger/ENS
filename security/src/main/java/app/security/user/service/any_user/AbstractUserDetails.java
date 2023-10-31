@@ -1,17 +1,18 @@
-package app.security.user.model;
+package app.security.user.service.any_user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 
 @RequiredArgsConstructor
-public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
+public abstract class AbstractUserDetails implements UserDetails {
 
-    private final User user;
+    private final AbstractUser abstractUser;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -19,14 +20,10 @@ public class UserDetails implements org.springframework.security.core.userdetail
     }
 
     @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
+    public abstract String getUsername();
 
     @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
+    public abstract String getPassword();
 
     @Override
     public boolean isAccountNonExpired() {
@@ -51,12 +48,20 @@ public class UserDetails implements org.springframework.security.core.userdetail
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDetails that)) return false;
-        return user.equals(that.user);
+        if (!(o instanceof app.security.user.service.any_user.AbstractUserDetails that)) return false;
+        return abstractUser.equals(that.abstractUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user);
+        return Objects.hash(abstractUser);
+    }
+
+    public String getAccountId() {
+        return abstractUser.getAccountId();
+    }
+
+    public AbstractUser getUser() {
+        return abstractUser;
     }
 }

@@ -2,11 +2,11 @@ package app.security.user.controller;
 
 import app.security.user.controller.dto.UserLoginRequest;
 import app.security.user.controller.dto.UserRegisterRequest;
-import app.security.user.controller.exceptions.InvalidPasswordException;
-import app.security.user.controller.exceptions.InvalidUsernameException;
-import app.security.user.controller.exceptions.UserAlreadyExistsException;
-import app.security.user.controller.exceptions.UserDoesntExistException;
-import app.security.user.service.UserService;
+import app.security.user.exceptions.InvalidPasswordException;
+import app.security.user.exceptions.InvalidUsernameException;
+import app.security.user.exceptions.UserAlreadyExistsException;
+import app.security.user.exceptions.UserDoesntExistException;
+import app.security.user.service.ens_user.db.EnsUserService;
 import app.utils.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,34 +22,34 @@ public class UserController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final UserService userService;
+    private final EnsUserService ensUserService;
 
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public String register(@RequestBody UserRegisterRequest request) {
         log.trace("register method was called with params: username-{}", request.username());
-        return userService.register(request.toUser());
+        return ensUserService.register(request.toUser());
     }
 
     @PostMapping("/login")
     @ResponseStatus(value = HttpStatus.OK)
     public String login(@RequestBody UserLoginRequest request) {
         log.trace("UserController's login method was called with params: username-{}", request.username());
-        return userService.login(request.toUser());
+        return ensUserService.login(request.toUser());
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
         log.warn("UserAlreadyExistsException of UserController was thrown");
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "User with same username already exists, please re-enter");
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "EnsUser with same username already exists, please re-enter");
     }
 
     @ExceptionHandler(UserDoesntExistException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionMessage doesntExist(UserDoesntExistException e) {
         log.warn("NoSuchElementException of UserController was thrown");
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "User with such username doesn't exist, please re-enter");
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "EnsUser with such username doesn't exist, please re-enter");
     }
 
     @ExceptionHandler(InvalidPasswordException.class)

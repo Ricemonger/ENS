@@ -5,7 +5,7 @@ import app.contact.service.Method;
 import app.contact.service.db.ContactRepository;
 import app.notification.service.Notification;
 import app.notification.service.db.NotificationRepository;
-import app.security.user.service.repository.UserRepository;
+import app.security.user.service.ens_user.db.EnsUserRepository;
 import app.send.controller.dto.SendOneRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,11 +21,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 @EnableJpaRepositories({"app.test"
         , "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
-        , "app.security.user.model", "app.security.user.service.repository"})
+        , "app.security.user.model", "app.security.user.service.ens_user.db"})
 @ComponentScan(basePackages = {"app.test"
         , "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
-        , "app.security.user.model", "app.security.user.service.repository"})
+        , "app.security.user.model", "app.security.user.service.ens_user.db"})
 @EntityScan({
         "app.contact.model", "app.contact.service.repository"
         , "app.notification.model", "app.notification.service.repository"
@@ -39,14 +39,14 @@ public class SendControllerIntegrationTest {
     private ContactRepository contactRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EnsUserRepository ensUserRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
 
     @BeforeEach
     void beforeEach() {
-        userRepository.deleteAll();
+        ensUserRepository.deleteAll();
         contactRepository.deleteAll();
         notificationRepository.deleteAll();
 
