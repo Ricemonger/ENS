@@ -88,14 +88,6 @@ public class EnsUserService {
         }
     }
 
-    private EnsUser getByIdsOrThrow(String accountId, String username) throws UserDoesntExistException {
-        EnsUser byUsername = getByUsernameOrThrow(username);
-        EnsUser byAccountId = getByAccountIdOrThrow(accountId);
-        if (byAccountId.equals(byAccountId)) {
-            return byUsername;
-        } else throw new InvalidIdsException();
-    }
-
     private EnsUser getByUsernameOrThrow(String username) throws UserDoesntExistException {
         try {
             return ensUserRepository.findById(username).orElseThrow();

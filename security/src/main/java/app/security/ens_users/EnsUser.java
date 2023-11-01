@@ -1,6 +1,7 @@
 package app.security.ens_users;
 
-import app.security.any_users.AnyUser;
+import app.security.abstract_users.AbstractUser;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name = "ens-users")
@@ -16,17 +16,14 @@ import org.springframework.lang.NonNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EnsUser extends AnyUser {
+public class EnsUser extends AbstractUser {
+
+    @Column(unique = true, nullable = false)
+    private String accountId;
 
     @Id
     private String username;
 
-    @NonNull
+    @Column(nullable = false)
     private String password;
-
-    public EnsUser(String accountId, String username, String password) {
-        super(accountId);
-        this.username = username;
-        this.password = password;
-    }
 }

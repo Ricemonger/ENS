@@ -2,6 +2,7 @@ package app.security.ens_users.security;
 
 import app.security.abstract_users.security.JwtUtil;
 import app.security.ens_users.EnsUserDetails;
+import app.security.ens_users.EnsUserDetailsService;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

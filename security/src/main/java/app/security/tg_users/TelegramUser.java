@@ -1,9 +1,11 @@
 package app.security.tg_users;
 
-import app.security.any_users.AnyUser;
+import app.security.abstract_users.AbstractUser;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,11 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @NoArgsConstructor
-public class TelegramUser extends AnyUser {
+@AllArgsConstructor
+public class TelegramUser extends AbstractUser {
+
+    @Column(unique = true, nullable = false)
+    private String accountId;
 
     @Id
     private String chatId;

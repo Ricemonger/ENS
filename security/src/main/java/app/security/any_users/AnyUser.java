@@ -2,24 +2,17 @@ package app.security.any_users;
 
 import app.security.abstract_users.AbstractUser;
 import jakarta.persistence.*;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
-@Builder
+@Data
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
+@AllArgsConstructor
 public class AnyUser extends AbstractUser {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Override
-    public String getAccountId() {
-        return super.getAccountId();
-    }
-
-    public AnyUser(String accountId) {
-        setAccountId(accountId);
-    }
+    private String accountId;
 }

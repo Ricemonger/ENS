@@ -1,6 +1,5 @@
-package app.security.ens_users.security;
+package app.security.ens_users;
 
-import app.security.ens_users.EnsUserDetails;
 import app.security.ens_users.service.db.EnsUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

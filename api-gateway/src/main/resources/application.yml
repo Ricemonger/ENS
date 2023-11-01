@@ -29,7 +29,7 @@ spring:
         - id: security
           uri: http://localhost:8093
           predicates:
-            - Path=/api/users/**, /api/security/**
+            - Path=/api/users/**, /api/security/**, /api/tg-users/**
 
 application:
   title: gateway

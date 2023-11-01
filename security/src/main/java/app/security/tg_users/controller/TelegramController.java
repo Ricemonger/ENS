@@ -24,6 +24,7 @@ public class TelegramController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public TelegramUser create(TelegramUserChatIdRequest request) {
+        System.out.println(request.chatId());
         TelegramUser user = new TelegramUser(request.chatId());
         TelegramUser result = telegramUserService.create(user);
         log.trace("create method was called with request-{} and result-{}", request, result);

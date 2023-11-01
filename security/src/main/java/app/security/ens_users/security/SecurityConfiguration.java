@@ -1,5 +1,6 @@
 package app.security.ens_users.security;
 
+import app.security.ens_users.EnsUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,7 +49,7 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/users/login", "/api/users/register")
+                .requestMatchers("/api/users/login", "/api/users/register", "/api/tg-users")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
