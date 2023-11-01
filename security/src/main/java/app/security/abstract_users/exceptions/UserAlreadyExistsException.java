@@ -1,4 +1,4 @@
-package app.security.ens_users.exceptions;
+package app.security.abstract_users.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException() {

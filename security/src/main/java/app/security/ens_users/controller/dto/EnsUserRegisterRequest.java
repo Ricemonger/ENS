@@ -1,9 +1,8 @@
 package app.security.ens_users.controller.dto;
 
-
 import app.security.ens_users.EnsUser;
 
-public record UserLoginRequest(
+public record EnsUserRegisterRequest(
         String username,
         String password
 ) {
@@ -15,3 +14,4 @@ public record UserLoginRequest(
                 .build();
     }
 }
+

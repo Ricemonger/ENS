@@ -4,8 +4,7 @@ import app.security.abstract_users.security.JwtUtil;
 import app.utils.ExceptionMessage;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/security")
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityController {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final JwtUtil jwtUtil;
 
     @GetMapping("/getAccountId")
+    @ResponseStatus(HttpStatus.OK)
     public String getAccountId(@RequestHeader(name = "Authorization") String token) {
         log.trace("getAccountId method was called with token-{}", token);
         String result = jwtUtil.extractAccountId(token);

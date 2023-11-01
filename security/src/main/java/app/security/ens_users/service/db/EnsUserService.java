@@ -1,11 +1,15 @@
 package app.security.ens_users.service.db;
 
+import app.security.abstract_users.exceptions.UserAlreadyExistsException;
+import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.abstract_users.security.JwtUtil;
 import app.security.any_users.AnyUser;
 import app.security.any_users.db.AnyUserService;
 import app.security.ens_users.EnsUser;
 import app.security.ens_users.EnsUserDetails;
-import app.security.ens_users.exceptions.*;
+import app.security.ens_users.exceptions.InvalidIdsException;
+import app.security.ens_users.exceptions.InvalidPasswordException;
+import app.security.ens_users.exceptions.InvalidUsernameException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +72,14 @@ public class EnsUserService {
                 username,
                 passwordEncoder.encode(password), result);
         return result;
+    }
+
+    public EnsUser getByUsername(String username) {
+        return getByUsernameOrThrow(username);
+    }
+
+    public EnsUser getByAccountId(String accountId) {
+        return getByAccountIdOrThrow(accountId);
     }
 
     private void doesAccountExist(String accountId) {

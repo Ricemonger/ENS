@@ -1,4 +1,4 @@
-package app.security.tg_users.controller;
+package app.security.tg_users.controller.dto;
 
 public record TelegramUserFullRequest(
         String accountId,
