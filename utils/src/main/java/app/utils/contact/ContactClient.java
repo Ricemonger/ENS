@@ -1,4 +1,4 @@
-package app.send.service.contact;
+package app.utils.contact;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

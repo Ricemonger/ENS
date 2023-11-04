@@ -13,7 +13,7 @@ public class DataShowBotCommand extends AbstractBotCommand {
 
     @Override
     public void execute() {
-        String data = botService.getUserData();
+        String data = botService.getUserData(chatId);
         sendAnswer("Your user data:\n" + data);
     }
 }

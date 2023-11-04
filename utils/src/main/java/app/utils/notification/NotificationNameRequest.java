@@ -1,4 +1,4 @@
-package app.send.service.notification;
+package app.utils.notification;
 
 public record NotificationNameRequest(String name) {
 }

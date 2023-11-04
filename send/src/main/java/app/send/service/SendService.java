@@ -1,13 +1,14 @@
 package app.send.service;
 
-import app.send.service.contact.Contact;
-import app.send.service.contact.ContactService;
-import app.send.service.contact.Method;
-import app.send.service.notification.NotificationService;
+
 import app.send.service.senders.Sender;
 import app.send.service.senders.email.EmailSender;
 import app.send.service.senders.sms.SmsSender;
 import app.send.service.senders.viber.ViberSender;
+import app.utils.contact.Contact;
+import app.utils.contact.ContactService;
+import app.utils.contact.Method;
+import app.utils.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package app.send.service.contact;
+package app.utils.contact;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

@@ -35,7 +35,6 @@ public class TelegramBotCommandsConfiguration {
     public static final String DATA_HELP_MESSAGE = """
             Data methods:
                Show me all my data
-               Remove most of my data, except telegram account entry and linking to ENS account
                Remove ALL my data, including telegram account entry in bot's database
             """;
 

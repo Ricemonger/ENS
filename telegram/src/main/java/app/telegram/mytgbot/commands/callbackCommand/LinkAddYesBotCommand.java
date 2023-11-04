@@ -18,9 +18,9 @@ public class LinkAddYesBotCommand extends AbstractBotCommand {
             String password;
             sendAnswer("Linking your telegram account to your ENS account...");
             sendAnswer("Please enter your ENS account's username:");
-            username = "";
+            username = ;
             sendAnswer("Please enter your ENS account's password:");
-            password = "";
+            password = ;
             botService.link(chatId, username, password);
             //TODO LINKING
         };

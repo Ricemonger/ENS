@@ -91,4 +91,26 @@ public class TelegramUserService {
     public String getChatIdByToken(String telegramToken) {
         return telegramJwtUtil.extractChatId(telegramToken);
     }
+
+    public void unlink(Long chatId) {
+
+    }
+
+    public void link(Long chatId, String username, String password) {
+
+    }
+
+    public String getAccountInfo(Long chatId) {
+
+
+    }
+
+    public boolean isLinked(Long chatId) {
+
+
+    }
+
+    public void removeAccount(Long chatId) {
+
+    }
 }

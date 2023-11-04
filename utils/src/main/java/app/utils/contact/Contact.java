@@ -1,4 +1,4 @@
-package app.send.service.contact;
+package app.utils.contact;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

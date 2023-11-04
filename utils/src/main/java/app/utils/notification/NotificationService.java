@@ -1,4 +1,4 @@
-package app.send.service.notification;
+package app.utils.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package app.send.service.notification;
+package app.utils.notification;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
