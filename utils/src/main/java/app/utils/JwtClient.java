@@ -46,7 +46,7 @@ public class JwtClient {
         if (!token.startsWith("Bearer ")) {
             token = "Bearer " + token;
         }
-        log.trace("Extracting username from jwt token: {}", token);
+        log.trace("Extracting accountId from jwt token: {}", token);
         try {
             String username = webClient
                     .method(HttpMethod.GET)

@@ -16,6 +16,8 @@ public class LinkBotCommand extends AbstractBotCommand {
         if (!isAccountLinked()) {
             sendAnswer("Would tou like to link your telegram account to existing ENS account?");
             askYesOrNoFromInlineKeyboard("LINK_ADD_YES", "LINK_ADD_NO");
+        } else {
+            sendAnswer("You already have linked ENS account");
         }
     }
 
