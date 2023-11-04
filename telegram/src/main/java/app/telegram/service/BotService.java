@@ -55,6 +55,7 @@ public class BotService {
         stringBuilder.append(contactList);
         stringBuilder.append("\nAccount info:\n");
         stringBuilder.append(accountInfo);
+
         return stringBuilder.toString();
     }
 
@@ -72,35 +73,35 @@ public class BotService {
         return telegramUserService.isLinked(chatId);
     }
 
-    public void addManyContacts(List<Contact> contacts) {
-        contactService.addMany(contacts);
+    public void addManyContacts(Long chatId, List<Contact> contacts) {
+        contactService.addMany(chatId, contacts);
     }
 
-    public void addOneContact(Contact contact) {
-        contactService.addOne(contact);
+    public void addOneContact(Long chatId, Contact contact) {
+        contactService.addOne(chatId, contact);
     }
 
-    public void removeManyContacts(List<Contact> contacts) {
-        contactService.removeMany(contacts);
+    public void removeManyContacts(Long chatId, List<Contact> contacts) {
+        contactService.removeMany(chatId, contacts);
     }
 
-    public void removeOneContact(Contact contact) {
-        contactService.removeOne(contact);
+    public void removeOneContact(Long chatId, Contact contact) {
+        contactService.removeOne(chatId, contact);
     }
 
-    public void addManyNotifications(List<Notification> notifications) {
-        notificationService.addMany(notifications);
+    public void addManyNotifications(Long chatId, List<Notification> notifications) {
+        notificationService.addMany(chatId, notifications);
     }
 
-    public void addOneNotification(Notification notification) {
-        notificationService.addOne(notification);
+    public void addOneNotification(Long chatId, Notification notification) {
+        notificationService.addOne(chatId, notification);
     }
 
-    public void removeManyNotifications(List<Notification> notifications) {
-        notificationService.removeMany(notifications);
+    public void removeManyNotifications(Long chatId, List<Notification> notifications) {
+        notificationService.removeMany(chatId, notifications);
     }
 
-    public void removeOneNotifications(Notification notification) {
-        notificationService.removeOne(notification);
+    public void removeOneNotifications(Long chatId, Notification notification) {
+        notificationService.removeOne(chatId, notification);
     }
 }

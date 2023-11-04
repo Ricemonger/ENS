@@ -2,7 +2,7 @@ package app.telegram.mytgbot.commands.callbackCommand;
 
 import app.telegram.mytgbot.commands.AbstractBotCommand;
 import app.telegram.service.BotService;
-import app.telegram.service.contact.Contact;
+import app.utils.contact.Contact;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -18,7 +18,7 @@ public class ContactAddManyBotCommand extends AbstractBotCommand {
     public void execute() {
         //TODO ASK CONTACTS
         List<Contact> contactList = askManyContacts();
-        botService.addManyContacts(contactList);
+        botService.addManyContacts(chatId, contactList);
         sendAnswer("Contacts were successfully added");
     }
 

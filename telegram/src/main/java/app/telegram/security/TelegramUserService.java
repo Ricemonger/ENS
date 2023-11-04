@@ -1,5 +1,6 @@
 package app.telegram.security;
 
+import app.telegram.service.security.SecurityUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ public class TelegramUserService {
 
     private final TelegramJwtUtil telegramJwtUtil;
 
-    private final SecurityClient securityClient;
+    private final SecurityUserService securityUserService;
 
     public TelegramUser create(Long chatId) {
         TelegramUser saved = telegramUserRepository.save(new TelegramUser(String.valueOf(chatId)));
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-        securityClient.createTelegramUser(telegramToken);
+        securityUserService.createUser(telegramToken);
         return saved;
     }
 
@@ -93,29 +94,23 @@ public class TelegramUserService {
     }
 
     public void unlink(Long chatId) {
-
+        securityUserService.unlink(chatId);
     }
 
     public void link(Long chatId, String username, String password) {
-
+        securityUserService.link(chatId, username, password);
     }
 
     public String getAccountInfo(Long chatId) {
-
-
+        return securityUserService.getAccountInfo(chatId);
     }
 
     public boolean isLinked(Long chatId) {
-
-
+        return securityUserService.isLinked(chatId);
     }
 
     public void removeAccount(Long chatId) {
-
-    }
-
-    public String getAccountId(Long chatId) {
-
-
+        securityUserService.removeAccount(chatId);
+        telegramUserRepository.delete(new TelegramUser(String.valueOf(chatId)));
     }
 }

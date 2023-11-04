@@ -26,16 +26,36 @@ public class NotificationService {
     }
 
     public Map<String, String> getMapByAccountId(String token) {
-        List<Notification> list = findAllByAccountId(token);
+        List<Notification> list = findAllById(token);
         Map<String, String> result = list.stream().collect(Collectors.toMap(Notification::getName, Notification::getText));
         log.trace("getMap method was executed with params: jwt-{} and result:{}", token, result);
         return result;
     }
 
-    public List<Notification> findAllByAccountId(String token) {
+    public List<Notification> findAllById(String token) {
         List<Notification> list = notificationClient.findAllByAccountId(token);
         log.trace("NotificationClient's method findAllByAccountId was executed with params: jwt-{} and result:{}",
                 token, list);
         return list;
+    }
+
+    public void addMany(String securityToken, List<Notification> notifications) {
+
+    }
+
+    public void addOne(String securityToken, Notification notification) {
+
+    }
+
+    public void removeMany(String securityToken, List<Notification> notifications) {
+
+    }
+
+    public void removeOne(String securityToken, Notification notification) {
+
+    }
+
+    public void removeAllById(String securityToken) {
+
     }
 }

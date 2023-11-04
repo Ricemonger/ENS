@@ -66,7 +66,7 @@ public class SendService {
 
     public void sendAll(String token, String username) {
         log.trace("sendAll method is executing with params: username-{}", username);
-        List<Contact> contacts = contactService.findAllByAccountId(token);
+        List<Contact> contacts = contactService.findAllById(token);
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
         List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();

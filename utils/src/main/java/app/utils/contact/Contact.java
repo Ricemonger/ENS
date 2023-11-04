@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Contact {
-    private String accountId;
     private Method method;
     private String contactId;
     private String notificationName;

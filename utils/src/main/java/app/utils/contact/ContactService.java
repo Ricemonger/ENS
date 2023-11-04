@@ -26,10 +26,30 @@ public class ContactService {
         return result;
     }
 
-    public List<Contact> findAllByAccountId(String token) {
+    public List<Contact> findAllById(String token) {
         List<Contact> result = contactClient.findAllByAccountId(token);
         log.trace("ContactClient's and Service's method findAllByAccountId was executed with params: jwt-{},result:{}",
                 token, result);
         return result;
+    }
+
+    public void AddMany(String securityToken, List<Contact> contacts) {
+
+    }
+
+    public void AddOne(String securityToken, Contact contact) {
+
+    }
+
+    public void removeMany(String securityToken, List<Contact> contacts) {
+
+    }
+
+    public void removeOne(String securityToken, Contact contact) {
+
+    }
+
+    public void removeAllById(String securityToken) {
+
     }
 }
