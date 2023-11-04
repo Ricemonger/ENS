@@ -1,2 +1,3 @@
 telegram.bot.name=
 telegram.bot.token=
+jwt.sign_key=

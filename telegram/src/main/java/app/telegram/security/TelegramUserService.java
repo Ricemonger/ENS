@@ -20,9 +20,13 @@ public class TelegramUserService {
 
     private final TelegramJwtUtil telegramJwtUtil;
 
+    private final SecurityClient securityClient;
+
     public TelegramUser create(Long chatId) {
-        TelegramUser newUser = new TelegramUser(String.valueOf(chatId));
-        return telegramUserRepository.save(newUser);
+        TelegramUser saved = telegramUserRepository.save(new TelegramUser(String.valueOf(chatId)));
+        String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
+        securityClient.createTelegramUser(telegramToken);
+        return saved;
     }
 
     public TelegramUser findByChatId(Long chatId) {
@@ -82,5 +86,9 @@ public class TelegramUserService {
         } catch (NoSuchElementException e) {
             throw new TelegramUserDoesntExist();
         }
+    }
+
+    public String getChatIdByToken(String telegramToken) {
+        return telegramJwtUtil.extractChatId(telegramToken);
     }
 }
