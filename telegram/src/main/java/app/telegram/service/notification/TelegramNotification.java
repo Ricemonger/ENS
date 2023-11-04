@@ -1,4 +1,4 @@
-package app.utils.notification;
+package app.telegram.service.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Notification {
-    private String accountId;
+public class TelegramNotification {
+    private Long chatId;
     private String name;
     private String text;
 }

@@ -113,4 +113,9 @@ public class TelegramUserService {
     public void removeAccount(Long chatId) {
 
     }
+
+    public String getAccountId(Long chatId) {
+
+
+    }
 }

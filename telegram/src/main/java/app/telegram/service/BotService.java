@@ -1,11 +1,11 @@
 package app.telegram.service;
 
 import app.telegram.security.TelegramUserService;
+import app.telegram.service.contact.ContactServiceWrapper;
+import app.telegram.service.notification.NotificationServiceWrapper;
 import app.telegram.service.sender.SendService;
 import app.utils.contact.Contact;
-import app.utils.contact.ContactService;
 import app.utils.notification.Notification;
-import app.utils.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +17,9 @@ public class BotService {
 
     private final TelegramUserService telegramUserService;
 
-    private final ContactService contactService;
+    private final ContactServiceWrapper contactService;
 
-    private final NotificationService notificationService;
+    private final NotificationServiceWrapper notificationService;
 
     private final SendService sendService;
 
