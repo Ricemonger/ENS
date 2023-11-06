@@ -4,8 +4,7 @@ import app.notification.exceptions.NotificationAlreadyExistsException;
 import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.service.Notification;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +14,8 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final NotificationRepository notificationRepository;
 
@@ -43,6 +41,12 @@ public class NotificationService {
         notificationRepository.delete(dbNotification);
         log.trace("delete method was executed with params: {}", notification);
         return dbNotification;
+    }
+
+    public void clear(String accountId) {
+        List<Notification> notifications = notificationRepository.findAllByAccountId(accountId);
+        notificationRepository.deleteAll(notifications);
+        log.trace("clear method was executed with accountId: {}", accountId);
     }
 
     public Notification findOneByPrimaryKey(String accountId, String notificationName) {

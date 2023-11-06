@@ -14,12 +14,12 @@ public interface ContactClient {
     @GetMapping("/getByAI")
     List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String token);
 
-    @DeleteMapping("/clear")
-    void clear(@RequestHeader(name = "Authorization") String token);
+    @PostMapping
+    Contact create(@RequestHeader(name = "Authorization") String token, @RequestBody Contact request);
 
     @DeleteMapping
-    void delete(@RequestHeader(name = "Authorization") String token, @RequestBody Contact request);
+    Contact delete(@RequestHeader(name = "Authorization") String token, @RequestBody Contact request);
 
-    @PostMapping
-    void create(@RequestHeader(name = "Authorization") String token, @RequestBody Contact request);
+    @DeleteMapping("/clear")
+    void clear(@RequestHeader(name = "Authorization") String token);
 }

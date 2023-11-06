@@ -3,12 +3,11 @@ package app.send.controller;
 import app.send.controller.dto.SendOneRequest;
 import app.send.exceptions.SenderApiException;
 import app.send.service.SendService;
-import app.send.service.contact.Method;
 import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
+import app.utils.contact.Method;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +16,8 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/api/send")
 @RequiredArgsConstructor
+@Slf4j
 public class SendController {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final SendService sendService;
 

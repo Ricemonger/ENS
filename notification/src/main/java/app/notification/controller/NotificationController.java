@@ -10,8 +10,7 @@ import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final NotificationService notificationService;
 
@@ -42,6 +40,14 @@ public class NotificationController {
         Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim(), request.text().trim());
         log.trace("update method was called with params: {}", notification);
         return notificationService.update(notification);
+    }
+
+    @DeleteMapping("/clear")
+    @ResponseStatus(HttpStatus.OK)
+    public void clear(@RequestHeader("Authorization") String token) {
+        String accountId = jwtUtil.extractAccountId(token);
+        log.trace("delete method was called with params: {}", token);
+        notificationService.clear(accountId);
     }
 
     @DeleteMapping

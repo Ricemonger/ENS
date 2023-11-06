@@ -1,9 +1,7 @@
 package app.utils.notification;
 
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,10 +14,12 @@ public interface NotificationClient {
     @GetMapping("/getByPK")
     List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
 
+    @PostMapping
+    Notification create(@RequestHeader("Authorization") String token, @RequestBody Notification request);
 
-    void create(String securityToken, Notification notification);
+    @DeleteMapping
+    Notification delete(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
 
-    void delete(String securityToken, Notification notification);
-
-    void clear(String securityToken);
+    @DeleteMapping("/clear")
+    void clear(@RequestHeader("Authorization") String token);
 }
