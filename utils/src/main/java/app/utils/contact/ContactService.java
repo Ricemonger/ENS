@@ -33,23 +33,36 @@ public class ContactService {
         return result;
     }
 
-    public void AddMany(String securityToken, List<Contact> contacts) {
-
+    public void addMany(String securityToken, List<Contact> contacts) {
+        for (Contact contact : contacts) {
+            contactClient.create(securityToken, contact);
+        }
+        log.trace("contactClient's method addMany was executed with params: jwt-{} and contacts:{}",
+                securityToken, contacts);
     }
 
-    public void AddOne(String securityToken, Contact contact) {
-
+    public void addOne(String securityToken, Contact contact) {
+        contactClient.create(securityToken, contact);
+        log.trace("contactClient's method addOne was executed with params: jwt-{} and contact:{}",
+                securityToken, contact);
     }
 
     public void removeMany(String securityToken, List<Contact> contacts) {
-
+        for (Contact contact : contacts) {
+            contactClient.delete(securityToken, contact);
+        }
+        log.trace("contactClient's method removeMany was executed with params: jwt-{} and contacts:{}",
+                securityToken, contacts);
     }
 
     public void removeOne(String securityToken, Contact contact) {
-
+        contactClient.delete(securityToken, contact);
+        log.trace("contactClient's method removeOne was executed with params: jwt-{} and contacts:{}",
+                securityToken, contact);
     }
 
     public void removeAllById(String securityToken) {
-
+        contactClient.clear(securityToken);
+        log.trace("contactClient's method removeAllById was executed with params: jwt-{}", securityToken);
     }
 }

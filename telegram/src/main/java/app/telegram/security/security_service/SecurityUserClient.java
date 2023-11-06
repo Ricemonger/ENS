@@ -11,6 +11,7 @@ import java.util.List;
 
 @FeignClient(name = "security-user", url = "${application.config.security-users.url}")
 public interface SecurityUserClient {
+
     @GetMapping("/getByPK")
     List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactPKRequest request);
 
@@ -32,5 +33,5 @@ public interface SecurityUserClient {
     boolean isLinked(String telegramToken);
 
     void createUser(String telegramToken);
-    
+
 }

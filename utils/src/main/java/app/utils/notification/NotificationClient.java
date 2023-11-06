@@ -9,9 +9,17 @@ import java.util.List;
 
 @FeignClient(name = "notification", url = "${application.config.notification.url}")
 public interface NotificationClient {
+
     @GetMapping("/getByAI")
     List<Notification> findAllByAccountId(@RequestHeader("Authorization") String token);
 
     @GetMapping("/getByPK")
     List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
+
+
+    void create(String securityToken, Notification notification);
+
+    void delete(String securityToken, Notification notification);
+
+    void clear(String securityToken);
 }

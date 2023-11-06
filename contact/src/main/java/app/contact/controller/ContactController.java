@@ -13,8 +13,7 @@ import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +24,8 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/contacts")
 @RequiredArgsConstructor
+@Slf4j
 public class ContactController {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContactService contactService;
 
@@ -71,6 +69,14 @@ public class ContactController {
         } catch (IllegalArgumentException e) {
             throw new InvalidContactMethodException(e);
         }
+    }
+
+    @DeleteMapping("/clear")
+    @ResponseStatus(HttpStatus.OK)
+    public void clear(@RequestHeader(name = "Authorization") String token) {
+        String accountId = jwtUtil.extractAccountId(token);
+        log.trace("clear method was called with jwt: {}", token);
+        contactService.clear(accountId);
     }
 
     @RequestMapping("/getByUN")

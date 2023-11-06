@@ -3,10 +3,12 @@ package app.utils.sender;
 import app.utils.contact.Contact;
 import app.utils.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SendService {
 
     private final SendClient sendClient;
@@ -15,6 +17,7 @@ public class SendService {
 
     public void sendAll(String securityToken) {
         sendClient.sendAll(securityToken);
+        log.trace("sendAll method was executed with securityToken:{}", securityToken);
     }
 
     public void sendOne(String securityToken, Contact contact) {
@@ -27,5 +30,6 @@ public class SendService {
         SendOneRequest request = new SendOneRequest(method, contactId, notificationText);
 
         sendClient.sendOne(securityToken, request);
+        log.trace("sendOne method was executed with securityToken-{}, request-{}", securityToken, request);
     }
 }

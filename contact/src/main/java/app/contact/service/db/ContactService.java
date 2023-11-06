@@ -5,8 +5,7 @@ import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.service.Contact;
 import app.contact.service.Method;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +15,8 @@ import java.util.NoSuchElementException;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ContactService {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContactRepository contactRepository;
 
@@ -37,6 +35,12 @@ public class ContactService {
         contactRepository.delete(contact);
         log.trace("delete method was executed with params: {}", contact);
         return removed;
+    }
+
+    public void clear(String accountId) {
+        List<Contact> toDelete = contactRepository.findAllByAccountId(accountId);
+        log.trace("clear method was called with accountId: {}", accountId);
+        contactRepository.deleteAll(toDelete);
     }
 
     public Contact update(Contact contact) {
