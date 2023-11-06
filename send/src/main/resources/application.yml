@@ -9,11 +9,6 @@ spring:
 application:
   title: sender
   version: 0.1
-  config:
-    contact:
-      url: http://localhost:8080/api/contacts
-    notification:
-      url: http://localhost:8080/api/notifications
 
 server:
   port: 8092

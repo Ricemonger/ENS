@@ -1,5 +1,6 @@
-package app.telegram.security;
+package app.telegram.security.controller;
 
+import app.telegram.security.db.TelegramUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

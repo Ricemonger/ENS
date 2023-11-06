@@ -1,11 +1,11 @@
 package app.send.service;
 
-import app.send.service.contact.ContactService;
-import app.send.service.contact.Method;
-import app.send.service.notification.NotificationService;
 import app.send.service.senders.email.EmailSender;
 import app.send.service.senders.sms.SmsSender;
 import app.send.service.senders.viber.ViberSender;
+import app.utils.contact.ContactService;
+import app.utils.contact.Method;
+import app.utils.notification.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

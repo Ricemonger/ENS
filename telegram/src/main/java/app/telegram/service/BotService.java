@@ -1,9 +1,9 @@
 package app.telegram.service;
 
-import app.telegram.security.TelegramUserService;
-import app.telegram.service.contact.ContactServiceWrapper;
-import app.telegram.service.notification.NotificationServiceWrapper;
-import app.telegram.service.sender.SendService;
+import app.telegram.security.db.TelegramUserService;
+import app.telegram.service.clients.ContactServiceWrapper;
+import app.telegram.service.clients.NotificationServiceWrapper;
+import app.telegram.service.clients.SendServiceWrapper;
 import app.utils.contact.Contact;
 import app.utils.notification.Notification;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ public class BotService {
 
     private final TelegramUserService telegramUserService;
 
-    private final ContactServiceWrapper contactService;
+    private final ContactServiceWrapper contactServiceWrapper;
 
-    private final NotificationServiceWrapper notificationService;
+    private final NotificationServiceWrapper notificationServiceWrapper;
 
-    private final SendService sendService;
+    private final SendServiceWrapper sendServiceWrapper;
 
     public void create(Long chatId) {
         telegramUserService.create(chatId);
@@ -32,7 +32,11 @@ public class BotService {
     }
 
     public void sendAll(Long chatId) {
-        sendService.sendAll(chatId);
+        sendServiceWrapper.sendAll(chatId);
+    }
+
+    public void sendOne(Long chatId, Contact contact) {
+        sendServiceWrapper.sendOne(chatId, contact);
     }
 
     public void unlink(Long chatId) {
@@ -45,8 +49,8 @@ public class BotService {
 
     public String getUserData(Long chatId) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<Notification> notificationList = notificationService.findAll(chatId);
-        List<Contact> contactList = contactService.findAll(chatId);
+        List<Notification> notificationList = notificationServiceWrapper.findAll(chatId);
+        List<Contact> contactList = contactServiceWrapper.findAll(chatId);
         String accountInfo = telegramUserService.getAccountInfo(chatId);
 
         stringBuilder.append("Notifications:\n");
@@ -65,8 +69,8 @@ public class BotService {
     }
 
     public void clear(Long chatId) {
-        notificationService.clear(chatId);
-        contactService.clear(chatId);
+        notificationServiceWrapper.clear(chatId);
+        contactServiceWrapper.clear(chatId);
     }
 
     public boolean isLinked(Long chatId) {
@@ -74,34 +78,34 @@ public class BotService {
     }
 
     public void addManyContacts(Long chatId, List<Contact> contacts) {
-        contactService.addMany(chatId, contacts);
+        contactServiceWrapper.addMany(chatId, contacts);
     }
 
     public void addOneContact(Long chatId, Contact contact) {
-        contactService.addOne(chatId, contact);
+        contactServiceWrapper.addOne(chatId, contact);
     }
 
     public void removeManyContacts(Long chatId, List<Contact> contacts) {
-        contactService.removeMany(chatId, contacts);
+        contactServiceWrapper.removeMany(chatId, contacts);
     }
 
     public void removeOneContact(Long chatId, Contact contact) {
-        contactService.removeOne(chatId, contact);
+        contactServiceWrapper.removeOne(chatId, contact);
     }
 
     public void addManyNotifications(Long chatId, List<Notification> notifications) {
-        notificationService.addMany(chatId, notifications);
+        notificationServiceWrapper.addMany(chatId, notifications);
     }
 
     public void addOneNotification(Long chatId, Notification notification) {
-        notificationService.addOne(chatId, notification);
+        notificationServiceWrapper.addOne(chatId, notification);
     }
 
     public void removeManyNotifications(Long chatId, List<Notification> notifications) {
-        notificationService.removeMany(chatId, notifications);
+        notificationServiceWrapper.removeMany(chatId, notifications);
     }
 
     public void removeOneNotifications(Long chatId, Notification notification) {
-        notificationService.removeOne(chatId, notification);
+        notificationServiceWrapper.removeOne(chatId, notification);
     }
 }

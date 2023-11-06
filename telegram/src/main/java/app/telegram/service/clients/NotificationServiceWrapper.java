@@ -1,6 +1,6 @@
-package app.telegram.service.notification;
+package app.telegram.service.clients;
 
-import app.telegram.service.security.SecurityUserService;
+import app.telegram.security.db.TelegramUserService;
 import app.utils.notification.Notification;
 import app.utils.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class NotificationServiceWrapper {
 
     private final NotificationService notificationService;
 
-    private final SecurityUserService securityUserService;
+    private final TelegramUserService telegramUserService;
 
     public List<Notification> findAll(Long chatId) {
         String securityToken = getSecurityToken(chatId);
@@ -47,6 +47,6 @@ public class NotificationServiceWrapper {
     }
 
     private String getSecurityToken(Long chatId) {
-        return securityUserService.getSecurityToken(chatId);
+        return telegramUserService.getSecurityToken(chatId);
     }
 }

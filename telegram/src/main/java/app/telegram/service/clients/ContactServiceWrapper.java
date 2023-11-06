@@ -1,6 +1,6 @@
-package app.telegram.service.contact;
+package app.telegram.service.clients;
 
-import app.telegram.service.security.SecurityUserService;
+import app.telegram.security.db.TelegramUserService;
 import app.utils.contact.Contact;
 import app.utils.contact.ContactService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ public class ContactServiceWrapper {
 
     private final ContactService contactService;
 
-    private final SecurityUserService securityUserService;
+    private final TelegramUserService telegramUserService;
 
     public List<Contact> findAll(Long chatId) {
         String securityToken = getSecurityToken(chatId);
@@ -47,6 +47,6 @@ public class ContactServiceWrapper {
     }
 
     private String getSecurityToken(Long chatId) {
-        return securityUserService.getSecurityToken(chatId);
+        return telegramUserService.getSecurityToken(chatId);
     }
 }
