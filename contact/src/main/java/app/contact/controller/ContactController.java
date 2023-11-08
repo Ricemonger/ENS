@@ -6,11 +6,9 @@ import app.contact.controller.dto.ContactNNRequest;
 import app.contact.exceptions.ContactAlreadyExistsException;
 import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.exceptions.InvalidContactMethodException;
-import app.contact.service.Contact;
-import app.contact.service.Method;
-import app.contact.service.db.ContactRepositoryService;
+import app.contact.model.Contact;
+import app.contact.model.Method;
 import app.utils.ExceptionMessage;
-import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -28,103 +25,60 @@ import java.util.Locale;
 @Slf4j
 public class ContactController {
 
-    private final ContactRepositoryService contactRepositoryService;
-
-    private final JwtClient jwtUtil;
+    private final ContactControllerService service;
 
     @PostMapping
     @ResponseStatus(code = HttpStatus.CREATED)
-    public Contact create(@RequestHeader(name = "Authorization") String token, @RequestBody ContactCreUpdRequest request) {
-        try {
-            Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId(), request.notificationName());
-            log.trace("create method was called with params: {}", contact);
-            return contactRepositoryService.create(contact);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidContactMethodException(e);
-        }
+    public Contact create(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
+        return service.create(securityToken, request);
     }
 
     @PatchMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public Contact update(@RequestHeader(name = "Authorization") String token, @RequestBody ContactCreUpdRequest request) {
-        try {
-            Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-            log.trace("update method was called with params: {}", request);
-            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId(), request.notificationName());
-            log.trace("update method was called with params: {}", contact);
-            return contactRepositoryService.update(contact);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidContactMethodException(e);
-        }
+    public Contact update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
+        return service.update(securityToken, request);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public Contact delete(@RequestHeader(name = "Authorization") String token, @RequestBody ContactKeyRequest request) {
-        try {
-            Method method = Method.valueOf(request.method().toUpperCase(Locale.ROOT).trim());
-            Contact contact = new Contact(jwtUtil.extractAccountId(token), method, request.contactId());
-            log.trace("delete method was called with params: {}", contact);
-            return contactRepositoryService.delete(contact);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidContactMethodException(e);
-        }
+    public Contact delete(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
+        return service.delete(securityToken, request);
     }
 
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
-    public void clear(@RequestHeader(name = "Authorization") String token) {
-        String accountId = jwtUtil.extractAccountId(token);
-        log.trace("clear method was called with jwt: {}", token);
-        contactRepositoryService.clear(accountId);
+    public void clear(@RequestHeader(name = "Authorization") String securityToken) {
+        service.clear(securityToken);
     }
 
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String token) {
-        return findAllByAccountId(token);
+    public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String securityToken) {
+        return findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByAI")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String token) {
-        String accountId = jwtUtil.extractAccountId(token);
-        log.trace("findAllByUsername method was called with params: accountId-{}", accountId);
-        return contactRepositoryService.findAllByAccountId(accountId);
+    public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String securityToken) {
+        return service.findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
-    public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactKeyRequest pkRequest) {
-        try {
-            String accountId = jwtUtil.extractAccountId(token);
-            Method method = Method.valueOf(pkRequest.method().toUpperCase(Locale.ROOT).trim());
-            String contactId = pkRequest.contactId();
-            log.trace("findAllLikePrimaryKey method was called with params: accountId-{}, method-{}, contactID-{}", accountId, method, contactId);
-            return contactRepositoryService.findAllLikePrimaryKey(accountId, method, contactId);
-        } catch (IllegalArgumentException e) {
-            throw new InvalidContactMethodException(e);
-        }
+    public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest pkRequest) {
+        return service.findAllLikePrimaryKey(securityToken, pkRequest);
     }
 
     @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
-    public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String token, @RequestBody ContactNNRequest nnRequest) {
-        String accountId = jwtUtil.extractAccountId(token);
-        String notificationName = nnRequest.notificationName();
-        log.trace("findAllLikeNotificationName method was called with params: accountId-{}, notificationName-{}", accountId, notificationName);
-        return contactRepositoryService.findAllLikeNotificationName(accountId, notificationName);
+    public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest nnRequest) {
+        return service.findAllLikeNotificationName(securityToken, nnRequest);
     }
 
     @PostMapping("/changeAccountId")
     @ResponseStatus(HttpStatus.OK)
-    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken,
-                                @RequestBody ChangeAccountIdRequest request) {
-        String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
-        String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        contactRepositoryService.changeAccountId(oldAccountId, newAccountId);
+    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, ChangeAccountIdRequest request) {
+        service.changeAccountId(oldAccountIdToken, request);
     }
 
     @ExceptionHandler(ContactDoesntExistException.class)

@@ -1,8 +1,8 @@
 package app.telegram.mytgbot;
 
+import app.telegram.model.BotService;
 import app.telegram.mytgbot.commands.callbackCommand.*;
 import app.telegram.mytgbot.commands.directCommand.*;
-import app.telegram.service.BotService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

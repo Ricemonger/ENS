@@ -1,8 +1,8 @@
 package app.contact.service.repository;
 
-import app.contact.service.Contact;
-import app.contact.service.Method;
-import app.contact.service.db.ContactRepository;
+import app.contact.model.Contact;
+import app.contact.model.Method;
+import app.contact.model.db.ContactRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

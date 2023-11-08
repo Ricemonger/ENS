@@ -1,12 +1,12 @@
 package app.test;
 
-import app.contact.service.db.ContactRepository;
+import app.contact.model.db.ContactRepository;
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
-import app.notification.service.Notification;
-import app.notification.service.db.NotificationCompositeKey;
-import app.notification.service.db.NotificationRepository;
-import app.security.ens_users.service.db.EnsUserRepository;
+import app.notification.model.Notification;
+import app.notification.model.db.NotificationCompositeKey;
+import app.notification.model.db.NotificationRepository;
+import app.security.ens_users.db.EnsUserRepository;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

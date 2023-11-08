@@ -2,9 +2,7 @@ package app.send.controller;
 
 import app.send.controller.dto.SendOneRequest;
 import app.send.exceptions.SenderApiException;
-import app.send.service.SendService;
 import app.utils.ExceptionMessage;
-import app.utils.JwtClient;
 import app.utils.feign_clients.contact.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,22 +17,18 @@ import java.util.Arrays;
 @Slf4j
 public class SendController {
 
-    private final SendService sendService;
-
-    private final JwtClient jwtUtil;
+    private final SendControllerService service;
 
     @PostMapping("/one")
-    public void sendOne(@RequestHeader(name = "Authorization") String token, @RequestBody SendOneRequest request) {
-        String username = jwtUtil.extractAccountId(token);
-        log.trace("sendOne method was called with params: username-{}, request-{}", username, request);
-        sendService.sendOne(token, username, request.method(), request.contactId(), request.notificationText());
+    @ResponseStatus(HttpStatus.OK)
+    public void sendOne(@RequestHeader(name = "Authorization") String securityToken, @RequestBody SendOneRequest request) {
+        service.sendOne(securityToken, request);
     }
 
     @PostMapping("/all")
-    public void sendAll(@RequestHeader(name = "Authorization") String token) {
-        String username = jwtUtil.extractAccountId(token);
-        log.trace("sendAll method was called with params: username-{}", username);
-        sendService.sendAll(token, username);
+    @ResponseStatus(HttpStatus.OK)
+    public void sendAll(@RequestHeader(name = "Authorization") String securityToken) {
+        service.sendAll(securityToken);
     }
 
     @ExceptionHandler(SenderApiException.class)

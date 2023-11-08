@@ -4,10 +4,8 @@ import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.exceptions.NotificationAlreadyExistsException;
 import app.notification.exceptions.NotificationDoesntExistException;
-import app.notification.service.Notification;
-import app.notification.service.db.NotificationRepositoryService;
+import app.notification.model.Notification;
 import app.utils.ExceptionMessage;
-import app.utils.JwtClient;
 import app.utils.JwtRuntimeException;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import lombok.RequiredArgsConstructor;
@@ -23,73 +21,54 @@ import java.util.List;
 @Slf4j
 public class NotificationController {
 
-    private final NotificationRepositoryService notificationRepositoryService;
-
-    private final JwtClient jwtUtil;
+    private final NotificationControllerService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Notification create(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request) {
-        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim(), request.text().trim());
-        log.trace("create method was called with params: {}", notification);
-        return notificationRepositoryService.create(notification);
+    public Notification create(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationCreUpdRequest request) {
+        return service.create(securityToken, request);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
-    public Notification update(@RequestHeader("Authorization") String token, @RequestBody NotificationCreUpdRequest request) {
-        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim(), request.text().trim());
-        log.trace("update method was called with params: {}", notification);
-        return notificationRepositoryService.update(notification);
+    public Notification update(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationCreUpdRequest request) {
+        return service.update(securityToken, request);
     }
 
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
-    public void clear(@RequestHeader("Authorization") String token) {
-        String accountId = jwtUtil.extractAccountId(token);
-        log.trace("delete method was called with params: {}", token);
-        notificationRepositoryService.clear(accountId);
+    public void clear(@RequestHeader("Authorization") String securityToken) {
+        service.clear(securityToken);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public Notification delete(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request) {
-        Notification notification = new Notification(jwtUtil.extractAccountId(token), request.name().trim());
-        log.trace("delete method was called with params: {}", notification);
-        return notificationRepositoryService.delete(notification);
+    public Notification delete(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request) {
+        return service.delete(securityToken, request);
     }
 
     @RequestMapping("/getByUN")
     @ResponseStatus(HttpStatus.OK)
-    public List<Notification> findAllByAccountIdUN(@RequestHeader("Authorization") String token) {
-        return findAllByAccountId(token);
+    public List<Notification> findAllByAccountIdUN(@RequestHeader("Authorization") String securityToken) {
+        return findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByAI")
     @ResponseStatus(HttpStatus.OK)
-    public List<Notification> findAllByAccountId(@RequestHeader("Authorization") String token) {
-        String accountId = jwtUtil.extractAccountId(token);
-        log.trace("findByAccountId method was called with param accountId: {}", accountId);
-        return notificationRepositoryService.findAllByAccountId(jwtUtil.extractAccountId(token));
+    public List<Notification> findAllByAccountId(@RequestHeader("Authorization") String securityToken) {
+        return service.findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
-    public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request) {
-        String accountId = jwtUtil.extractAccountId(token);
-        String notificationName = request.name().trim();
-        log.trace("findByPrimaryKey method was called with params: accountId-{}, notificationName-{}", accountId, notificationName);
-        return notificationRepositoryService.findAllLikePrimaryKey(accountId, notificationName);
+    public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request) {
+        return service.findAllLikePrimaryKey(securityToken, request);
     }
 
     @PostMapping("/changeAccountId")
     @ResponseStatus(HttpStatus.OK)
-    void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken,
-                         @RequestBody ChangeAccountIdRequest request) {
-        String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
-        String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        notificationRepositoryService.changeAccountId(oldAccountId, newAccountId);
+    void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, @RequestBody ChangeAccountIdRequest request) {
+        service.changeAccountId(oldAccountIdToken, request);
     }
 
     @ExceptionHandler(NotificationDoesntExistException.class)

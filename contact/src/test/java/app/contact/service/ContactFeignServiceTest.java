@@ -2,8 +2,10 @@ package app.contact.service;
 
 import app.contact.exceptions.ContactAlreadyExistsException;
 import app.contact.exceptions.ContactDoesntExistException;
-import app.contact.service.db.ContactRepository;
-import app.contact.service.db.ContactRepositoryService;
+import app.contact.model.Contact;
+import app.contact.model.Method;
+import app.contact.model.db.ContactRepository;
+import app.contact.model.db.ContactRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

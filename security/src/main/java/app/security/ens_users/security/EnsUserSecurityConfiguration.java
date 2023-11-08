@@ -1,6 +1,5 @@
 package app.security.ens_users.security;
 
-import app.security.ens_users.EnsUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

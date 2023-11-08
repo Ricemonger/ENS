@@ -1,6 +1,6 @@
 package app.telegram.mytgbot.commands;
 
-import app.telegram.service.BotService;
+import app.telegram.model.BotService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;

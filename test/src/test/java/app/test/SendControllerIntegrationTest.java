@@ -1,11 +1,11 @@
 package app.test;
 
-import app.contact.service.Contact;
-import app.contact.service.Method;
-import app.contact.service.db.ContactRepository;
-import app.notification.service.Notification;
-import app.notification.service.db.NotificationRepository;
-import app.security.ens_users.service.db.EnsUserRepository;
+import app.contact.model.Contact;
+import app.contact.model.Method;
+import app.contact.model.db.ContactRepository;
+import app.notification.model.Notification;
+import app.notification.model.db.NotificationRepository;
+import app.security.ens_users.db.EnsUserRepository;
 import app.send.controller.dto.SendOneRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
