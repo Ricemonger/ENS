@@ -14,7 +14,7 @@ public class SecurityUserService {
     }
 
     public void createUser(String telegramToken) {
-        securityUserClient.createUser(telegramToken);
+        securityUserClient.create(telegramToken);
     }
 
     public boolean isLinked(String telegramToken) {

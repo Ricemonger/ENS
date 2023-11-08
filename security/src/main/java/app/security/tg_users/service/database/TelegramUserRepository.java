@@ -10,6 +10,4 @@ public interface TelegramUserRepository extends JpaRepository<TelegramUser, Stri
     boolean existsByAccountId(String accountId);
 
     Optional<TelegramUser> findByAccountId(String accountId);
-
-    Optional<Object> findByChatId(String chatId);
 }

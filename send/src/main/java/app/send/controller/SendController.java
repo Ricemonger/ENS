@@ -5,7 +5,7 @@ import app.send.exceptions.SenderApiException;
 import app.send.service.SendService;
 import app.utils.ExceptionMessage;
 import app.utils.JwtClient;
-import app.utils.contact.Method;
+import app.utils.feign_clients.contact.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

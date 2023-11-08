@@ -18,7 +18,9 @@ spring:
 application:
   title: telegram
   version: 0.1
-
+  config:
+    security-tg-users:
+      url: http://localhost:8080/api/security/security-tg-users
 server:
   port: 8094
 

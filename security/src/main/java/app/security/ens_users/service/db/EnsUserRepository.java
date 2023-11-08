@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface EnsUserRepository extends JpaRepository<EnsUser, String> {
 
     Optional<EnsUser> findByAccountId(String accountId);
+
+    boolean existsByAccountId(String accountId);
+
 }

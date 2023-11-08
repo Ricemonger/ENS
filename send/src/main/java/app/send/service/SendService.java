@@ -5,10 +5,10 @@ import app.send.service.senders.Sender;
 import app.send.service.senders.email.EmailSender;
 import app.send.service.senders.sms.SmsSender;
 import app.send.service.senders.viber.ViberSender;
-import app.utils.contact.Contact;
-import app.utils.contact.ContactService;
-import app.utils.contact.Method;
-import app.utils.notification.NotificationService;
+import app.utils.feign_clients.contact.Contact;
+import app.utils.feign_clients.contact.ContactFeignService;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.notification.NotificationFeignService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +25,9 @@ public class SendService {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final ContactService contactService;
+    private final ContactFeignService contactFeignService;
 
-    private final NotificationService notificationService;
+    private final NotificationFeignService notificationFeignService;
 
     private final EmailSender emailSender;
 
@@ -44,8 +44,8 @@ public class SendService {
             notifText = notificationText;
         } else {
             try {
-                String notificationName = contactService.findOneByPrimaryKey(token, method, contactId).getNotificationName();
-                notifText = notificationService.findOneByPrimaryKey(token, notificationName).getText();
+                String notificationName = contactFeignService.findOneByPrimaryKey(token, method, contactId).getNotificationName();
+                notifText = notificationFeignService.findOneByPrimaryKey(token, notificationName).getText();
             } catch (NoSuchElementException e) {
             }
         }
@@ -66,11 +66,11 @@ public class SendService {
 
     public void sendAll(String token, String username) {
         log.trace("sendAll method is executing with params: username-{}", username);
-        List<Contact> contacts = contactService.findAllById(token);
+        List<Contact> contacts = contactFeignService.findAllById(token);
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
         List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
-        Map<String, String> notifications = notificationService.getMapByAccountId(token);
+        Map<String, String> notifications = notificationFeignService.getMapByAccountId(token);
         sendAllSms(username, smsContacts, notifications);
         sendAllEmails(username, emailContacts, notifications);
         sendAllViberMessages(username, viberContacts, notifications);

@@ -9,7 +9,7 @@ import app.security.ens_users.controller.dto.EnsUserRegisterRequest;
 import app.security.ens_users.controller.dto.EnsUserUsernameRequest;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
-import app.security.ens_users.service.db.EnsUserService;
+import app.security.ens_users.service.db.EnsUserRepositoryService;
 import app.utils.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class EnsUserController {
 
-    private final EnsUserService ensUserService;
+    private final EnsUserRepositoryService ensUserRepositoryService;
 
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public String register(@RequestBody EnsUserRegisterRequest request) {
-        String token = ensUserService.register(request.toUser());
+        String token = ensUserRepositoryService.register(request.toUser());
         log.trace("register method was called with request-{} and result-{}", request, token);
         return token;
     }
@@ -36,7 +36,7 @@ public class EnsUserController {
     @PostMapping("/login")
     @ResponseStatus(value = HttpStatus.OK)
     public String login(@RequestBody EnsUserLoginRequest request) {
-        String token = ensUserService.login(request.toUser());
+        String token = ensUserRepositoryService.login(request.toUser());
         log.trace("login method was called with request-{} and result-{}", request, token);
         return token;
     }
@@ -44,7 +44,7 @@ public class EnsUserController {
     @GetMapping("/getByUN")
     @ResponseStatus(value = HttpStatus.OK)
     public EnsUser getByUsername(EnsUserUsernameRequest request) {
-        EnsUser result = ensUserService.getByUsername(request.username());
+        EnsUser result = ensUserRepositoryService.getByUsername(request.username());
         log.trace("getByUsername method was called with request-{} and result-{}", request, result);
         return result;
     }
@@ -52,7 +52,7 @@ public class EnsUserController {
     @GetMapping("/getByAI")
     @ResponseStatus(value = HttpStatus.OK)
     public EnsUser getByAccountId(EnsUserAccountIdRequest request) {
-        EnsUser result = ensUserService.getByAccountId(request.accountId());
+        EnsUser result = ensUserRepositoryService.getByAccountId(request.accountId());
         log.trace("getByAccountId method was called with request-{} and result-{}", request, result);
         return result;
     }

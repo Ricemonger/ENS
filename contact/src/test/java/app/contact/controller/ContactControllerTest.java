@@ -9,7 +9,7 @@ import app.contact.service.Contact;
 import app.contact.service.Method;
 import app.contact.service.db.ContactCompositeKey;
 import app.contact.service.db.ContactRepository;
-import app.contact.service.db.ContactService;
+import app.contact.service.db.ContactRepositoryService;
 import app.utils.JwtClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class ContactControllerTest {
     @Autowired
     private ContactRepository contactRepository;
 
-    private ContactService contactService;
+    private ContactRepositoryService contactRepositoryService;
 
     @Mock
     private JwtClient jwtClient;
@@ -43,12 +43,12 @@ class ContactControllerTest {
     private ContactController contactController;
 
     @Mock
-    private ContactService mockContactService;
+    private ContactRepositoryService mockContactRepositoryService;
 
     @BeforeEach
     void setUp() {
-        contactService = new ContactService(contactRepository);
-        contactController = new ContactController(contactService, jwtClient);
+        contactRepositoryService = new ContactRepositoryService(contactRepository);
+        contactController = new ContactController(contactRepositoryService, jwtClient);
     }
 
     @Test
@@ -92,23 +92,23 @@ class ContactControllerTest {
 
     @Test
     void findAllByAccountId() {
-        contactController = new ContactController(mockContactService, jwtClient);
+        contactController = new ContactController(mockContactRepositoryService, jwtClient);
         contactController.findAllByAccountId("");
-        verify(mockContactService).findAllByAccountId(any());
+        verify(mockContactRepositoryService).findAllByAccountId(any());
     }
 
     @Test
     void findAllLikePrimaryKey() {
-        contactController = new ContactController(mockContactService, jwtClient);
+        contactController = new ContactController(mockContactRepositoryService, jwtClient);
         contactController.findAllLikePrimaryKey("", new ContactKeyRequest(Method.SMS.name(), "380"));
-        verify(mockContactService).findAllLikePrimaryKey(any(), eq(Method.SMS), eq("380"));
+        verify(mockContactRepositoryService).findAllLikePrimaryKey(any(), eq(Method.SMS), eq("380"));
     }
 
     @Test
     void findAllLikeNotificationName() {
-        contactController = new ContactController(mockContactService, jwtClient);
+        contactController = new ContactController(mockContactRepositoryService, jwtClient);
         String name = "name";
         contactController.findAllLikeNotificationName("", new ContactNNRequest(name));
-        verify(mockContactService).findAllLikeNotificationName(any(), eq(name));
+        verify(mockContactRepositoryService).findAllLikeNotificationName(any(), eq(name));
     }
 }

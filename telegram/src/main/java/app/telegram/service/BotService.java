@@ -4,8 +4,8 @@ import app.telegram.security.db.TelegramUserService;
 import app.telegram.service.clients.ContactServiceWrapper;
 import app.telegram.service.clients.NotificationServiceWrapper;
 import app.telegram.service.clients.SendServiceWrapper;
-import app.utils.contact.Contact;
-import app.utils.notification.Notification;
+import app.utils.feign_clients.contact.Contact;
+import app.utils.feign_clients.notification.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

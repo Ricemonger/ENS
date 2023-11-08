@@ -2,7 +2,7 @@ package app.contact;
 
 import app.contact.controller.ContactController;
 import app.contact.service.db.ContactRepository;
-import app.contact.service.db.ContactService;
+import app.contact.service.db.ContactRepositoryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +17,7 @@ class ContactServerTests {
     private ContactRepository contactRepository;
 
     @Autowired
-    private ContactService contactService;
+    private ContactRepositoryService contactRepositoryService;
 
     @Autowired
     private ContactController contactController;
@@ -25,7 +25,7 @@ class ContactServerTests {
     @Test
     void contextLoads() throws Exception {
         assertNotNull(contactRepository);
-        assertNotNull(contactService);
+        assertNotNull(contactRepositoryService);
         assertNotNull(contactController);
     }
 

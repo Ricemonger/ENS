@@ -7,7 +7,7 @@ import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.service.Notification;
 import app.notification.service.db.NotificationCompositeKey;
 import app.notification.service.db.NotificationRepository;
-import app.notification.service.db.NotificationService;
+import app.notification.service.db.NotificationRepositoryService;
 import app.utils.JwtClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,17 +37,17 @@ class NotificationControllerTest {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    private NotificationService notificationService;
+    private NotificationRepositoryService notificationRepositoryService;
 
     private NotificationController notificationController;
 
     @Mock
-    private NotificationService mockNotificationService;
+    private NotificationRepositoryService mockNotificationRepositoryService;
 
     @BeforeEach
     void setUp() {
-        notificationService = new NotificationService(notificationRepository);
-        notificationController = new NotificationController(notificationService, jwtClient);
+        notificationRepositoryService = new NotificationRepositoryService(notificationRepository);
+        notificationController = new NotificationController(notificationRepositoryService, jwtClient);
     }
 
     @Test
@@ -91,16 +91,16 @@ class NotificationControllerTest {
 
     @Test
     void findAllByAccountId() {
-        notificationController = new NotificationController(mockNotificationService, jwtClient);
+        notificationController = new NotificationController(mockNotificationRepositoryService, jwtClient);
         notificationController.findAllByAccountId("");
-        verify(mockNotificationService).findAllByAccountId(any());
+        verify(mockNotificationRepositoryService).findAllByAccountId(any());
     }
 
     @Test
     void findAllLikePrimaryKey() {
-        notificationController = new NotificationController(mockNotificationService, jwtClient);
+        notificationController = new NotificationController(mockNotificationRepositoryService, jwtClient);
         String name = "name";
         notificationController.findAllLikePrimaryKey("", new NotificationNameRequest(name));
-        verify(mockNotificationService).findAllLikePrimaryKey(any(), eq(name));
+        verify(mockNotificationRepositoryService).findAllLikePrimaryKey(any(), eq(name));
     }
 }
