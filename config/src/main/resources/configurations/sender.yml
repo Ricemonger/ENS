@@ -1,0 +1,18 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8092
+application:
+  title: sender
+  version: 0.1
+
+spring:
+  application:
+    name: sender
+logging:
+  level:
+    app:
+      sender: trace
