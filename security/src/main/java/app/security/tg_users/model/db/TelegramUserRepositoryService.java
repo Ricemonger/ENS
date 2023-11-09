@@ -1,4 +1,4 @@
-package app.security.tg_users.db;
+package app.security.tg_users.model.db;
 
 import app.security.abstract_users.exceptions.UserAlreadyExistsException;
 import app.security.abstract_users.exceptions.UserDoesntExistException;

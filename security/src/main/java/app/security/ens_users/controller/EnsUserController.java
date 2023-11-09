@@ -2,12 +2,8 @@ package app.security.ens_users.controller;
 
 import app.security.abstract_users.exceptions.UserAlreadyExistsException;
 import app.security.abstract_users.exceptions.UserDoesntExistException;
-import app.security.ens_users.EnsUser;
-import app.security.ens_users.controller.dto.EnsUserAccountIdRequest;
 import app.security.ens_users.controller.dto.EnsUserLoginRequest;
 import app.security.ens_users.controller.dto.EnsUserRegisterRequest;
-import app.security.ens_users.controller.dto.EnsUserUsernameRequest;
-import app.security.ens_users.db.EnsUserRepositoryService;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.utils.ExceptionMessage;
@@ -23,38 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class EnsUserController {
 
-    private final EnsUserRepositoryService ensUserRepositoryService;
+    private final EnsUserControllerService ensUserControllerService;
 
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public String register(@RequestBody EnsUserRegisterRequest request) {
-        String token = ensUserRepositoryService.register(request.toUser());
-        log.trace("register method was called with request-{} and result-{}", request, token);
-        return token;
+        return ensUserControllerService.register(request);
     }
 
     @PostMapping("/login")
     @ResponseStatus(value = HttpStatus.OK)
     public String login(@RequestBody EnsUserLoginRequest request) {
-        String token = ensUserRepositoryService.login(request.toUser());
-        log.trace("login method was called with request-{} and result-{}", request, token);
-        return token;
-    }
-
-    @GetMapping("/getByUN")
-    @ResponseStatus(value = HttpStatus.OK)
-    public EnsUser getByUsername(EnsUserUsernameRequest request) {
-        EnsUser result = ensUserRepositoryService.getByUsername(request.username());
-        log.trace("getByUsername method was called with request-{} and result-{}", request, result);
-        return result;
-    }
-
-    @GetMapping("/getByAI")
-    @ResponseStatus(value = HttpStatus.OK)
-    public EnsUser getByAccountId(EnsUserAccountIdRequest request) {
-        EnsUser result = ensUserRepositoryService.getByAccountId(request.accountId());
-        log.trace("getByAccountId method was called with request-{} and result-{}", request, result);
-        return result;
+        return ensUserControllerService.login(request);
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)

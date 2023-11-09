@@ -1,6 +1,5 @@
 package app.security.abstract_users.controller;
 
-import app.security.abstract_users.security.AbstractUserJwtUtil;
 import app.utils.ExceptionMessage;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
@@ -15,15 +14,12 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class AbstractUserController {
 
-    private final AbstractUserJwtUtil abstractUserJwtUtil;
+    private final AbstractUserControllerService abstractUserControllerService;
 
     @GetMapping("/getAccountId")
     @ResponseStatus(HttpStatus.OK)
     public String getAccountId(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("getAccountId method was called with securityToken-{}", securityToken);
-        String result = abstractUserJwtUtil.extractAccountId(securityToken);
-        log.trace("getAccountId method's with securityToken-{} result is {}", securityToken, result);
-        return result;
+        return abstractUserControllerService.getAccountId(securityToken);
     }
 
     @ExceptionHandler(JwtException.class)

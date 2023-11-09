@@ -1,4 +1,4 @@
-package app.security.tg_users.telegram_client;
+package app.security.tg_users.model.telegram_client;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

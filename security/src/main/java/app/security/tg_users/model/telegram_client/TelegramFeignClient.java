@@ -1,4 +1,4 @@
-package app.security.tg_users.telegram_client;
+package app.security.tg_users.model.telegram_client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

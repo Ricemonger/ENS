@@ -1,4 +1,4 @@
-package app.security.tg_users.db;
+package app.security.tg_users.model.db;
 
 import app.security.tg_users.TelegramUser;
 import org.springframework.data.jpa.repository.JpaRepository;
