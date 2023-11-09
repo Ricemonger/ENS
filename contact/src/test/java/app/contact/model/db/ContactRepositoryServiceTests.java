@@ -19,13 +19,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class ContactRepositoryServiceTests {
 
-    private final Contact CONTACT = new Contact("9999", Method.SMS, "9999", "name");
+    private final static Contact CONTACT = new Contact("9999", Method.SMS, "9999", "name");
 
-    private final Contact ALTERED_NOTIFICATION_NAME = new Contact("9999", Method.SMS, "9999", "eman");
+    private final static Contact ALTERED_METHOD = new Contact("9999", Method.TELEGRAM, "9999", "name");
 
-    private final Contact ALTERED_CONTACT_ID = new Contact("9999", Method.SMS, "1111", "name");
+    private final static Contact ALTERED_CONTACT_ID = new Contact("9999", Method.SMS, "1111", "name");
 
-    private final Contact ANOTHER_ACCOUNT_ID_CONTACT_ID = new Contact("1111", Method.SMS, "1111", "name");
+    private final static Contact LIKE_CONTACT_ID = new Contact("9999", Method.SMS, "9999999", "name");
+
+    private final static Contact ALTERED_NOTIFICATION_NAME = new Contact("9999", Method.SMS, "9999", "eman");
+
+    private final static Contact ALTERED_ACCOUNT_ID = new Contact("1111", Method.SMS, "9999", "name");
 
     @Autowired
     private ContactRepository repository;
@@ -48,7 +52,7 @@ public class ContactRepositoryServiceTests {
     }
 
     @Test
-    void createShouldThrowIfUserExists() {
+    void createShouldThrowIfContactAlreadyExists() {
         repository.save(CONTACT);
 
         Executable executable = () -> service.create(CONTACT);
@@ -68,14 +72,14 @@ public class ContactRepositoryServiceTests {
     }
 
     @Test
-    void updateShouldThrowIfUserDoesntExist() {
+    void updateShouldThrowIfContactDoesntExist() {
         Executable executable = () -> service.update(CONTACT);
 
         assertThrows(ContactDoesntExistException.class, executable);
     }
 
     @Test
-    void deleteShouldRemoveFromDb() {
+    void deleteShouldRemoveContactFromDb() {
         repository.save(CONTACT);
 
         service.delete(CONTACT);
@@ -84,7 +88,7 @@ public class ContactRepositoryServiceTests {
     }
 
     @Test
-    void deleteShouldThrowIfUserDoesntExist() {
+    void deleteShouldThrowIfContactDoesntExist() {
         Executable executable = () -> service.delete(CONTACT);
 
         assertThrows(ContactDoesntExistException.class, executable);
@@ -94,69 +98,79 @@ public class ContactRepositoryServiceTests {
     void clearShouldRemoveAllEntriesByAccountId() {
         repository.save(CONTACT);
         repository.save(ALTERED_CONTACT_ID);
-        repository.save(ANOTHER_ACCOUNT_ID_CONTACT_ID);
+        repository.save(ALTERED_ACCOUNT_ID);
 
-        String accountId = CONTACT.getAccountId();
-        service.clear(accountId);
+        service.clear(CONTACT.getAccountId());
+        List<Contact> expectedResult = Collections.singletonList(ALTERED_ACCOUNT_ID);
+        List<Contact> trueResult = repository.findAll();
 
-        assertEquals(repository.findAll(), Collections.singletonList(ANOTHER_ACCOUNT_ID_CONTACT_ID));
+        assertEquals(expectedResult, trueResult);
     }
 
     @Test
     void changeAccountIdShouldChangeIds() {
+        repository.save(ALTERED_METHOD);
         repository.save(ALTERED_CONTACT_ID);
+        repository.save(ALTERED_ACCOUNT_ID);
 
-        String oldAccountId = ALTERED_CONTACT_ID.getAccountId();
-        String newAccountId = ANOTHER_ACCOUNT_ID_CONTACT_ID.getAccountId();
-
+        String oldAccountId = ALTERED_ACCOUNT_ID.getAccountId();
+        String newAccountId = CONTACT.getAccountId();
         service.changeAccountId(oldAccountId, newAccountId);
-        Contact inDb = repository.findAll().get(0);
 
-        assertEquals(inDb, ANOTHER_ACCOUNT_ID_CONTACT_ID);
+        List<Contact> expectedResult = new ArrayList<>();
+        expectedResult.add(ALTERED_METHOD);
+        expectedResult.add(ALTERED_CONTACT_ID);
+        expectedResult.add(CONTACT);
+        List<Contact> trueResult = repository.findAllByAccountId(newAccountId);
+
+        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
     }
 
     @Test
     void findAllLikePrimaryKeyShouldGetLikePK() {
         repository.save(CONTACT);
+        repository.save(ALTERED_METHOD);
         repository.save(ALTERED_CONTACT_ID);
-        repository.save(ANOTHER_ACCOUNT_ID_CONTACT_ID);
+        repository.save(LIKE_CONTACT_ID);
+        repository.save(ALTERED_ACCOUNT_ID);
 
-        String accountIdFilter = ALTERED_CONTACT_ID.getAccountId();
-        Method methodFilter = ALTERED_CONTACT_ID.getMethod();
-        String contactIdFilter = "1";
+        List<Contact> expectedResult = new ArrayList<>();
+        expectedResult.add(CONTACT);
+        expectedResult.add(LIKE_CONTACT_ID);
+        List<Contact> trueResult = service.findAllLikePrimaryKey(CONTACT.getAccountId(), CONTACT.getMethod(),
+                CONTACT.getContactId());
 
-        List<Contact> found = service.findAllLikePrimaryKey(accountIdFilter, methodFilter, contactIdFilter);
-
-        assertEquals(found, Collections.singletonList(ALTERED_CONTACT_ID));
+        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
     }
 
     @Test
     void findAllLikeNotificationNameShouldGetByNN() {
-        repository.save(ALTERED_NOTIFICATION_NAME);
+        repository.save(ALTERED_METHOD);
         repository.save(ALTERED_CONTACT_ID);
-        repository.save(ANOTHER_ACCOUNT_ID_CONTACT_ID);
+        repository.save(ALTERED_NOTIFICATION_NAME);
+        repository.save(ALTERED_ACCOUNT_ID);
 
-        String accountIdFilter = ALTERED_CONTACT_ID.getAccountId();
-        String notificationNameFilter = ALTERED_CONTACT_ID.getNotificationName();
+        List<Contact> expectedResult = new ArrayList<>();
+        expectedResult.add(ALTERED_METHOD);
+        expectedResult.add(ALTERED_CONTACT_ID);
+        List<Contact> trueResult = service.findAllLikeNotificationName(CONTACT.getAccountId(), CONTACT.getNotificationName());
 
-        List<Contact> found = service.findAllLikeNotificationName(accountIdFilter, notificationNameFilter);
-
-        assertEquals(found, Collections.singletonList(ALTERED_CONTACT_ID));
+        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
     }
 
     @Test
-    void findAllByAccountIdShouldGetByAccountId() {
-        repository.save(ALTERED_NOTIFICATION_NAME);
+    void findAllByAccountIdShouldGetAllByAccountId() {
+        repository.save(CONTACT);
+        repository.save(ALTERED_METHOD);
         repository.save(ALTERED_CONTACT_ID);
-        repository.save(ANOTHER_ACCOUNT_ID_CONTACT_ID);
+        repository.save(ALTERED_ACCOUNT_ID);
 
-        String accountIdFilter = ALTERED_CONTACT_ID.getAccountId();
-        List<Contact> trueResult = new ArrayList<>();
-        trueResult.add(ALTERED_NOTIFICATION_NAME);
-        trueResult.add(ALTERED_CONTACT_ID);
+        List<Contact> expectedResult = new ArrayList<>();
+        expectedResult.add(CONTACT);
+        expectedResult.add(ALTERED_METHOD);
+        expectedResult.add(ALTERED_CONTACT_ID);
+        List<Contact> trueResult = service.findAllByAccountId(CONTACT.getAccountId());
 
-        List<Contact> found = service.findAllByAccountId(accountIdFilter);
-
-        assertTrue(trueResult.containsAll(found) && found.containsAll(trueResult));
+        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
     }
 }

@@ -1,8 +1,7 @@
-package app.contact.controller;
+package app.notification.controller;
 
-import app.contact.controller.dto.ContactCreUpdRequest;
-import app.contact.controller.dto.ContactKeyRequest;
-import app.contact.controller.dto.ContactNNRequest;
+import app.notification.controller.dto.NotificationCreUpdRequest;
+import app.notification.controller.dto.NotificationNameRequest;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,23 +12,21 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ContactControllerTests {
+public class NotificationControllerTests {
 
     private final static String TOKEN = "token";
 
-    private final static ContactCreUpdRequest CRE_UPD_REQUEST = new ContactCreUpdRequest("sms", "999", "999");
+    private final static NotificationCreUpdRequest CRE_UPD_REQUEST = new NotificationCreUpdRequest("name", "text");
 
-    private final static ContactKeyRequest PRIMARY_KEY_REQUEST = new ContactKeyRequest("sms", "999");
-
-    private final static ContactNNRequest NOTIFICATION_NAME_REQUEST = new ContactNNRequest("111");
+    private final static NotificationNameRequest NAME_REQUEST = new NotificationNameRequest("name");
 
     private final static ChangeAccountIdRequest CHANGE_ACCOUNT_ID_REQUEST = new ChangeAccountIdRequest("new token");
 
     @Mock
-    private ContactControllerService service;
+    private NotificationControllerService service;
 
     @InjectMocks
-    private ContactController controller;
+    private NotificationController controller;
 
     @Test
     public void create() {
@@ -45,8 +42,8 @@ public class ContactControllerTests {
 
     @Test
     public void delete() {
-        controller.delete(TOKEN, PRIMARY_KEY_REQUEST);
-        verify(service).delete(TOKEN, PRIMARY_KEY_REQUEST);
+        controller.delete(TOKEN, NAME_REQUEST);
+        verify(service).delete(TOKEN, NAME_REQUEST);
     }
 
     @Test
@@ -74,14 +71,8 @@ public class ContactControllerTests {
     }
 
     @Test
-    public void findAllLikePrimaryKey() {
-        controller.findAllLikePrimaryKey(TOKEN, PRIMARY_KEY_REQUEST);
-        verify(service).findAllLikePrimaryKey(TOKEN, PRIMARY_KEY_REQUEST);
-    }
-
-    @Test
-    public void findAllLikeNotificationName() {
-        controller.findAllLikeNotificationName(TOKEN, NOTIFICATION_NAME_REQUEST);
-        verify(service).findAllLikeNotificationName(TOKEN, NOTIFICATION_NAME_REQUEST);
+    public void findAllByPrimaryKey() {
+        controller.findAllLikePrimaryKey(TOKEN, NAME_REQUEST);
+        verify(service).findAllLikePrimaryKey(TOKEN, NAME_REQUEST);
     }
 }

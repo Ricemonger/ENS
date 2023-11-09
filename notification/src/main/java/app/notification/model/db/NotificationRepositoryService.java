@@ -49,10 +49,17 @@ public class NotificationRepositoryService {
         log.trace("clear method was executed with accountId: {}", accountId);
     }
 
-    public Notification findOneByPrimaryKey(String accountId, String notificationName) {
-        Notification result = getByKeyOrThrow(accountId, notificationName);
-        log.trace("findOneByPrimaryKey method was executed with params: accountId-{}, notificationName-{} and result:{}", accountId, notificationName, result);
-        return result;
+    public void changeAccountId(String oldAccountId, String newAccountId) {
+        List<Notification> oldNotifications = findAllByAccountId(oldAccountId);
+        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        for (Notification toDelete : oldNotifications) {
+            notificationRepository.delete(toDelete);
+            Notification toSave = new Notification();
+            toSave.setAccountId(newAccountId);
+            toSave.setText(toDelete.getText());
+            toSave.setName(toDelete.getName());
+            notificationRepository.save(toSave);
+        }
     }
 
     public List<Notification> findAllLikePrimaryKey(String accountId, String notificationName) {
@@ -69,16 +76,6 @@ public class NotificationRepositoryService {
         List<Notification> result = notificationRepository.findAllByAccountId(accountId);
         log.trace("findAllByAccountId method was executed with params: accountId-{} and result:{}", accountId, result);
         return result;
-    }
-
-    public void changeAccountId(String oldAccountId, String newAccountId) {
-        List<Notification> oldNotifications = findAllByAccountId(oldAccountId);
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        for (Notification notification : oldNotifications) {
-            notificationRepository.delete(notification);
-            notification.setAccountId(newAccountId);
-            notificationRepository.save(notification);
-        }
     }
 
     private Notification getByKeyOrThrow(Notification notification) {

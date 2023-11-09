@@ -1,6 +1,7 @@
 package app.notification;
 
 import app.notification.controller.NotificationController;
+import app.notification.controller.NotificationControllerService;
 import app.notification.model.db.NotificationRepository;
 import app.notification.model.db.NotificationRepositoryService;
 import org.junit.jupiter.api.Test;
@@ -19,13 +20,16 @@ class NotificationServerTests {
     private NotificationRepositoryService notificationRepositoryService;
 
     @Autowired
+    private NotificationControllerService notificationControllerService;
+
+    @Autowired
     private NotificationController notificationController;
 
     @Test
-    void contextLoads() throws Exception {
+    void contextLoads() {
         assertNotNull(notificationRepository);
         assertNotNull(notificationRepositoryService);
+        assertNotNull(notificationControllerService);
         assertNotNull(notificationController);
     }
-
 }

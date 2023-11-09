@@ -22,11 +22,15 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class ContactControllerServiceTests {
 
-    private final Contact CONTACT = new Contact(null, Method.SMS, "9999", "name");
-
-    private final Contact DELETE_CONTACT = new Contact(null, Method.SMS, "9999");
-
     private final static String TOKEN = "token";
+
+    private final static String ANOTHER_TOKEN = "another token";
+
+    private final static String INVALID_METHOD = "invalid method";
+
+    private final static Contact CONTACT = new Contact(null, Method.SMS, "9999", "name");
+
+    private final static Contact DELETE_CONTACT = new Contact(null, Method.SMS, "9999");
 
     @Mock
     private ContactRepositoryService repositoryService;
@@ -38,11 +42,12 @@ public class ContactControllerServiceTests {
     private ContactControllerService controllerService;
 
     @Test
-    public void createShouldCallServiceCreate() {
+    public void create() {
         ContactCreUpdRequest request = new ContactCreUpdRequest(
                 CONTACT.getMethod().name(),
                 CONTACT.getContactId(),
                 CONTACT.getNotificationName());
+
         controllerService.create(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
@@ -62,11 +67,12 @@ public class ContactControllerServiceTests {
     }
 
     @Test
-    public void updateShouldCallServiceUpdate() {
+    public void update() {
         ContactCreUpdRequest request = new ContactCreUpdRequest(
                 CONTACT.getMethod().name(),
                 CONTACT.getContactId(),
                 CONTACT.getNotificationName());
+
         controllerService.update(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
@@ -76,7 +82,7 @@ public class ContactControllerServiceTests {
     @Test
     public void updateShouldThrowIfInvalidMethod() {
         ContactCreUpdRequest request = new ContactCreUpdRequest(
-                "INVALID METHOD",
+                INVALID_METHOD,
                 CONTACT.getContactId(),
                 CONTACT.getNotificationName());
 
@@ -86,10 +92,11 @@ public class ContactControllerServiceTests {
     }
 
     @Test
-    public void deleteShouldCallServiceDelete() {
+    public void delete() {
         ContactKeyRequest request = new ContactKeyRequest(
-                CONTACT.getMethod().name(),
-                CONTACT.getContactId());
+                DELETE_CONTACT.getMethod().name(),
+                DELETE_CONTACT.getContactId());
+
         controllerService.delete(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
@@ -99,8 +106,8 @@ public class ContactControllerServiceTests {
     @Test
     public void deleteShouldThrowIfInvalidMethod() {
         ContactKeyRequest request = new ContactKeyRequest(
-                "INVALID METHOD",
-                CONTACT.getContactId());
+                INVALID_METHOD,
+                DELETE_CONTACT.getContactId());
 
         Executable executable = () -> controllerService.delete(TOKEN, request);
 
@@ -108,40 +115,34 @@ public class ContactControllerServiceTests {
     }
 
     @Test
-    public void clearShouldCallServiceClear() {
+    public void clear() {
         controllerService.clear(TOKEN);
-
 
         verify(jwtUtil).extractAccountId(TOKEN);
         verify(repositoryService).clear(null);
     }
 
     @Test
-    public void changeAccountIdShouldCallServiceChangeAccountId() {
-        String oldAccountIdToken = TOKEN;
-        String newAccountIdToken = "new token";
+    public void changeAccountId() {
+        ChangeAccountIdRequest changeAccountIdRequest = new ChangeAccountIdRequest(ANOTHER_TOKEN);
 
-        ChangeAccountIdRequest changeAccountIdRequest = new ChangeAccountIdRequest(newAccountIdToken);
+        controllerService.changeAccountId(TOKEN, changeAccountIdRequest);
 
-        controllerService.changeAccountId(oldAccountIdToken, changeAccountIdRequest);
-
-        verify(jwtUtil).extractAccountId(oldAccountIdToken);
-        verify(jwtUtil).extractAccountId(newAccountIdToken);
-
+        verify(jwtUtil).extractAccountId(TOKEN);
+        verify(jwtUtil).extractAccountId(ANOTHER_TOKEN);
         verify(repositoryService).changeAccountId(null, null);
     }
 
     @Test
-    public void findAllByAccountIdShouldCallServiceFindAllByAccountId() {
+    public void findAllByAccountId() {
         controllerService.findAllByAccountId(TOKEN);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-
         verify(repositoryService).findAllByAccountId(null);
     }
 
     @Test
-    public void findAllLikePrimaryKeyShouldCallServiceFindAllLikePrimaryKey() {
+    public void findAllLikePrimaryKey() {
         ContactKeyRequest keyRequest = new ContactKeyRequest(
                 CONTACT.getMethod().name(),
                 CONTACT.getContactId()
@@ -150,7 +151,6 @@ public class ContactControllerServiceTests {
         controllerService.findAllLikePrimaryKey(TOKEN, keyRequest);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-
         verify(repositoryService).findAllLikePrimaryKey(null, CONTACT.getMethod(), CONTACT.getContactId());
     }
 
@@ -167,7 +167,7 @@ public class ContactControllerServiceTests {
     }
 
     @Test
-    public void findAllLikeNotificationNameShouldCallServiceFindAllLikeNotificationName() {
+    public void findAllLikeNotificationName() {
         ContactNNRequest nameRequest = new ContactNNRequest(
                 CONTACT.getNotificationName()
         );
@@ -175,7 +175,6 @@ public class ContactControllerServiceTests {
         controllerService.findAllLikeNotificationName(TOKEN, nameRequest);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-
         verify(repositoryService).findAllLikeNotificationName(null, CONTACT.getNotificationName());
     }
 }

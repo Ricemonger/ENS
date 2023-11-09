@@ -55,7 +55,7 @@ public class NotificationControllerService {
     public List<Notification> findAllByAccountId(String securityToken) {
         String accountId = jwtUtil.extractAccountId(securityToken);
         log.trace("findByAccountId method was called with param accountId: {}", accountId);
-        return notificationRepositoryService.findAllByAccountId(jwtUtil.extractAccountId(securityToken));
+        return notificationRepositoryService.findAllByAccountId(accountId);
     }
 
     public List<Notification> findAllLikePrimaryKey(String securityToken, NotificationNameRequest request) {
