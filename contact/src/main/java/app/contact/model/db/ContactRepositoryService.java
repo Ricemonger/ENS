@@ -22,7 +22,7 @@ public class ContactRepositoryService {
 
     public Contact create(Contact contact) {
         try {
-            getByKey(contact);
+            getByKeyOrThrow(contact);
         } catch (ContactDoesntExistException e) {
             log.trace("create method was executed with params: {}", contact);
             return contactRepository.save(contact);
@@ -31,7 +31,7 @@ public class ContactRepositoryService {
     }
 
     public Contact delete(Contact contact) {
-        Contact removed = getByKey(contact);
+        Contact removed = getByKeyOrThrow(contact);
         contactRepository.delete(contact);
         log.trace("delete method was executed with params: {}", contact);
         return removed;
@@ -44,10 +44,34 @@ public class ContactRepositoryService {
     }
 
     public Contact update(Contact contact) {
-        Contact dbContact = getByKey(contact);
+        Contact dbContact = getByKeyOrThrow(contact);
         dbContact.setNotificationName(contact.getNotificationName());
         Contact result = contactRepository.save(dbContact);
         log.trace("update method was executed with params: {} and result:{}", contact, result);
+        return result;
+    }
+
+    public void changeAccountId(String oldAccountId, String newAccountId) {
+        List<Contact> oldContacts = findAllByAccountId(oldAccountId);
+        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        for (Contact toDelete : oldContacts) {
+            contactRepository.delete(toDelete);
+            Contact toSave = new Contact();
+            toSave.setAccountId(newAccountId);
+            toSave.setMethod(toDelete.getMethod());
+            toSave.setContactId(toDelete.getContactId());
+            toSave.setNotificationName(toDelete.getNotificationName());
+            contactRepository.save(toSave);
+        }
+    }
+
+    public List<Contact> findAllLikePrimaryKey(String accountId, Method method, String contactId) {
+        List<Contact> byAccountId = findAllByAccountId(accountId);
+        List<Contact> result = byAccountId
+                .stream()
+                .filter(contact -> (contact.getMethod().equals(method) && contact.getContactId().startsWith(contactId)))
+                .toList();
+        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
         return result;
     }
 
@@ -61,43 +85,17 @@ public class ContactRepositoryService {
         return result;
     }
 
-    public List<Contact> findAllLikePrimaryKey(String accountId, Method method, String contactId) {
-        List<Contact> byAccountId = findAllByAccountId(accountId);
-        List<Contact> result = byAccountId
-                .stream()
-                .filter(contact -> (contact.getMethod().equals(method) && contact.getContactId().startsWith(contactId)))
-                .toList();
-        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
-        return result;
-    }
-
-    public Contact findOneByPrimaryKey(String accountId, Method method, String contactId) {
-        Contact result = getByKey(accountId, method, contactId);
-        log.trace("findOneByPrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
-        return result;
-    }
-
     public List<Contact> findAllByAccountId(String accountId) {
         List<Contact> result = contactRepository.findAllByAccountId(accountId);
         log.trace("findAllByUsername method was executed with params: accountId-{} and result:{}", accountId, result);
         return result;
     }
 
-    public void changeAccountId(String oldAccountId, String newAccountId) {
-        List<Contact> oldContacts = findAllByAccountId(oldAccountId);
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        for (Contact contact : oldContacts) {
-            contactRepository.delete(contact);
-            contact.setAccountId(newAccountId);
-            contactRepository.save(contact);
-        }
+    private Contact getByKeyOrThrow(Contact contact) {
+        return getByKeyOrThrow(contact.getAccountId(), contact.getMethod(), contact.getContactId());
     }
 
-    private Contact getByKey(Contact contact) {
-        return getByKey(contact.getAccountId(), contact.getMethod(), contact.getContactId());
-    }
-
-    private Contact getByKey(String accountId, Method method, String contactId) {
+    private Contact getByKeyOrThrow(String accountId, Method method, String contactId) {
         Contact result;
         try {
             result = contactRepository.findById(new ContactCompositeKey(accountId, method, contactId)).orElseThrow();

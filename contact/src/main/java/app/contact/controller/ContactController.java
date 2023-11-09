@@ -51,6 +51,12 @@ public class ContactController {
         service.clear(securityToken);
     }
 
+    @PostMapping("/changeAccountId")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, ChangeAccountIdRequest request) {
+        service.changeAccountId(oldAccountIdToken, request);
+    }
+
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String securityToken) {
@@ -73,12 +79,6 @@ public class ContactController {
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest nnRequest) {
         return service.findAllLikeNotificationName(securityToken, nnRequest);
-    }
-
-    @PostMapping("/changeAccountId")
-    @ResponseStatus(HttpStatus.OK)
-    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, ChangeAccountIdRequest request) {
-        service.changeAccountId(oldAccountIdToken, request);
     }
 
     @ExceptionHandler(ContactDoesntExistException.class)

@@ -1,6 +1,6 @@
 package app.send;
 
-import app.utils.JwtClient;
+import app.utils.SecurityJwtWebClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -15,7 +15,7 @@ public class SendServer {
     }
 
     @Bean
-    public JwtClient jwtClient() {
-        return new JwtClient();
+    public SecurityJwtWebClient jwtClient() {
+        return new SecurityJwtWebClient();
     }
 }

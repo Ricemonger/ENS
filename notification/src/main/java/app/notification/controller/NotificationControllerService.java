@@ -4,7 +4,7 @@ import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;
 import app.notification.model.db.NotificationRepositoryService;
-import app.utils.JwtClient;
+import app.utils.SecurityJwtWebClient;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class NotificationControllerService {
 
     private final NotificationRepositoryService notificationRepositoryService;
 
-    private final JwtClient jwtUtil;
+    private final SecurityJwtWebClient jwtUtil;
 
     public Notification create(String securityToken, NotificationCreUpdRequest request) {
         Notification notification = new Notification(jwtUtil.extractAccountId(securityToken), request.name().trim(), request.text().trim());
@@ -33,6 +33,11 @@ public class NotificationControllerService {
         return notificationRepositoryService.update(notification);
     }
 
+    public Notification delete(String securityToken, NotificationNameRequest request) {
+        Notification notification = new Notification(jwtUtil.extractAccountId(securityToken), request.name().trim());
+        log.trace("delete method was called with params: {}", notification);
+        return notificationRepositoryService.delete(notification);
+    }
 
     public void clear(String securityToken) {
         String accountId = jwtUtil.extractAccountId(securityToken);
@@ -40,10 +45,11 @@ public class NotificationControllerService {
         notificationRepositoryService.clear(accountId);
     }
 
-    public Notification delete(String securityToken, NotificationNameRequest request) {
-        Notification notification = new Notification(jwtUtil.extractAccountId(securityToken), request.name().trim());
-        log.trace("delete method was called with params: {}", notification);
-        return notificationRepositoryService.delete(notification);
+    void changeAccountId(String oldAccountIdToken, ChangeAccountIdRequest request) {
+        String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
+        String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
+        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        notificationRepositoryService.changeAccountId(oldAccountId, newAccountId);
     }
 
     public List<Notification> findAllByAccountId(String securityToken) {
@@ -57,12 +63,5 @@ public class NotificationControllerService {
         String notificationName = request.name().trim();
         log.trace("findByPrimaryKey method was called with params: accountId-{}, notificationName-{}", accountId, notificationName);
         return notificationRepositoryService.findAllLikePrimaryKey(accountId, notificationName);
-    }
-
-    void changeAccountId(String oldAccountIdToken, ChangeAccountIdRequest request) {
-        String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
-        String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        notificationRepositoryService.changeAccountId(oldAccountId, newAccountId);
     }
 }

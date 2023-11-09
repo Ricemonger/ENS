@@ -2,7 +2,7 @@ package app.send.controller;
 
 import app.send.controller.dto.SendOneRequest;
 import app.send.model.SendService;
-import app.utils.JwtClient;
+import app.utils.SecurityJwtWebClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ public class SendControllerService {
 
     private final SendService sendService;
 
-    private final JwtClient jwtUtil;
+    private final SecurityJwtWebClient jwtUtil;
 
     public void sendOne(String securityToken, SendOneRequest request) {
         String username = jwtUtil.extractAccountId(securityToken);

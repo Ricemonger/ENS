@@ -35,16 +35,22 @@ public class NotificationController {
         return service.update(securityToken, request);
     }
 
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Notification delete(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request) {
+        return service.delete(securityToken, request);
+    }
+
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
     public void clear(@RequestHeader("Authorization") String securityToken) {
         service.clear(securityToken);
     }
 
-    @DeleteMapping
+    @PostMapping("/changeAccountId")
     @ResponseStatus(HttpStatus.OK)
-    public Notification delete(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request) {
-        return service.delete(securityToken, request);
+    void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, @RequestBody ChangeAccountIdRequest request) {
+        service.changeAccountId(oldAccountIdToken, request);
     }
 
     @RequestMapping("/getByUN")
@@ -63,12 +69,6 @@ public class NotificationController {
     @ResponseStatus(HttpStatus.OK)
     public List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request) {
         return service.findAllLikePrimaryKey(securityToken, request);
-    }
-
-    @PostMapping("/changeAccountId")
-    @ResponseStatus(HttpStatus.OK)
-    void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, @RequestBody ChangeAccountIdRequest request) {
-        service.changeAccountId(oldAccountIdToken, request);
     }
 
     @ExceptionHandler(NotificationDoesntExistException.class)

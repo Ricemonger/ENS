@@ -21,7 +21,7 @@ public class NotificationRepositoryService {
 
     public Notification create(Notification notification) {
         try {
-            getByKey(notification);
+            getByKeyOrThrow(notification);
         } catch (NotificationDoesntExistException e) {
             log.trace("create method was executed with params: {}", notification);
             return notificationRepository.save(notification);
@@ -30,14 +30,14 @@ public class NotificationRepositoryService {
     }
 
     public Notification update(Notification notification) {
-        Notification dbNotification = getByKey(notification);
+        Notification dbNotification = getByKeyOrThrow(notification);
         dbNotification.setText(notification.getText());
         log.trace("update method was executed with params: {}", notification);
         return notificationRepository.save(dbNotification);
     }
 
     public Notification delete(Notification notification) {
-        Notification dbNotification = getByKey(notification);
+        Notification dbNotification = getByKeyOrThrow(notification);
         notificationRepository.delete(dbNotification);
         log.trace("delete method was executed with params: {}", notification);
         return dbNotification;
@@ -50,7 +50,7 @@ public class NotificationRepositoryService {
     }
 
     public Notification findOneByPrimaryKey(String accountId, String notificationName) {
-        Notification result = getByKey(accountId, notificationName);
+        Notification result = getByKeyOrThrow(accountId, notificationName);
         log.trace("findOneByPrimaryKey method was executed with params: accountId-{}, notificationName-{} and result:{}", accountId, notificationName, result);
         return result;
     }
@@ -81,11 +81,11 @@ public class NotificationRepositoryService {
         }
     }
 
-    private Notification getByKey(Notification notification) {
-        return getByKey(notification.getAccountId(), notification.getName());
+    private Notification getByKeyOrThrow(Notification notification) {
+        return getByKeyOrThrow(notification.getAccountId(), notification.getName());
     }
 
-    private Notification getByKey(String accountId, String notificationName) {
+    private Notification getByKeyOrThrow(String accountId, String notificationName) {
         Notification result;
         try {
             result = notificationRepository.findById(new NotificationCompositeKey(accountId, notificationName)).orElseThrow();
