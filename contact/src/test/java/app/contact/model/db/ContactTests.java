@@ -22,12 +22,12 @@ public class ContactTests {
     private final static Contact ALTERED_ACCOUNT_ID = new Contact("1111", Method.SMS, "9999", "name");
 
     @Test
-    void equalsShouldBeTrueIfRight() {
+    void equalsShouldBeTrueIfSame() {
         assertEquals(CONTACT, SAME_CONTACT);
     }
 
     @Test
-    void equalsShouldBeFalseIfNotRight() {
+    void equalsShouldBeFalseIfNotSame() {
         assertNotEquals(CONTACT, ALTERED_METHOD);
         assertNotEquals(CONTACT, ALTERED_CONTACT_ID);
         assertNotEquals(CONTACT, ALTERED_NOTIFICATION_NAME);

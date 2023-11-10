@@ -7,11 +7,11 @@ import app.security.ens_users.db.EnsUserRepositoryService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_client.TelegramFeignClientService;
+import app.security.tg_users.model.telegram_service_client.TelegramFeignClientService;
 import app.utils.feign_clients.contact.Contact;
-import app.utils.feign_clients.contact.ContactFeignService;
+import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.Notification;
-import app.utils.feign_clients.notification.NotificationFeignService;
+import app.utils.feign_clients.notification.NotificationFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,9 +31,9 @@ public class TelegramUserControllerService {
 
     private final EnsUserRepositoryService ensUserRepositoryService;
 
-    private final ContactFeignService contactFeignService;
+    private final ContactFeignClientService contactFeignClientService;
 
-    private final NotificationFeignService notificationFeignService;
+    private final NotificationFeignClientService notificationFeignService;
 
     private final AbstractUserJwtUtil abstractUserJwtUtil;
 
@@ -67,7 +67,7 @@ public class TelegramUserControllerService {
             TelegramUser telegramUser = new TelegramUser(newAccountId, getChatId(telegramToken));
             telegramUserRepositoryService.createOrThrow(telegramUser);
 
-            contactFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
+            contactFeignClientService.changeAccountId(oldAccountIdToken, newAccountIdToken);
             notificationFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
         } else {
             throw new UserDoesntExistException();
@@ -97,7 +97,7 @@ public class TelegramUserControllerService {
     private void changeNotificationsAndContactsAccountIds(String oldAccountId, String newAccountId) {
         String oldAccountIdToken = abstractUserJwtUtil.generateToken(oldAccountId);
         String newAccountIdToken = abstractUserJwtUtil.generateToken(newAccountId);
-        contactFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
+        contactFeignClientService.changeAccountId(oldAccountIdToken, newAccountIdToken);
         notificationFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
     }
 
@@ -111,7 +111,7 @@ public class TelegramUserControllerService {
         String accountId = getAccountIdByTelegramTokenOrThrow(chatId);
         String securityToken = abstractUserJwtUtil.generateToken(accountId);
         List<Notification> notifications = notificationFeignService.findAllById(securityToken);
-        List<Contact> contacts = contactFeignService.findAllById(securityToken);
+        List<Contact> contacts = contactFeignClientService.findAllById(securityToken);
 
         String sb = "ChatId: " + chatId + "\n" +
                 "AccountId: " + accountId + "\n" +

@@ -44,7 +44,7 @@ public class EnsUserJwtAuthFilter extends OncePerRequestFilter {
         }
         if (accountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             EnsUserDetails ensUserDetails = (EnsUserDetails) ensUserDetailsService.loadUserByAccountId(accountId);
-            if (abstractUserJwtUtil.isTokenValid(token, ensUserDetails)) {
+            if (abstractUserJwtUtil.isTokenValidAndContainsAccountId(token, ensUserDetails.getAccountId())) {
                 log.trace("Token {} is valid, authorizing...", token);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ensUserDetails, null, ensUserDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

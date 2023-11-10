@@ -17,6 +17,9 @@ spring:
 application:
   title: security-test
   version: 0.1
+  config:
+    telegram:
+      url: http://localhost:8080/api/telegram/security
 
 server:
   port: 8093

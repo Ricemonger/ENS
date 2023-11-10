@@ -2,7 +2,7 @@ package app.telegram.model.feign_clients;
 
 import app.telegram.users.db.TelegramUserService;
 import app.utils.feign_clients.notification.Notification;
-import app.utils.feign_clients.notification.NotificationFeignService;
+import app.utils.feign_clients.notification.NotificationFeignClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,38 +12,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class NotificationFeignClientServiceWrapper {
 
-    private final NotificationFeignService notificationFeignService;
+    private final NotificationFeignClientService notificationFeignClientService;
 
     private final TelegramUserService telegramUserService;
 
     public List<Notification> findAll(Long chatId) {
         String securityToken = getSecurityToken(chatId);
-        return notificationFeignService.findAllById(securityToken);
+        return notificationFeignClientService.findAllById(securityToken);
     }
 
     public void addMany(Long chatId, List<Notification> notifications) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignService.addMany(securityToken, notifications);
+        notificationFeignClientService.addMany(securityToken, notifications);
     }
 
     public void addOne(Long chatId, Notification notification) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignService.addOne(securityToken, notification);
+        notificationFeignClientService.addOne(securityToken, notification);
     }
 
     public void removeMany(Long chatId, List<Notification> notifications) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignService.removeMany(securityToken, notifications);
+        notificationFeignClientService.removeMany(securityToken, notifications);
     }
 
     public void removeOne(Long chatId, Notification notification) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignService.removeOne(securityToken, notification);
+        notificationFeignClientService.removeOne(securityToken, notification);
     }
 
     public void clear(Long chatId) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignService.removeAllById(securityToken);
+        notificationFeignClientService.removeAllById(securityToken);
     }
 
     private String getSecurityToken(Long chatId) {

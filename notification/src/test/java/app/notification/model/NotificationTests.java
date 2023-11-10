@@ -18,12 +18,12 @@ public class NotificationTests {
     private final static Notification ALTERED_ACCOUNT_ID = new Notification("9999", "name", "text");
 
     @Test
-    public void equalsShouldBeTrueIfRight() {
+    public void equalsShouldBeTrueIfSame() {
         assertEquals(NOTIFICATION, SAME_NOTIFICATION);
     }
 
     @Test
-    public void equalsShouldBeFalseIfNotRight() {
+    public void equalsShouldBeFalseIfNotSame() {
         assertNotEquals(NOTIFICATION, ALTERED_NAME);
         assertNotEquals(NOTIFICATION, ALTERED_TEXT);
         assertNotEquals(NOTIFICATION, ALTERED_ACCOUNT_ID);
