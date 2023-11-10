@@ -4,4 +4,7 @@ public record UsernamePasswordRequest(
         String username,
         String password
 ) {
+    public UsernamePasswordRequest toUser() {
+
+    }
 }

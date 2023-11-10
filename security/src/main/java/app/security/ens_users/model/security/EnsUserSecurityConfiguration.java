@@ -1,4 +1,4 @@
-package app.security.ens_users.security;
+package app.security.ens_users.model.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

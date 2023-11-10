@@ -1,29 +1,47 @@
 package app.security.ens_users;
 
 import app.security.abstract_users.AbstractUser;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import app.security.ens_users.model.db.EnsUserEntity;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "ens-users")
-@Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class EnsUser extends AbstractUser {
 
-    @Column(unique = true, nullable = false)
-    private String accountId;
+    private final EnsUserEntity ensUserEntity = new EnsUserEntity();
 
-    @Id
-    private String username;
+    public EnsUser(String username, String password) {
+        this(null, username, password);
+    }
 
-    @Column(nullable = false)
-    private String password;
+    public EnsUser(String accountId, String username, String password) {
+        ensUserEntity.setAccountId(accountId);
+        ensUserEntity.setUsername(username);
+        ensUserEntity.setPassword(password);
+    }
+
+    @Override
+    public String getAccountId() {
+        return ensUserEntity.getAccountId();
+    }
+
+    @Override
+    public void setAccountId(String accountId) {
+        ensUserEntity.setAccountId(accountId);
+    }
+
+    public void setUsername(String username) {
+        ensUserEntity.setUsername(username);
+    }
+
+    public String getUsername() {
+        return ensUserEntity.getUsername();
+    }
+
+    public void setPassword(String password) {
+        ensUserEntity.setPassword(password);
+    }
+
+    public String getPassword() {
+        return ensUserEntity.getPassword();
+    }
 }

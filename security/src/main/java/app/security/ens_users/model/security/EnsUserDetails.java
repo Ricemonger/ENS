@@ -1,4 +1,4 @@
-package app.security.ens_users.security;
+package app.security.ens_users.model.security;
 
 import app.security.abstract_users.AbstractUser;
 import app.security.abstract_users.security.AbstractUserDetails;

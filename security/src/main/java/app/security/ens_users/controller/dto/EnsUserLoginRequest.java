@@ -8,10 +8,6 @@ public record EnsUserLoginRequest(
         String password
 ) {
     public EnsUser toUser() {
-        return EnsUser
-                .builder()
-                .username(username)
-                .password(password)
-                .build();
+        return new EnsUser(username, password);
     }
 }

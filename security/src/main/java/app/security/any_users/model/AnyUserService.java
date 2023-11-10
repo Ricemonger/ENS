@@ -1,30 +1,33 @@
-package app.security.any_users.db;
+package app.security.any_users.model;
 
 import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.any_users.AnyUser;
+import app.security.any_users.model.db.AnyUserRepositoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AnyUserRepositoryService {
+public class AnyUserService {
 
-    private final AnyUserRepository anyUserRepository;
+    private final AnyUserRepositoryService anyUserRepositoryService;
+
 
     public AnyUser create() {
-        AnyUser result = anyUserRepository.save(new AnyUser());
+        AnyUser result = anyUserRepositoryService.save(new AnyUser());
         log.trace("create method called with result:{}", result);
         return result;
     }
 
     public AnyUser delete(String accountId) {
         try {
-            AnyUser deleted = anyUserRepository.findById(accountId).orElseThrow();
-            anyUserRepository.deleteById(accountId);
+            AnyUser deleted = anyUserRepositoryService.findByIdOrThrow(accountId);
+            anyUserRepositoryService.deleteById(accountId);
             log.trace("user {} was deleted", deleted);
             return deleted;
         } catch (NoSuchElementException e) {
@@ -34,7 +37,7 @@ public class AnyUserRepositoryService {
     }
 
     public boolean doesUserExist(String accountId) {
-        boolean result = anyUserRepository.existsById(accountId);
+        boolean result = anyUserRepositoryService.existsById(accountId);
         log.trace("doesUserExist method was called with accountID-{} and result-{}", accountId, result);
         return result;
     }

@@ -1,31 +1,42 @@
 package app.security.tg_users;
 
 import app.security.abstract_users.AbstractUser;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import app.security.tg_users.model.db.TelegramUserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "tg-users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class TelegramUser extends AbstractUser {
 
-    @Column(unique = true, nullable = false)
-    private String accountId;
-
-    @Id
-    private String chatId;
+    private TelegramUserEntity telegramUserEntity = new TelegramUserEntity();
 
     public TelegramUser(String chatId) {
-        this.chatId = chatId;
+        telegramUserEntity.setChatId(chatId);
     }
 
+    public TelegramUser(String accountId, String chatId) {
+        telegramUserEntity.setAccountId(accountId);
+        telegramUserEntity.setChatId(chatId);
+    }
+
+    public void setAccountId(String accountId) {
+        telegramUserEntity.setAccountId(accountId);
+    }
+
+    public String getAccountId() {
+        return telegramUserEntity.getAccountId();
+    }
+
+    public void setChatId(String chatId) {
+        telegramUserEntity.setChatId(chatId);
+    }
+
+    public String getChatId() {
+        return telegramUserEntity.getChatId();
+    }
 }

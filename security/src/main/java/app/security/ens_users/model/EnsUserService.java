@@ -1,30 +1,27 @@
-package app.security.ens_users.db;
+package app.security.ens_users.model;
 
 import app.security.abstract_users.exceptions.UserAlreadyExistsException;
 import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.abstract_users.security.AbstractUserJwtUtil;
 import app.security.any_users.AnyUser;
-import app.security.any_users.db.AnyUserRepositoryService;
+import app.security.any_users.model.AnyUserService;
 import app.security.ens_users.EnsUser;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
+import app.security.ens_users.model.db.EnsUserRepositoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class EnsUserRepositoryService {
-
-    private final EnsUserRepository ensUserRepository;
+public class EnsUserService {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -32,19 +29,21 @@ public class EnsUserRepositoryService {
 
     private final AbstractUserJwtUtil abstractUserJwtUtil;
 
-    private final AnyUserRepositoryService anyUserRepositoryService;
+    private final AnyUserService anyUserService;
+
+    private final EnsUserRepositoryService ensUserRepositoryService;
 
     public String register(EnsUser ensUser) {
         validateUsernamePassword(ensUser);
         try {
             getByUsernameOrThrow(ensUser.getUsername());
         } catch (UserDoesntExistException e) {
-            AnyUser newUserEntry = anyUserRepositoryService.create();
+            AnyUser newUserEntry = anyUserService.create();
 
             ensUser.setAccountId(newUserEntry.getAccountId());
             String notEncodedPassword = ensUser.getPassword();
             ensUser.setPassword(passwordEncoder.encode(notEncodedPassword));
-            ensUserRepository.save(ensUser);
+            ensUserRepositoryService.save(ensUser);
 
             ensUser.setPassword(notEncodedPassword);
             log.trace("register method was executed with params:{}", ensUser);
@@ -85,31 +84,19 @@ public class EnsUserRepositoryService {
         return getByUsernameOrThrow(username);
     }
 
-    public EnsUser getByAccountId(String accountId) {
-        return getByAccountIdOrThrow(accountId);
-    }
-
     public boolean doesUserExist(String accountId) {
-        return ensUserRepository.existsByAccountId(accountId);
+        return ensUserRepositoryService.existsByAccountId(accountId);
     }
 
     private void throwIfUserDoesntExists(String accountId) {
-        if (!anyUserRepositoryService.doesUserExist(accountId)) {
+        if (!anyUserService.doesUserExist(accountId)) {
             throw new UserDoesntExistException();
         }
     }
 
     private EnsUser getByUsernameOrThrow(String username) throws UserDoesntExistException {
         try {
-            return ensUserRepository.findById(username).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new UserDoesntExistException(e);
-        }
-    }
-
-    private EnsUser getByAccountIdOrThrow(String accountId) {
-        try {
-            return ensUserRepository.findByAccountId(accountId).orElseThrow();
+            return ensUserRepositoryService.findByIdOrThrow(username);
         } catch (NoSuchElementException e) {
             throw new UserDoesntExistException(e);
         }

@@ -6,6 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public abstract class AbstractUser {
+
     public abstract String getAccountId();
 
     public abstract void setAccountId(String accountId);
