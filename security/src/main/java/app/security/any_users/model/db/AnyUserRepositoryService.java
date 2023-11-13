@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,6 +26,10 @@ public class AnyUserRepositoryService {
         return toAnyUser(anyUserRepository.findById(accountId).orElseThrow());
     }
 
+    public List<AnyUser> findAll() {
+        return anyUserRepository.findAll().stream().map(AnyUser::new).toList();
+    }
+
     public AnyUser save(AnyUser anyUser) {
         return toAnyUser(anyUserRepository.save(toAnyUserEntity(anyUser)));
     }
@@ -34,5 +40,9 @@ public class AnyUserRepositoryService {
 
     private AnyUserEntity toAnyUserEntity(AnyUser anyUser) {
         return new AnyUserEntity(anyUser.getAccountId());
+    }
+
+    public void deleteAll() {
+        anyUserRepository.deleteAll();
     }
 }
