@@ -36,14 +36,14 @@ public class AnyUserEntityTests {
             new TelegramUserEntity("6666", "9999"));
 
     @Test
-    public void equalsShouldBeTrueIfSame() {
+    public void equalsShouldBeTrueIfSameAccountId() {
         assertEquals(ENTITY, SAME_ENTITY);
+        assertEquals(ENTITY, ALTERED_ENS_USER_ENTITY);
+        assertEquals(ENTITY, ALTERED_ANY_USER_ENTITY);
     }
 
     @Test
-    public void equalsShouldBeFalseIfNotSame() {
+    public void equalsShouldBeFalseIfNotSameAccountId() {
         assertNotEquals(ENTITY, ALTERED_ACCOUNT_ID);
-        assertNotEquals(ENTITY, ALTERED_ENS_USER_ENTITY);
-        assertNotEquals(ENTITY, ALTERED_ANY_USER_ENTITY);
     }
 }

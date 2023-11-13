@@ -27,13 +27,12 @@ public class EnsUserJwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if (header == null || !header.startsWith("Bearer ")) {
+        String token = request.getHeader("Authorization");
+        if (token == null) {
             log.warn("No Bearer Token provided for EnsUserJwtAuthFilter");
             filterChain.doFilter(request, response);
             return;
         }
-        String token = header.substring(7);
         String accountId;
         try {
             accountId = abstractUserJwtUtil.extractAccountId(token);
@@ -43,7 +42,7 @@ public class EnsUserJwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         if (accountId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            EnsUserDetails ensUserDetails = (EnsUserDetails) ensUserDetailsService.loadUserByAccountId(accountId);
+            EnsUserDetails ensUserDetails = ensUserDetailsService.loadUserByAccountId(accountId);
             if (abstractUserJwtUtil.isTokenValidAndContainsAccountId(token, ensUserDetails.getAccountId())) {
                 log.trace("Token {} is valid, authorizing...", token);
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(ensUserDetails, null, ensUserDetails.getAuthorities());

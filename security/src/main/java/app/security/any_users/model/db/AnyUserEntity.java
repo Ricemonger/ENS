@@ -29,4 +29,15 @@ public class AnyUserEntity {
     public AnyUserEntity(String accountId) {
         this.accountId = accountId;
     }
+
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null)
+            return false;
+        if (o instanceof AnyUserEntity entity) {
+            return this.accountId.equals(entity.getAccountId());
+        }
+        return false;
+    }
 }

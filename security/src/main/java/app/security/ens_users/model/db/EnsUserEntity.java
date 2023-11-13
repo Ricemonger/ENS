@@ -31,11 +31,22 @@ public class EnsUserEntity {
         this.password = password;
     }
 
+    public EnsUserEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public String getAccountId() {
         return anyUserEntity.getAccountId();
     }
 
     public void setAccountId(String accountId) {
         anyUserEntity.setAccountId(accountId);
+    }
+
+    public String toString() {
+        return String.format("(EnsUserEntity:accountId=%s, username=%s, password=%s)", anyUserEntity.getAccountId(),
+                username,
+                password);
     }
 }

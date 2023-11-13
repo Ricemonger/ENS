@@ -30,6 +30,10 @@ public class EnsUserRepositoryService {
         return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
     }
 
+    public void deleteAll() {
+        ensUserRepository.deleteAll();
+    }
+
     private EnsUser toEnsUser(EnsUserEntity entity) {
         return new EnsUser(entity.getAccountId(), entity.getUsername(), entity.getPassword());
     }
