@@ -33,7 +33,7 @@ public class TelegramUserController {
     @GetMapping("/getSecurityToken")
     @ResponseStatus(HttpStatus.OK)
     public String getSecurityToken(@RequestHeader(name = "Authorization") String telegramToken) {
-        return service.generateSecurityToken(telegramToken);
+        return service.getSecurityToken(telegramToken);
     }
 
     @GetMapping("/getAccountInfo")

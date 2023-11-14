@@ -18,7 +18,7 @@ public class AnyUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "account_id")
-    private String accountId;
+    private String accountId = "";
 
     @OneToOne(mappedBy = "anyUserEntity")
     private EnsUserEntity ensUserEntity;

@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class TelegramUserService {
+
     private final TelegramUserRepositoryService telegramUserRepositoryService;
 
     private final AnyUserService anyUserService;
@@ -40,6 +41,11 @@ public class TelegramUserService {
         String chatId = telegramFeignClientService.getChatId(telegramToken);
         TelegramUser telegramUser = new TelegramUser(chatId);
         return createOrThrow(telegramUser);
+    }
+
+    public void delete(String telegramToken) {
+        TelegramUser toDelete = new TelegramUser(getChatId(telegramToken));
+        deleteOrThrow(toDelete);
     }
 
     public String generateSecurityToken(String telegramToken) {
@@ -116,11 +122,6 @@ public class TelegramUserService {
                 contacts + "\n";
 
         return sb;
-    }
-
-    public void delete(String telegramToken) {
-        TelegramUser toDelete = new TelegramUser(getChatId(telegramToken));
-        deleteOrThrow(toDelete);
     }
 
     private String getAccountIdByTelegramTokenOrThrow(String telegramToken) {

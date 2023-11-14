@@ -19,8 +19,16 @@ public class TelegramUserControllerService {
         return telegramUserService.create(telegramToken);
     }
 
-    public String generateSecurityToken(String telegramToken) {
+    public void delete(String telegramToken) {
+        telegramUserService.delete(telegramToken);
+    }
+
+    public String getSecurityToken(String telegramToken) {
         return telegramUserService.generateSecurityToken(telegramToken);
+    }
+
+    public String getAccountInfo(String telegramToken) {
+        return telegramUserService.getAccountInfo(telegramToken);
     }
 
     public void link(String telegramToken, UsernamePasswordRequest request) {
@@ -37,13 +45,5 @@ public class TelegramUserControllerService {
 
     public boolean isLinked(String telegramToken) {
         return telegramUserService.isLinked(telegramToken);
-    }
-
-    public String getAccountInfo(String telegramToken) {
-        return telegramUserService.getAccountInfo(telegramToken);
-    }
-
-    public void delete(String telegramToken) {
-        telegramUserService.delete(telegramToken);
     }
 }

@@ -38,9 +38,4 @@ public class TelegramUserEntity {
     public String getAccountId() {
         return anyUserEntity.getAccountId();
     }
-
-    public String toString() {
-        return String.format("(TelegramUserEntity:accountId=%s, chatId=%s)", anyUserEntity.getAccountId(),
-                chatId);
-    }
 }
