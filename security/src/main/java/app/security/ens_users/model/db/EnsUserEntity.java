@@ -43,10 +43,4 @@ public class EnsUserEntity {
     public void setAccountId(String accountId) {
         anyUserEntity.setAccountId(accountId);
     }
-
-    public String toString() {
-        return String.format("(EnsUserEntity:accountId=%s, username=%s, password=%s)", anyUserEntity.getAccountId(),
-                username,
-                password);
-    }
 }

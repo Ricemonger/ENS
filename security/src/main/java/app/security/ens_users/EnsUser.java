@@ -3,7 +3,11 @@ package app.security.ens_users;
 import app.security.abstract_users.AbstractUser;
 import app.security.ens_users.model.db.EnsUserEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
+@Data
+@Builder
 @AllArgsConstructor
 public class EnsUser extends AbstractUser {
 

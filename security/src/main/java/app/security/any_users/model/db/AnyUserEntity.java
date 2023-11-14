@@ -40,4 +40,8 @@ public class AnyUserEntity {
         }
         return false;
     }
+
+    public String toString() {
+        return String.format("(AnyUserEntity:accountId=%s)", accountId);
+    }
 }

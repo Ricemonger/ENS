@@ -3,8 +3,6 @@ package app.security.ens_users.model;
 import app.security.abstract_users.exceptions.UserAlreadyExistsException;
 import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.abstract_users.security.AbstractUserJwtUtil;
-import app.security.any_users.AnyUser;
-import app.security.any_users.model.AnyUserService;
 import app.security.ens_users.EnsUser;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
@@ -29,8 +27,6 @@ public class EnsUserService {
 
     private final AbstractUserJwtUtil abstractUserJwtUtil;
 
-    private final AnyUserService anyUserService;
-
     private final EnsUserRepositoryService ensUserRepositoryService;
 
     public String register(EnsUser ensUser) {
@@ -38,9 +34,6 @@ public class EnsUserService {
         try {
             getByUsernameOrThrow(ensUser.getUsername());
         } catch (UserDoesntExistException e) {
-            AnyUser newUserEntry = anyUserService.create();
-
-            ensUser.setAccountId(newUserEntry.getAccountId());
             String notEncodedPassword = ensUser.getPassword();
             ensUser.setPassword(passwordEncoder.encode(notEncodedPassword));
             ensUserRepositoryService.save(ensUser);
@@ -59,7 +52,6 @@ public class EnsUserService {
         EnsUser inDb = getByUsernameOrThrow(username);
 
         String accountId = inDb.getAccountId();
-        throwIfUserDoesntExists(accountId);
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         String result = abstractUserJwtUtil.generateToken(accountId);
         log.trace("login method was executed with params: accountId-{}, username-{}, password-{} and result: {}",
@@ -80,26 +72,16 @@ public class EnsUserService {
         return true;
     }
 
-    public EnsUser getByUsername(String username) {
-        return getByUsernameOrThrow(username);
-    }
-
-    public boolean doesUserExist(String accountId) {
-        return ensUserRepositoryService.existsByAccountId(accountId);
-    }
-
-    private void throwIfUserDoesntExists(String accountId) {
-        if (!anyUserService.doesUserExist(accountId)) {
-            throw new UserDoesntExistException();
-        }
-    }
-
-    private EnsUser getByUsernameOrThrow(String username) throws UserDoesntExistException {
+    public EnsUser getByUsernameOrThrow(String username) {
         try {
             return ensUserRepositoryService.findByIdOrThrow(username);
         } catch (NoSuchElementException e) {
             throw new UserDoesntExistException(e);
         }
+    }
+
+    public boolean doesUserExist(String accountId) {
+        return ensUserRepositoryService.existsByAccountId(accountId);
     }
 
     private void validateUsernamePassword(EnsUser ensUser) {

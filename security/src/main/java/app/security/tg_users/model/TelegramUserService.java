@@ -52,7 +52,7 @@ public class TelegramUserService {
     public void link(String telegramToken, String username, String password) {
         if (ensUserService.canLogin(username, password)) {
             String oldAccountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
-            String newAccountId = ensUserService.getByUsername(username).getAccountId();
+            String newAccountId = ensUserService.getByUsernameOrThrow(username).getAccountId();
 
             String oldAccountIdToken = abstractUserJwtUtil.generateToken(oldAccountId);
             String newAccountIdToken = abstractUserJwtUtil.generateToken(newAccountId);
