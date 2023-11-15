@@ -2,6 +2,7 @@ package app.contact;
 
 import app.contact.controller.ContactController;
 import app.contact.controller.ContactControllerService;
+import app.contact.model.ContactService;
 import app.contact.model.db.ContactRepository;
 import app.contact.model.db.ContactRepositoryService;
 import org.junit.jupiter.api.Test;
@@ -26,11 +27,15 @@ class ContactServerTests {
     @Autowired
     private ContactController contactController;
 
+    @Autowired
+    private ContactService contactService;
+
     @Test
     void contextLoads() {
         assertNotNull(contactRepository);
         assertNotNull(contactRepositoryService);
         assertNotNull(contactControllerService);
         assertNotNull(contactController);
+        assertNotNull(contactService);
     }
 }

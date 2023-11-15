@@ -1,107 +1,73 @@
 package app.contact.model.db;
 
-import app.contact.exceptions.ContactAlreadyExistsException;
 import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.model.Contact;
 import app.contact.model.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class ContactRepositoryService {
 
     private final ContactRepository contactRepository;
 
-    public Contact create(Contact contact) {
+    public Contact save(Contact contact) {
+        Contact result = toContact(contactRepository.save(toEntity(contact)));
+        log.trace("save was executed for contact-{}", contact);
+        return result;
+    }
+
+    public Contact findByIdOrThrow(String accountId, Method method, String contactId) {
+        ContactCompositeKey key = new ContactCompositeKey(accountId, method, contactId);
         try {
-            getByKeyOrThrow(contact);
-        } catch (ContactDoesntExistException e) {
-            log.trace("create method was executed with params: {}", contact);
-            return contactRepository.save(contact);
+            Contact contact = toContact(contactRepository.findById(key).orElseThrow());
+            log.trace("findByIdOrThrow was executed with key-{} and result-{}", key, contact);
+            return contact;
+        } catch (NoSuchElementException e) {
+            log.trace("findByIdOrThrow couldn't find contact with key-{}", key);
+            throw new ContactDoesntExistException();
         }
-        throw new ContactAlreadyExistsException();
-    }
-
-    public Contact delete(Contact contact) {
-        Contact removed = getByKeyOrThrow(contact);
-        contactRepository.delete(contact);
-        log.trace("delete method was executed with params: {}", contact);
-        return removed;
-    }
-
-    public void clear(String accountId) {
-        List<Contact> toDelete = contactRepository.findAllByAccountId(accountId);
-        log.trace("clear method was called with accountId: {}", accountId);
-        contactRepository.deleteAll(toDelete);
-    }
-
-    public Contact update(Contact contact) {
-        Contact dbContact = getByKeyOrThrow(contact);
-        dbContact.setNotificationName(contact.getNotificationName());
-        Contact result = contactRepository.save(dbContact);
-        log.trace("update method was executed with params: {} and result:{}", contact, result);
-        return result;
-    }
-
-    public void changeAccountId(String oldAccountId, String newAccountId) {
-        List<Contact> oldContacts = findAllByAccountId(oldAccountId);
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        for (Contact toDelete : oldContacts) {
-            contactRepository.delete(toDelete);
-            Contact toSave = new Contact();
-            toSave.setAccountId(newAccountId);
-            toSave.setMethod(toDelete.getMethod());
-            toSave.setContactId(toDelete.getContactId());
-            toSave.setNotificationName(toDelete.getNotificationName());
-            contactRepository.save(toSave);
-        }
-    }
-
-    public List<Contact> findAllLikePrimaryKey(String accountId, Method method, String contactId) {
-        List<Contact> byAccountId = findAllByAccountId(accountId);
-        List<Contact> result = byAccountId
-                .stream()
-                .filter(contact -> (contact.getMethod().equals(method) && contact.getContactId().startsWith(contactId)))
-                .toList();
-        log.trace("findAllLikePrimaryKey method was executed with params: {} and result:{}", new Contact(accountId, method, contactId), result);
-        return result;
-    }
-
-    public List<Contact> findAllLikeNotificationName(String accountId, String notificationName) {
-        List<Contact> byAccountId = findAllByAccountId(accountId);
-        List<Contact> result = byAccountId
-                .stream()
-                .filter(contact -> contact.getNotificationName().startsWith(notificationName))
-                .toList();
-        log.trace("findAllLikeNotificationName method was executed with params: accountId-{}, notificationName-{} and result:{}", accountId, notificationName, result);
-        return result;
     }
 
     public List<Contact> findAllByAccountId(String accountId) {
-        List<Contact> result = contactRepository.findAllByAccountId(accountId);
-        log.trace("findAllByUsername method was executed with params: accountId-{} and result:{}", accountId, result);
-        return result;
+        List<Contact> contacts = contactRepository.findAllByAccountId(accountId).stream().map(this::toContact).toList();
+        log.trace("findAllByAccountId was executed with accountId-{} and result-{}", accountId, contacts);
+        return contacts;
     }
 
-    private Contact getByKeyOrThrow(Contact contact) {
-        return getByKeyOrThrow(contact.getAccountId(), contact.getMethod(), contact.getContactId());
+    public List<Contact> findAll() {
+        log.trace("findAll was executed");
+        return contactRepository.findAll().stream().map(this::toContact).toList();
     }
 
-    private Contact getByKeyOrThrow(String accountId, Method method, String contactId) {
-        Contact result;
-        try {
-            result = contactRepository.findById(new ContactCompositeKey(accountId, method, contactId)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new ContactDoesntExistException(e);
-        }
-        return result;
+    public void delete(Contact contact) {
+        contactRepository.delete(toEntity(contact));
+        log.trace("delete was executed for contact-{}", contact);
+    }
+
+    public void deleteAll(List<Contact> toDelete) {
+        List<ContactEntity> entitiesToDelete = toDelete.stream().map(this::toEntity).toList();
+        contactRepository.deleteAll(entitiesToDelete);
+        log.trace("deleteAll was executed for list-{}", toDelete);
+    }
+
+    public void deleteAll() {
+        contactRepository.deleteAll();
+        log.trace("deleteAll was executed");
+    }
+
+    private ContactEntity toEntity(Contact contact) {
+        return new ContactEntity(contact.getAccountId(), contact.getMethod(), contact.getContactId(),
+                contact.getNotificationName());
+    }
+
+    private Contact toContact(ContactEntity entity) {
+        return new Contact(entity);
     }
 }

@@ -5,8 +5,8 @@ import app.contact.controller.dto.ContactKeyRequest;
 import app.contact.controller.dto.ContactNNRequest;
 import app.contact.exceptions.InvalidContactMethodException;
 import app.contact.model.Contact;
+import app.contact.model.ContactService;
 import app.contact.model.Method;
-import app.contact.model.db.ContactRepositoryService;
 import app.utils.SecurityJwtWebClient;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ public class ContactControllerServiceTests {
     private final static Contact DELETE_CONTACT = new Contact(null, Method.SMS, "9999");
 
     @Mock
-    private ContactRepositoryService repositoryService;
+    private ContactService contactService;
 
     @Mock
     private SecurityJwtWebClient jwtUtil;
@@ -51,7 +51,7 @@ public class ContactControllerServiceTests {
         controllerService.create(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).create(CONTACT);
+        verify(contactService).create(CONTACT);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ContactControllerServiceTests {
         controllerService.update(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).update(CONTACT);
+        verify(contactService).update(CONTACT);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class ContactControllerServiceTests {
         controllerService.delete(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).delete(DELETE_CONTACT);
+        verify(contactService).delete(DELETE_CONTACT);
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ContactControllerServiceTests {
         controllerService.clear(TOKEN);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).clear(null);
+        verify(contactService).clear(null);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ContactControllerServiceTests {
 
         verify(jwtUtil).extractAccountId(TOKEN);
         verify(jwtUtil).extractAccountId(ANOTHER_TOKEN);
-        verify(repositoryService).changeAccountId(null, null);
+        verify(contactService).changeAccountId(null, null);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class ContactControllerServiceTests {
         controllerService.findAllByAccountId(TOKEN);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).findAllByAccountId(null);
+        verify(contactService).findAllByAccountId(null);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ContactControllerServiceTests {
         controllerService.findAllLikePrimaryKey(TOKEN, keyRequest);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).findAllLikePrimaryKey(null, CONTACT.getMethod(), CONTACT.getContactId());
+        verify(contactService).findAllLikePrimaryKey(null, CONTACT.getMethod(), CONTACT.getContactId());
     }
 
     @Test
@@ -175,6 +175,6 @@ public class ContactControllerServiceTests {
         controllerService.findAllLikeNotificationName(TOKEN, nameRequest);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).findAllLikeNotificationName(null, CONTACT.getNotificationName());
+        verify(contactService).findAllLikeNotificationName(null, CONTACT.getNotificationName());
     }
 }
