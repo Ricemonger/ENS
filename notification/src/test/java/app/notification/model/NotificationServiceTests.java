@@ -3,13 +3,11 @@ package app.notification.model;
 import app.notification.exceptions.NotificationAlreadyExistsException;
 import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.model.db.NotificationRepositoryService;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +27,6 @@ public class NotificationServiceTests {
     private final static Notification ALTERED_TEXT = new Notification("1111", "name", "altered");
 
     private final static Notification ALTERED_ACCOUNT_ID = new Notification("9999", "name", "text");
-
-    @MockBean
-    private SecurityJwtWebClient jwtUtil;
 
     @Autowired
     private NotificationRepositoryService repositoryService;

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@PropertySource("authentication.properties")
+@PropertySource("classpath:authentication.properties")
 public class InfobipAuthConfigurer {
     @Value("${infobip.viber.token}")
     private String authToken;
@@ -15,5 +15,4 @@ public class InfobipAuthConfigurer {
     private String viberUrl;
     @Value("${infobip.viber.company}")
     private String companyName;
-
 }

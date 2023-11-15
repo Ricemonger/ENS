@@ -28,13 +28,13 @@ public class ContactController {
     private final ContactControllerService service;
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.CREATED)
     public Contact create(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
         return service.create(securityToken, request);
     }
 
     @PatchMapping
-    @ResponseStatus(code = HttpStatus.OK)
+    @ResponseStatus(HttpStatus.OK)
     public Contact update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
         return service.update(securityToken, request);
     }

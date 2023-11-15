@@ -34,8 +34,9 @@ public class SendController {
     @ExceptionHandler(SenderApiException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage senderApiException(SenderApiException e) {
-        log.warn("SenderApiException was thrown with message: {}", e.getMessage());
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Exception was thrown during sending operation", e);
+        log.warn("SenderApiException was thrown with message: {}", e.toString());
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Exception was thrown during sending operation");
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -48,8 +49,9 @@ public class SendController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e) {
-        log.warn("UnknownException occurred: {}" + e.getMessage());
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown exception was thrown", e);
+        log.warn("UnknownException occurred: {}", e.toString());
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown exception was thrown");
     }
 }
 

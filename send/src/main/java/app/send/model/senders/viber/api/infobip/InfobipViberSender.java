@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -31,8 +32,8 @@ public class InfobipViberSender implements ViberSender {
     @Override
     public void send(String sendTo, String text) {
         try {
-            String json = "{\"messages\":[{\"from\":\"%s\",\"to\":\"%s\",\"content\":{\"text\":\"%s\"}}]}";
-            String body = String.format(json, FROM, sendTo, text);
+            String jsonFormat = "{\"messages\":[{\"from\":\"%s\",\"to\":\"%s\",\"content\":{\"text\":\"%s\"}}]}";
+            String body = String.format(jsonFormat, FROM, sendTo, text);
             String response = WEB_CLIENT
                     .post()
                     .header("Authorization", "App " + AUTH_TOKEN)
@@ -49,18 +50,22 @@ public class InfobipViberSender implements ViberSender {
     }
 
     @Override
-    public void bulkSend(Map<String, String> sendings) {
-        String json = "{\"messages\":[%s]}";
-        String sendingJson = "{\"from\":\"%s\",\"to\":\"%s\",\"content\":{\"text\":\"%s\"}}";
+    public void bulkSend(Map<String, List<String>> sendings) {
+        String jsonFormat = "{\"messages\":[%s]}";
+        String sendingJsonFormat = "{\"from\":\"%s\",\"to\":\"%s\",\"content\":{\"text\":\"%s\"}}";
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : sendings.entrySet()) {
-            stringBuilder.append(String.format(sendingJson, FROM, entry.getKey(), entry.getValue())).append(",");
+        for (Map.Entry<String, List<String>> entry : sendings.entrySet()) {
+            String text = entry.getKey();
+            List<String> sendToList = entry.getValue();
+            for (String sendTo : sendToList) {
+                stringBuilder.append(String.format(sendingJsonFormat, FROM, sendTo, text)).append(",");
+            }
         }
         String bulkMessage = stringBuilder.toString();
         if (bulkMessage.endsWith(",")) {
             bulkMessage = bulkMessage.substring(0, bulkMessage.length() - 1);
         }
-        String body = String.format(json, bulkMessage);
+        String body = String.format(jsonFormat, bulkMessage);
         System.out.println(body);
         try {
             String response = WEB_CLIENT

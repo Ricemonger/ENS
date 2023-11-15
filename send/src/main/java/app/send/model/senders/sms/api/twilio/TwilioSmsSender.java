@@ -8,6 +8,7 @@ import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -33,17 +34,19 @@ public class TwilioSmsSender implements SmsSender {
     }
 
     @Override
-    public void bulkSend(Map<String, String> sendings) {
+    public void bulkSend(Map<String, List<String>> sendings) {
         PhoneNumber from = new PhoneNumber(twilioAuthConfiguration.getTrialNumber());
         try {
             sendings.entrySet().stream().parallel().forEach(entry -> {
-                        String to = entry.getKey();
-                        if (!to.startsWith("+")) {
-                            to = "+" + to;
-                        }
-                        Message.creator(new PhoneNumber(to), from, entry.getValue()).create();
+                String text = entry.getKey();
+                List<String> sendToList = entry.getValue();
+                for (String sendTo : sendToList) {
+                    if (!sendTo.startsWith("+")) {
+                        sendTo = "+" + sendTo;
                     }
-            );
+                    Message.creator(new PhoneNumber(sendTo), from, text).create();
+                }
+            });
         } catch (ApiException e) {
             throw new TwilioApiException(e);
         }

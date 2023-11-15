@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@PropertySource("authentication.properties")
+@PropertySource("classpath:authentication.properties")
 public class AmazonAuthConfiguration {
     @Value("${amazon.email.sender}")
     private String sentFrom;

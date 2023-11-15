@@ -3,13 +3,11 @@ package app.contact.model.db;
 import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.model.Contact;
 import app.contact.model.Method;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.Collections;
@@ -38,9 +36,6 @@ public class ContactRepositoryServiceTests {
     private final static ContactEntity ENTITY = new ContactEntity(ACCOUNT_ID, METHOD, CONTACT_ID, NOTIFICATION);
 
     private final static ContactEntity ANOTHER_ENTITY = new ContactEntity(ANOTHER_ACCOUNT_ID, METHOD, CONTACT_ID, NOTIFICATION);
-
-    @MockBean
-    private SecurityJwtWebClient jwtUtil;
 
     @SpyBean
     private ContactRepository repository;

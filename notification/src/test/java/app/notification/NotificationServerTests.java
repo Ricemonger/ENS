@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class NotificationServerTests {
 
     @MockBean
-    private SecurityJwtWebClient jwtUtil;
+    private SecurityJwtWebClient securityJwtWebClient;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -36,6 +36,7 @@ class NotificationServerTests {
 
     @Test
     void contextLoads() {
+        assertNotNull(securityJwtWebClient);
         assertNotNull(notificationRepository);
         assertNotNull(notificationRepositoryService);
         assertNotNull(notificationControllerService);

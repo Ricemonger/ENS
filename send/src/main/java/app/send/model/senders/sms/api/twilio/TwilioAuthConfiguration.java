@@ -7,14 +7,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-@PropertySource("authentication.properties")
+@PropertySource("classpath:authentication.properties")
 public class TwilioAuthConfiguration {
-
     @Value("${twilio.account_sid}")
     private String accountSid;
     @Value("${twilio.auth_token}")
     private String authToken;
     @Value("${twilio.trial_number}")
     private String trialNumber;
-
 }

@@ -8,6 +8,7 @@ server:
 application:
   title: contact
   version: 0.1
+
 spring:
   application:
     name: contact

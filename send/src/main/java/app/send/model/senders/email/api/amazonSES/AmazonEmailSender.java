@@ -11,7 +11,9 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 
 @Service
@@ -32,8 +34,28 @@ public class AmazonEmailSender implements EmailSender {
         PROPERTIES.put("mail.smtp.starttls.required", "true");
     }
 
-    public void send(String to, String text) {
-        Session session = Session.getDefaultInstance(PROPERTIES);
+    @Override
+    public void send(String sendTo, String text) {
+        Session session = createSession();
+        sendToOneEmail(sendTo, text, session);
+    }
+
+    @Override
+    public void bulkSend(Map<String, List<String>> sendings) {
+        Session session = createSession();
+
+        for (Map.Entry<String, List<String>> entry : sendings.entrySet()) {
+            String text = entry.getKey();
+            List<String> sendToList = entry.getValue();
+            sendToManyEmails(sendToList, text, session);
+        }
+    }
+
+    private Session createSession() {
+        return Session.getDefaultInstance(PROPERTIES);
+    }
+
+    private void sendToOneEmail(String to, String text, Session session) {
         MimeMessage msg = new MimeMessage(session);
         try {
             msg.setFrom(new InternetAddress(auth.getSentFrom()));
@@ -43,70 +65,40 @@ public class AmazonEmailSender implements EmailSender {
             Transport transport = session.getTransport();
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
             transport.sendMessage(msg, msg.getAllRecipients());
-            transport.close();
+            closeTransport(transport);
         } catch (MessagingException e) {
             throw new AmazonEmailException(e);
         }
     }
 
-    @Override
-    public void bulkSend(Map<String, String> sendings) {
-        Session session;
-        Transport transport;
+    private void sendToManyEmails(List<String> sendToList, String text, Session session) {
         try {
-            session = Session.getDefaultInstance(PROPERTIES);
-            transport = session.getTransport();
+            Transport transport = session.getTransport();
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
+            InternetAddress[] addresses = (InternetAddress[]) sendToList.stream().map(address -> {
+                try {
+                    return new InternetAddress(address);
+                } catch (AddressException e) {
+                    throw new AmazonEmailException(e);
+                }
+            }).toArray();
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(auth.getSentFrom()));
+            msg.setRecipients(Message.RecipientType.TO, addresses);
+            msg.setSubject(SUBJECT);
+            msg.setContent(text, "text/plain");
+            transport.sendMessage(msg, msg.getAllRecipients());
+            closeTransport(transport);
         } catch (MessagingException e) {
             throw new AmazonEmailException(e);
         }
-        if (sendings.size() < 50) {
-            for (String sendTo : sendings.keySet()) {
-                try {
-                    MimeMessage msg = new MimeMessage(session);
-                    msg.setFrom(new InternetAddress(auth.getSentFrom()));
-                    msg.setRecipient(Message.RecipientType.TO, new InternetAddress(sendTo));
-                    msg.setSubject(SUBJECT);
-                    msg.setContent(sendings.get(sendTo), "text/plain");
-                    transport.sendMessage(msg, msg.getAllRecipients());
-                } catch (MessagingException e) {
-                    throw new AmazonEmailException(e);
-                }
-            }
-        } else {
-            Map<String, List<String>> revertMap = new HashMap<>();
-            for (Map.Entry<String, String> entry : sendings.entrySet()) {
-                String revertKey = entry.getValue();
-                List<String> revertValue = revertMap.getOrDefault(revertKey, new ArrayList<>());
-                revertValue.add(entry.getKey());
-                revertMap.put(revertKey, revertValue);
-            }
-            for (Map.Entry<String, List<String>> entry : revertMap.entrySet()) {
-                String text = entry.getKey();
-                List<String> sendTo = entry.getValue();
-                try {
-                    InternetAddress[] addresses = (InternetAddress[]) sendTo.stream().map(address -> {
-                        try {
-                            return new InternetAddress(address);
-                        } catch (AddressException e) {
-                            throw new AmazonEmailException(e);
-                        }
-                    }).toArray();
-                    MimeMessage msg = new MimeMessage(session);
-                    msg.setFrom(new InternetAddress(auth.getSentFrom()));
-                    msg.setRecipients(Message.RecipientType.TO, addresses);
-                    msg.setSubject(SUBJECT);
-                    msg.setContent(text, "text/plain");
-                    transport.sendMessage(msg, msg.getAllRecipients());
-                } catch (MessagingException e) {
-                    throw new AmazonEmailException(e);
-                }
-            }
-        }
+    }
+
+    private void closeTransport(Transport transport) {
         try {
             transport.close();
         } catch (MessagingException e) {
-            throw new AmazonEmailException(e);
+            throw new AmazonEmailException();
         }
     }
 }

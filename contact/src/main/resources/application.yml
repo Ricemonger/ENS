@@ -5,6 +5,7 @@ spring:
     import: optional:configserver:http://localhost:8888
 
   # DEFAULT CONFIGURATION FOR STARTUP WITHOUT CONFIG SERVER
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/ens

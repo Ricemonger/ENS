@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,11 +32,12 @@ public class SendService {
 
     private final ViberSender viberSender;
 
-    private final String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE BY %S!!";
+    private final String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE!!";
 
-    public void sendOne(String token, String username, String method, String contactId, String notificationText) {
-        log.trace("sendOne method is executing with params: username-{}, method-{}, contactId-{}, notificationText-{}", username, method, contactId, notificationText);
-        String notifText = String.format(DEFAULT_TEXT_PATTERN, username);
+    public void sendOne(String token, String method, String contactId, String notificationText) {
+        log.trace("sendOne method is executing with params: token-{}, method-{}, contactId-{}, notificationText-{}",
+                token, method, contactId, notificationText);
+        String notifText = DEFAULT_TEXT_PATTERN;
         if (notificationText != null && !notificationText.isBlank()) {
             notifText = notificationText;
         } else {
@@ -51,68 +49,75 @@ public class SendService {
         }
         switch (method.toUpperCase()) {
             case "SMS":
-                send(smsSender, username, contactId, notifText);
+                send(smsSender, contactId, notifText);
                 break;
             case "EMAIL":
-                send(emailSender, username, contactId, notifText);
+                send(emailSender, contactId, notifText);
                 break;
             case "VIBER":
-                send(viberSender, username, contactId, notifText);
+                send(viberSender, contactId, notifText);
                 break;
             default:
                 throw new IllegalArgumentException("WRONG METHOD NAME");
         }
     }
 
-    public void sendAll(String token, String username) {
-        log.trace("sendAll method is executing with params: username-{}", username);
+    public void sendAll(String token) {
+        log.trace("sendAll method is executing with param: token-{}", token);
         List<Contact> contacts = contactFeignClientService.findAllById(token);
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
         List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
         Map<String, String> notifications = notificationFeignClientService.getMapByAccountId(token);
-        sendAllSms(username, smsContacts, notifications);
-        sendAllEmails(username, emailContacts, notifications);
-        sendAllViberMessages(username, viberContacts, notifications);
+        sendAllSms(smsContacts, notifications);
+        sendAllEmails(emailContacts, notifications);
+        sendAllViberMessages(viberContacts, notifications);
     }
 
-    private void sendAllViberMessages(String username, List<Contact> contacts, Map<String, String> notifications) {
-        bulkSend(viberSender, username, contacts, notifications);
+    private void sendAllViberMessages(List<Contact> contacts, Map<String, String> notifications) {
+        bulkSend(viberSender, contacts, notifications);
     }
 
-    private void sendAllSms(String username, List<Contact> contacts, Map<String, String> notifications) {
-        bulkSend(smsSender, username, contacts, notifications);
+    private void sendAllSms(List<Contact> contacts, Map<String, String> notifications) {
+        bulkSend(smsSender, contacts, notifications);
     }
 
-    private void sendAllEmails(String username, List<Contact> contacts, Map<String, String> notifications) {
-        bulkSend(emailSender, username, contacts, notifications);
+    private void sendAllEmails(List<Contact> contacts, Map<String, String> notifications) {
+        bulkSend(emailSender, contacts, notifications);
     }
 
-    private void bulkSend(Sender sender, String username, List<Contact> contacts, Map<String, String> notifications) {
-        sender.bulkSend(toSendMap(username, contacts, notifications));
+    private void bulkSend(Sender sender, List<Contact> contacts, Map<String, String> notifications) {
+        sender.bulkSend(toSendMap(contacts, notifications));
         log.trace("bulk send notifications were sent with params: sender-{}, contacts-{}, notifications-{}", sender, contacts, notifications);
     }
 
-    private void send(Sender sender, String username, String contactId, String notificationText) {
+    private void send(Sender sender, String contactId, String notificationText) {
         sender.send(contactId, notificationText);
-        log.trace("notification was sent with params: sender-{}, username-{}, contactId-{}, notificationText-{}", sender, username, contactId, notificationText);
+        log.trace("notification was sent with params: sender-{}, contactId-{}, notificationText-{}", sender, contactId, notificationText);
     }
 
-    private Map<String, String> toSendMap(String username, List<Contact> contacts, Map<String, String> notifications) {
-        Map<String, String> sendMap = new HashMap<>();
+    private Map<String, List<String>> toSendMap(List<Contact> contacts, Map<String, String> notifications) {
+        Map<String, List<String>> sendMap = new HashMap<>();
+
         for (Contact contact : contacts) {
             String sendTo = contact.getContactId();
             String notificationText;
             try {
                 notificationText = notifications.get(contact.getNotificationName());
             } catch (Exception e) {
-                notificationText = String.format(DEFAULT_TEXT_PATTERN, username);
+                notificationText = DEFAULT_TEXT_PATTERN;
             }
             if (notificationText == null || notificationText.isBlank()) {
-                notificationText = String.format(DEFAULT_TEXT_PATTERN, username);
+                notificationText = DEFAULT_TEXT_PATTERN;
             }
-            sendMap.put(sendTo, notificationText);
+            List<String> sendToList = sendMap.get(notificationText);
+            if (sendToList == null) {
+                sendToList = new ArrayList<>();
+            }
+            sendToList.add(sendTo);
+            sendMap.put(notificationText, sendToList);
         }
+
         return sendMap;
     }
 }

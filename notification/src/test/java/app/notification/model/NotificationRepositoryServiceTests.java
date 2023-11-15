@@ -4,13 +4,11 @@ import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.model.db.NotificationEntity;
 import app.notification.model.db.NotificationRepository;
 import app.notification.model.db.NotificationRepositoryService;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.Collections;
@@ -37,9 +35,6 @@ public class NotificationRepositoryServiceTests {
     private final static NotificationEntity ENTITY = new NotificationEntity(ACCOUNT_ID, NAME, TEXT);
 
     private final static NotificationEntity ANOTHER_ENTITY = new NotificationEntity(ANOTHER_ACCOUNT_ID, NAME, TEXT);
-
-    @MockBean
-    private SecurityJwtWebClient jwtUtil;
 
     @SpyBean
     private NotificationRepository repository;
