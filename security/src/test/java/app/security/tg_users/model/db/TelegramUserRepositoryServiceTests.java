@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
 
@@ -36,12 +37,18 @@ public class TelegramUserRepositoryServiceTests {
     public void saveShouldCallSaveOnRepository() {
         service.save(new TelegramUser(CHAT_ID));
 
+        assertEquals(CHAT_ID, repository.findAll().get(0).getChatId());
+
         verify(repository).save(new TelegramUserEntity(CHAT_ID));
     }
 
     @Test
     public void deleteShouldCallDeleteOnRepository() {
+        repository.save(new TelegramUserEntity(CHAT_ID));
+
         service.delete(new TelegramUser(CHAT_ID));
+
+        assertEquals(0, repository.findAll().size());
 
         verify(repository).delete(new TelegramUserEntity(CHAT_ID));
     }
@@ -55,6 +62,8 @@ public class TelegramUserRepositoryServiceTests {
 
         assertEquals(accountIdRepository, user.getAccountId());
         assertEquals(CHAT_ID, user.getChatId());
+
+        verify(repository).findById(CHAT_ID);
     }
 
     @Test
@@ -64,6 +73,8 @@ public class TelegramUserRepositoryServiceTests {
         Executable executable = () -> service.findByChatIdOrThrow(CHAT_ID);
 
         assertThrows(NoSuchElementException.class, executable);
+
+        verify(repository).findById(CHAT_ID);
     }
 
     @Test
@@ -75,6 +86,8 @@ public class TelegramUserRepositoryServiceTests {
 
         assertEquals(CHAT_ID, found.getChatId());
         assertEquals(accountIdRepository, found.getAccountId());
+
+        verify(repository).findByAnyUserEntityAccountId(accountIdRepository);
     }
 
     @Test
@@ -84,6 +97,8 @@ public class TelegramUserRepositoryServiceTests {
         Executable executable = () -> service.findByAccountIdOrThrow("ACCOUNT_ID");
 
         assertThrows(NoSuchElementException.class, executable);
+
+        verify(repository).findByAnyUserEntityAccountId("ACCOUNT_ID");
     }
 
     @Test
@@ -91,6 +106,8 @@ public class TelegramUserRepositoryServiceTests {
         repository.save(new TelegramUserEntity(CHAT_ID));
 
         assertTrue(service.existsByChatId(CHAT_ID));
+
+        verify(repository).existsById(CHAT_ID);
     }
 
     @Test
@@ -98,6 +115,8 @@ public class TelegramUserRepositoryServiceTests {
         repository.save(new TelegramUserEntity(ALTERED_CHAT_ID));
 
         assertFalse(service.existsByChatId(CHAT_ID));
+
+        verify(repository).existsById(CHAT_ID);
     }
 
     @Test
@@ -105,6 +124,8 @@ public class TelegramUserRepositoryServiceTests {
         String accountId = repository.save(new TelegramUserEntity(CHAT_ID)).getAccountId();
 
         assertTrue(service.existsByAccountId(accountId));
+
+        verify(repository).existsByAnyUserEntityAccountId(accountId);
     }
 
     @Test
@@ -112,5 +133,30 @@ public class TelegramUserRepositoryServiceTests {
         repository.save(new TelegramUserEntity(CHAT_ID));
 
         assertFalse(service.existsByAccountId("-098765432"));
+
+        verify(repository).existsByAnyUserEntityAccountId("-098765432");
+    }
+
+    @Test
+    public void findAllShouldReturnAllEntries() {
+        repository.save(new TelegramUserEntity(CHAT_ID));
+        repository.save(new TelegramUserEntity(ALTERED_CHAT_ID));
+
+        assertEquals(2, service.findAll().size());
+
+        verify(repository).findAll();
+    }
+
+    @Test
+    public void deleteAll() {
+        repository.save(new TelegramUserEntity(CHAT_ID));
+        repository.save(new TelegramUserEntity(ALTERED_CHAT_ID));
+
+        reset(repository);
+        service.deleteAll();
+
+        assertEquals(0, repository.findAll().size());
+
+        verify(repository).deleteAll();
     }
 }
