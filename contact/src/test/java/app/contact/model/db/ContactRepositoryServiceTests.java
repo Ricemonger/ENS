@@ -3,64 +3,115 @@ package app.contact.model.db;
 import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.model.Contact;
 import app.contact.model.Method;
+import app.utils.feign_clients.security.SecurityJwtWebClient;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.Collections;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class ContactRepositoryServiceTests {
 
-    private final static ContactEntity ENTITY = new ContactEntity("accountId", Method.SMS, "contactId", "notificationName");
+    private final static String ACCOUNT_ID = "1111";
 
-    private final static Contact CONTACT = new Contact("accountId", Method.SMS, "contactId", "notificationName");
+    private final static String ANOTHER_ACCOUNT_ID = "9999";
 
-    @Mock
+    private final static Method METHOD = Method.SMS;
+
+    private final static String CONTACT_ID = "contactId";
+
+    private final static String NOTIFICATION = "notificationName";
+
+    private final static Contact CONTACT = new Contact(ACCOUNT_ID, METHOD, CONTACT_ID, NOTIFICATION);
+
+    private final static ContactEntity ENTITY = new ContactEntity(ACCOUNT_ID, METHOD, CONTACT_ID, NOTIFICATION);
+
+    private final static ContactEntity ANOTHER_ENTITY = new ContactEntity(ANOTHER_ACCOUNT_ID, METHOD, CONTACT_ID, NOTIFICATION);
+
+    @MockBean
+    private SecurityJwtWebClient jwtUtil;
+
+    @SpyBean
     private ContactRepository repository;
 
-    @InjectMocks
+    @Autowired
     private ContactRepositoryService service;
+
+    @BeforeEach
+    public void setUp() {
+        repository.deleteAll();
+    }
 
     @Test
     public void save() {
         service.save(CONTACT);
 
         verify(repository).save(ENTITY);
+
+        assertEquals(new Contact(repository.findAll().get(0)), CONTACT);
     }
 
     @Test
     public void findByIdOrThrow() {
-        Executable executable = () -> service.findByIdOrThrow(CONTACT.getAccountId(), CONTACT.getMethod(),
-                CONTACT.getContactId());
+        repository.save(ENTITY);
+
+        Contact contact = service.findByIdOrThrow(ACCOUNT_ID, METHOD, CONTACT_ID);
+
+        assertEquals(new Contact(repository.findAll().get(0)), contact);
+    }
+
+    @Test
+    public void findByIdOrThrowShouldThrowIfDoesntExist() {
+        Executable executable = () -> service.findByIdOrThrow(ACCOUNT_ID, METHOD, CONTACT_ID);
 
         assertThrows(ContactDoesntExistException.class, executable);
     }
 
     @Test
     public void findAllByAccountId() {
-        service.findAllByAccountId(CONTACT.getAccountId());
+        Contact expected = new Contact(repository.save(ENTITY));
+        repository.save(ANOTHER_ENTITY);
 
-        verify(repository).findAllByAccountId(CONTACT.getAccountId());
+        List<Contact> expectedResult = Collections.singletonList(expected);
+
+        List<Contact> trueResult = service.findAllByAccountId(ACCOUNT_ID);
+
+        assertEquals(expectedResult, trueResult);
+
+        verify(repository).findAllByAccountId(ACCOUNT_ID);
     }
 
     @Test
     public void findAll() {
-        service.findAll();
+        repository.save(ENTITY);
+        repository.save(ANOTHER_ENTITY);
+
+        int size = service.findAll().size();
+
+        assertEquals(2, size);
 
         verify(repository).findAll();
     }
 
     @Test
     public void delete() {
+        repository.save(ENTITY);
+        repository.save(ANOTHER_ENTITY);
+
         service.delete(CONTACT);
+
+        assertEquals(repository.findAll(), Collections.singletonList(ANOTHER_ENTITY));
 
         verify(repository).delete(ENTITY);
     }
@@ -77,6 +128,8 @@ public class ContactRepositoryServiceTests {
     @Test
     public void deleteAllList() {
         reset(repository);
+
+        repository.save(ENTITY);
 
         service.deleteAll(Collections.singletonList(CONTACT));
 

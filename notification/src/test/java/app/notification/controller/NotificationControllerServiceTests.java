@@ -3,9 +3,9 @@ package app.notification.controller;
 import app.notification.controller.dto.NotificationCreUpdRequest;
 import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;
-import app.notification.model.db.NotificationRepositoryService;
-import app.utils.SecurityJwtWebClient;
+import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.security.SecurityJwtWebClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ public class NotificationControllerServiceTests {
     private final static Notification DELETE_NOTIFICATION = new Notification(null, "name");
 
     @Mock
-    private NotificationRepositoryService repositoryService;
+    private NotificationService notificationService;
 
     @Mock
     private SecurityJwtWebClient jwtUtil;
@@ -43,7 +43,7 @@ public class NotificationControllerServiceTests {
         controllerService.create(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).create(NOTIFICATION);
+        verify(notificationService).create(NOTIFICATION);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class NotificationControllerServiceTests {
         controllerService.update(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).update(NOTIFICATION);
+        verify(notificationService).update(NOTIFICATION);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class NotificationControllerServiceTests {
         controllerService.delete(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).delete(DELETE_NOTIFICATION);
+        verify(notificationService).delete(DELETE_NOTIFICATION);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class NotificationControllerServiceTests {
         controllerService.clear(TOKEN);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).clear(null);
+        verify(notificationService).clear(null);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class NotificationControllerServiceTests {
 
         verify(jwtUtil).extractAccountId(TOKEN);
         verify(jwtUtil).extractAccountId(ANOTHER_TOKEN);
-        verify(repositoryService).changeAccountId(null, null);
+        verify(notificationService).changeAccountId(null, null);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class NotificationControllerServiceTests {
         controllerService.findAllByAccountId(TOKEN);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).findAllByAccountId(null);
+        verify(notificationService).findAllByAccountId(null);
     }
 
     @Test
@@ -102,6 +102,6 @@ public class NotificationControllerServiceTests {
         controllerService.findAllLikePrimaryKey(TOKEN, request);
 
         verify(jwtUtil).extractAccountId(TOKEN);
-        verify(repositoryService).findAllLikePrimaryKey(null, NOTIFICATION.getName());
+        verify(notificationService).findAllLikePrimaryKey(null, NOTIFICATION.getName());
     }
 }

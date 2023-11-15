@@ -1,4 +1,4 @@
-package app.utils;
+package app.utils.feign_clients.security;
 
 public class JwtRuntimeException extends RuntimeException {
 

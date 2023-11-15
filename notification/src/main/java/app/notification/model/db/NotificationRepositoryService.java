@@ -1,6 +1,5 @@
 package app.notification.model.db;
 
-import app.notification.exceptions.NotificationAlreadyExistsException;
 import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.model.Notification;
 import lombok.RequiredArgsConstructor;
@@ -15,78 +14,58 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class NotificationRepositoryService {
 
-    private final NotificationRepository notificationRepository;
+    private final NotificationRepository repository;
 
-    public Notification create(Notification notification) {
+
+    public Notification save(Notification notification) {
+        log.trace("save method is called for notification-{}", notification);
+        return toNotification(repository.save(toEntity(notification)));
+    }
+
+    public Notification findByIdOrThrow(String accountId, String name) {
+        NotificationCompositeKey key = new NotificationCompositeKey(accountId, name);
         try {
-            getByKeyOrThrow(notification);
-        } catch (NotificationDoesntExistException e) {
-            log.trace("create method was executed with params: {}", notification);
-            return notificationRepository.save(notification);
+            Notification result = toNotification(repository.findById(key).orElseThrow());
+            log.trace("findByIdOrThrow was executed for accountId-{}, name-{} and result-{}", accountId, name, result);
+            return result;
+        } catch (NoSuchElementException e) {
+            throw new NotificationDoesntExistException();
         }
-        throw new NotificationAlreadyExistsException();
-    }
-
-    public Notification update(Notification notification) {
-        Notification dbNotification = getByKeyOrThrow(notification);
-        dbNotification.setText(notification.getText());
-        log.trace("update method was executed with params: {}", notification);
-        return notificationRepository.save(dbNotification);
-    }
-
-    public Notification delete(Notification notification) {
-        Notification dbNotification = getByKeyOrThrow(notification);
-        notificationRepository.delete(dbNotification);
-        log.trace("delete method was executed with params: {}", notification);
-        return dbNotification;
-    }
-
-    public void clear(String accountId) {
-        List<Notification> notifications = notificationRepository.findAllByAccountId(accountId);
-        notificationRepository.deleteAll(notifications);
-        log.trace("clear method was executed with accountId: {}", accountId);
-    }
-
-    public void changeAccountId(String oldAccountId, String newAccountId) {
-        List<Notification> oldNotifications = findAllByAccountId(oldAccountId);
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
-        for (Notification toDelete : oldNotifications) {
-            notificationRepository.delete(toDelete);
-            Notification toSave = new Notification();
-            toSave.setAccountId(newAccountId);
-            toSave.setText(toDelete.getText());
-            toSave.setName(toDelete.getName());
-            notificationRepository.save(toSave);
-        }
-    }
-
-    public List<Notification> findAllLikePrimaryKey(String accountId, String notificationName) {
-        List<Notification> byAccountId = findAllByAccountId(accountId);
-        List<Notification> result = byAccountId
-                .stream()
-                .filter(notification -> notification.getName().startsWith(notificationName))
-                .toList();
-        log.trace("findAllByPrimaryKey method was executed with params: accountId-{}, notificationName-{} and result:{}", accountId, notificationName, result);
-        return result;
     }
 
     public List<Notification> findAllByAccountId(String accountId) {
-        List<Notification> result = notificationRepository.findAllByAccountId(accountId);
-        log.trace("findAllByAccountId method was executed with params: accountId-{} and result:{}", accountId, result);
+        List<Notification> result =
+                repository.findAllByAccountId(accountId).stream().map(this::toNotification).toList();
+        log.trace("findAllByAccountId was executed for accountId-{} and result-{}", accountId, result);
         return result;
     }
 
-    private Notification getByKeyOrThrow(Notification notification) {
-        return getByKeyOrThrow(notification.getAccountId(), notification.getName());
+    public List<Notification> findAll() {
+        log.trace("findAll method was called");
+        return repository.findAll().stream().map(this::toNotification).toList();
     }
 
-    private Notification getByKeyOrThrow(String accountId, String notificationName) {
-        Notification result;
-        try {
-            result = notificationRepository.findById(new NotificationCompositeKey(accountId, notificationName)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new NotificationDoesntExistException(e);
-        }
-        return result;
+    public void delete(Notification notification) {
+        repository.delete(toEntity(notification));
+        log.trace("delete method was called for notification-{}", notification);
+    }
+
+    public void deleteAll(List<Notification> notifications) {
+        List<NotificationEntity> entitiesToDelete = notifications.stream().map(this::toEntity).toList();
+        repository.deleteAll(entitiesToDelete);
+        log.trace("deleteAll method was called for notifications-{}", notifications);
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
+        log.trace("deleteAll method was called");
+    }
+
+    private NotificationEntity toEntity(Notification notification) {
+        return new NotificationEntity(notification.getAccountId(), notification.getName(), notification.getText());
+    }
+
+    private Notification toNotification(NotificationEntity entity) {
+        return new Notification(entity);
     }
 }

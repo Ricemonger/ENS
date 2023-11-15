@@ -1,33 +1,50 @@
 package app.notification.model;
 
-import app.notification.model.db.NotificationCompositeKey;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.JoinColumn;
+import app.notification.model.db.NotificationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(NotificationCompositeKey.class)
 public class Notification {
-    @Id
-    @JoinColumn
-    private String accountId;
-    @Id
-    private String name;
 
-    private String text;
+    private NotificationEntity entity = new NotificationEntity();
 
     public Notification(String accountId, String name) {
-        this.accountId = accountId;
-        this.name = name;
-        this.text = "";
+        this(accountId, name, "");
+    }
+
+    public Notification(String accountId, String name, String text) {
+        entity.setAccountId(accountId);
+        entity.setName(name);
+        entity.setText(text);
+    }
+
+    public void setAccountId(String accountId) {
+        entity.setAccountId(accountId);
+    }
+
+    public String getAccountId() {
+        return entity.getAccountId();
+    }
+
+    public void setName(String name) {
+        entity.setName(name);
+    }
+
+    public String getName() {
+        return entity.getName();
+    }
+
+    public void setText(String text) {
+        entity.setText(text);
+    }
+
+    public String getText() {
+        return entity.getText();
     }
 }

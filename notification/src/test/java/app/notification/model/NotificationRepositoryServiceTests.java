@@ -1,160 +1,137 @@
 package app.notification.model;
 
-import app.notification.exceptions.NotificationAlreadyExistsException;
 import app.notification.exceptions.NotificationDoesntExistException;
+import app.notification.model.db.NotificationEntity;
 import app.notification.model.db.NotificationRepository;
 import app.notification.model.db.NotificationRepositoryService;
+import app.utils.feign_clients.security.SecurityJwtWebClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class NotificationRepositoryServiceTests {
 
-    private final static Notification NOTIFICATION = new Notification("1111", "name", "text");
+    private final static String ACCOUNT_ID = "1111";
 
-    private final static Notification ALTERED_NAME = new Notification("1111", "altered", "text");
+    private final static String ANOTHER_ACCOUNT_ID = "9999";
 
-    private final static Notification LIKE_NAME = new Notification("1111", "nameeeeee", "text");
+    private final static String NAME = "name";
 
-    private final static Notification ALTERED_TEXT = new Notification("1111", "name", "altered");
+    private final static String TEXT = "text";
 
-    private final static Notification ALTERED_ACCOUNT_ID = new Notification("9999", "name", "text");
+    private final static Notification NOTIFICATION = new Notification(ACCOUNT_ID, NAME, TEXT);
 
-    @Autowired
+    private final static NotificationEntity ENTITY = new NotificationEntity(ACCOUNT_ID, NAME, TEXT);
+
+    private final static NotificationEntity ANOTHER_ENTITY = new NotificationEntity(ANOTHER_ACCOUNT_ID, NAME, TEXT);
+
+    @MockBean
+    private SecurityJwtWebClient jwtUtil;
+
+    @SpyBean
     private NotificationRepository repository;
 
     @Autowired
     private NotificationRepositoryService service;
 
     @BeforeEach
-    void cleanUp() {
+    public void setUp() {
         repository.deleteAll();
     }
 
     @Test
-    public void createShouldSaveNotificationInDb() {
-        service.create(NOTIFICATION);
+    public void save() {
+        service.save(NOTIFICATION);
 
-        Notification inDb = repository.findAll().get(0);
+        verify(repository).save(ENTITY);
 
-        assertEquals(NOTIFICATION, inDb);
+        assertEquals(new Notification(repository.findAll().get(0)), NOTIFICATION);
     }
 
     @Test
-    public void createShouldThrowIfNotificationAlreadyExists() {
-        repository.save(NOTIFICATION);
+    public void findByIdOrThrow() {
+        repository.save(ENTITY);
 
-        Executable executable = () -> service.create(NOTIFICATION);
+        Notification notification = service.findByIdOrThrow(ACCOUNT_ID, NAME);
 
-        assertThrows(NotificationAlreadyExistsException.class, executable);
+        assertEquals(new Notification(repository.findAll().get(0)), notification);
     }
 
     @Test
-    public void updateShouldPatchNotificationInDb() {
-        repository.save(NOTIFICATION);
-
-        service.update(ALTERED_TEXT);
-
-        Notification inDb = repository.findAll().get(0);
-
-        assertEquals(ALTERED_TEXT, inDb);
-    }
-
-    @Test
-    public void updateShouldThrowIfNotificationDoesntExist() {
-        Executable executable = () -> service.update(NOTIFICATION);
+    public void findByIdOrThrowShouldThrowIfDoesntExist() {
+        Executable executable = () -> service.findByIdOrThrow(ACCOUNT_ID, NAME);
 
         assertThrows(NotificationDoesntExistException.class, executable);
     }
 
     @Test
-    public void deleteShouldRemoveNotificationFromDb() {
-        repository.save(NOTIFICATION);
+    public void findAllByAccountId() {
+        Notification expected = new Notification(repository.save(ENTITY));
+        repository.save(ANOTHER_ENTITY);
+
+        List<Notification> expectedResult = Collections.singletonList(expected);
+
+        List<Notification> trueResult = service.findAllByAccountId(ACCOUNT_ID);
+
+        assertEquals(expectedResult, trueResult);
+
+        verify(repository).findAllByAccountId(ACCOUNT_ID);
+    }
+
+    @Test
+    public void findAll() {
+        repository.save(ENTITY);
+        repository.save(ANOTHER_ENTITY);
+
+        int size = service.findAll().size();
+
+        assertEquals(2, size);
+
+        verify(repository).findAll();
+    }
+
+    @Test
+    public void delete() {
+        repository.save(ENTITY);
+        repository.save(ANOTHER_ENTITY);
 
         service.delete(NOTIFICATION);
 
-        List<Notification> shouldBeEmpty = repository.findAll();
+        assertEquals(repository.findAll(), Collections.singletonList(ANOTHER_ENTITY));
 
-        assertEquals(0, shouldBeEmpty.size());
+        verify(repository).delete(ENTITY);
     }
 
     @Test
-    public void deleteThrowsIfNotificationDoesntExist() {
-        Executable executable = () -> service.delete(NOTIFICATION);
+    public void deleteAll() {
+        reset(repository);
 
-        assertThrows(NotificationDoesntExistException.class, executable);
+        service.deleteAll();
+
+        verify(repository).deleteAll();
     }
 
     @Test
-    public void clearShouldRemoveAllEntriesByAccountId() {
-        repository.save(NOTIFICATION);
-        repository.save(ALTERED_NAME);
+    public void deleteAllList() {
+        reset(repository);
 
-        repository.save(ALTERED_ACCOUNT_ID);
+        repository.save(ENTITY);
 
-        service.clear(NOTIFICATION.getAccountId());
+        service.deleteAll(Collections.singletonList(NOTIFICATION));
 
-        List<Notification> expectedResult = Collections.singletonList(ALTERED_ACCOUNT_ID);
-        List<Notification> trueResult = repository.findAll();
-
-        assertEquals(expectedResult, trueResult);
-    }
-
-    @Test
-    public void changeAccountIdShouldChangeIds() {
-        repository.save(ALTERED_NAME);
-        repository.save(ALTERED_ACCOUNT_ID);
-
-        String oldAccountId = ALTERED_ACCOUNT_ID.getAccountId();
-        String newAccountId = ALTERED_NAME.getAccountId();
-
-        service.changeAccountId(oldAccountId, newAccountId);
-
-        List<Notification> expectedResult = new ArrayList<>();
-        expectedResult.add(ALTERED_NAME);
-        expectedResult.add(NOTIFICATION);
-        List<Notification> trueResult = repository.findAll();
-
-        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
-    }
-
-    @Test
-    public void findAllLikePrimaryKeyShouldGetAllLikePrimaryKey() {
-        repository.save(NOTIFICATION);
-        repository.save(ALTERED_NAME);
-        repository.save(LIKE_NAME);
-        repository.save(ALTERED_ACCOUNT_ID);
-
-        List<Notification> expectedResult = new ArrayList<>();
-        expectedResult.add(NOTIFICATION);
-        expectedResult.add(LIKE_NAME);
-        List<Notification> trueResult = service.findAllLikePrimaryKey(NOTIFICATION.getAccountId(), NOTIFICATION.getName());
-
-        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
-    }
-
-    @Test
-    public void findAllByAccountIdShouldGetAllByAccountId() {
-        repository.save(NOTIFICATION);
-        repository.save(ALTERED_NAME);
-        repository.save(LIKE_NAME);
-        repository.save(ALTERED_ACCOUNT_ID);
-
-        List<Notification> expectedResult = new ArrayList<>();
-        expectedResult.add(NOTIFICATION);
-        expectedResult.add(ALTERED_NAME);
-        expectedResult.add(LIKE_NAME);
-        List<Notification> trueResult = service.findAllByAccountId(NOTIFICATION.getAccountId());
-
-        assertTrue(expectedResult.containsAll(trueResult) && trueResult.containsAll(expectedResult));
+        verify(repository).deleteAll(Collections.singletonList(ENTITY));
     }
 }
