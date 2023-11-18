@@ -36,7 +36,11 @@ public class AnyUserEntity {
         if (o == null)
             return false;
         if (o instanceof AnyUserEntity entity) {
-            return this.accountId.equals(entity.getAccountId());
+            if (this.accountId != null) {
+                return this.accountId.equals(entity.getAccountId());
+            } else {
+                return entity.getAccountId() == null;
+            }
         }
         return false;
     }
