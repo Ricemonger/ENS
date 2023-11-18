@@ -75,13 +75,13 @@ public class AmazonEmailSender implements EmailSender {
         try {
             Transport transport = session.getTransport();
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
-            InternetAddress[] addresses = (InternetAddress[]) sendToList.stream().map(address -> {
+            InternetAddress[] addresses = sendToList.stream().map(address -> {
                 try {
                     return new InternetAddress(address);
                 } catch (AddressException e) {
                     throw new AmazonEmailException(e);
                 }
-            }).toArray();
+            }).toArray(InternetAddress[]::new);
             MimeMessage msg = new MimeMessage(session);
             msg.setFrom(new InternetAddress(auth.getSentFrom()));
             msg.setRecipients(Message.RecipientType.TO, addresses);

@@ -20,6 +20,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class SendService {
 
+    public final static String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE!!";
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContactFeignClientService contactFeignClientService;
@@ -31,8 +33,6 @@ public class SendService {
     private final SmsSender smsSender;
 
     private final ViberSender viberSender;
-
-    private final String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE!!";
 
     public void sendOne(String token, String method, String contactId, String notificationText) {
         log.trace("sendOne method is executing with params: token-{}, method-{}, contactId-{}, notificationText-{}",
