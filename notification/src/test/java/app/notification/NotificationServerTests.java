@@ -5,7 +5,7 @@ import app.notification.controller.NotificationControllerService;
 import app.notification.model.NotificationService;
 import app.notification.model.db.NotificationRepository;
 import app.notification.model.db.NotificationRepositoryService;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
+import app.utils.feign_clients.security.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class NotificationServerTests {
 
     @MockBean
-    private SecurityJwtWebClient securityJwtWebClient;
+    private SecurityFeignClientService securityFeignClientService;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -36,7 +36,7 @@ class NotificationServerTests {
 
     @Test
     void contextLoads() {
-        assertNotNull(securityJwtWebClient);
+        assertNotNull(securityFeignClientService);
         assertNotNull(notificationRepository);
         assertNotNull(notificationRepositoryService);
         assertNotNull(notificationControllerService);

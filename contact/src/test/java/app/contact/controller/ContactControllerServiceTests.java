@@ -8,7 +8,7 @@ import app.contact.model.Contact;
 import app.contact.model.ContactService;
 import app.contact.model.Method;
 import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
+import app.utils.feign_clients.security.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
@@ -36,7 +36,7 @@ public class ContactControllerServiceTests {
     private ContactService contactService;
 
     @Mock
-    private SecurityJwtWebClient jwtUtil;
+    private SecurityFeignClientService jwtUtil;
 
     @InjectMocks
     private ContactControllerService controllerService;

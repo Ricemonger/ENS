@@ -5,7 +5,7 @@ import app.contact.controller.ContactControllerService;
 import app.contact.model.ContactService;
 import app.contact.model.db.ContactRepository;
 import app.contact.model.db.ContactRepositoryService;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
+import app.utils.feign_clients.security.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class ContactServerTests {
 
     @Autowired
-    private SecurityJwtWebClient securityJwtWebClient;
+    private SecurityFeignClientService securityFeignClientService;
 
     @Autowired
     private ContactRepository contactRepository;
@@ -36,7 +36,7 @@ class ContactServerTests {
 
     @Test
     void contextLoads() {
-        assertNotNull(securityJwtWebClient);
+        assertNotNull(securityFeignClientService);
         assertNotNull(contactRepository);
         assertNotNull(contactRepositoryService);
         assertNotNull(contactControllerService);

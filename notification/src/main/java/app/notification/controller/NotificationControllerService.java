@@ -5,7 +5,7 @@ import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;
 import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
+import app.utils.feign_clients.security.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class NotificationControllerService {
 
     private final NotificationService notificationService;
 
-    private final SecurityJwtWebClient jwtUtil;
+    private final SecurityFeignClientService jwtUtil;
 
     public Notification create(String securityToken, NotificationCreUpdRequest request) {
         Notification notification = new Notification(jwtUtil.extractAccountId(securityToken), request.name().trim(), request.text().trim());

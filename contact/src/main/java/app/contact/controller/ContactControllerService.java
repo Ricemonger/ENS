@@ -8,7 +8,7 @@ import app.contact.model.Contact;
 import app.contact.model.ContactService;
 import app.contact.model.Method;
 import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.security.SecurityJwtWebClient;
+import app.utils.feign_clients.security.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class ContactControllerService {
 
     private final ContactService contactService;
 
-    private final SecurityJwtWebClient jwtUtil;
+    private final SecurityFeignClientService jwtUtil;
 
     public Contact create(String securityToken, ContactCreUpdRequest request) {
         Method method = getMethodOrThrow(request.method());
