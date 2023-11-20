@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: telegram
+  config:
+    import: optional:configserver:http://localhost:8888
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+application:
+  title: telegram-test
+  version: 0.1
+  config:
+    security-tg-users:
+      url: http://localhost:8080/api/security/security-tg-users
+
+server:
+  port: 8094
+
+logging:
+  level:
+    app:
+      contact: trace

@@ -81,11 +81,14 @@ public class TelegramUserServiceTests {
 
     @Test
     public void createShouldAddNewUserIfUserDoesntExist() {
-        telegramUserService.create(TOKEN);
+        String token = telegramUserService.create(TOKEN);
+        String accountId = telegramUserRepositoryService.findAll().get(0).getAccountId();
 
         verify(telegramFeignClientService).getChatId(TOKEN);
 
         verify(telegramUserRepositoryService).save(new TelegramUser(TOKEN));
+
+        assertTrue(abstractUserJwtUtil.isTokenValidAndContainsAccountId(token, accountId));
     }
 
     @Test
@@ -118,14 +121,14 @@ public class TelegramUserServiceTests {
         telegramUserRepositoryService.save(new TelegramUser(TOKEN));
         String accountId = telegramUserRepositoryService.findAll().get(0).getAccountId();
 
-        String securityToken = telegramUserService.generateSecurityToken(TOKEN);
+        String securityToken = telegramUserService.getSecurityToken(TOKEN);
 
         assertTrue(abstractUserJwtUtil.isTokenValidAndContainsAccountId(securityToken, accountId));
     }
 
     @Test
     public void generateSecurityTokenShouldThrowIfUserDoesntExist() {
-        Executable executable = () -> telegramUserService.generateSecurityToken(TOKEN);
+        Executable executable = () -> telegramUserService.getSecurityToken(TOKEN);
 
         assertThrows(UserDoesntExistException.class, executable);
     }

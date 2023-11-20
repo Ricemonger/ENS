@@ -35,15 +35,22 @@ public class TelegramUserService {
 
     private final AbstractUserJwtUtil abstractUserJwtUtil;
 
-    public TelegramUser create(String telegramToken) {
+    public String create(String telegramToken) {
         String chatId = telegramFeignClientService.getChatId(telegramToken);
         if (!doesUserExistByChatId(chatId)) {
             TelegramUser result = telegramUserRepositoryService.save(new TelegramUser(chatId));
             log.trace("create method was called with request-{} and result-{}", telegramToken, result);
-            return result;
+            return abstractUserJwtUtil.generateToken(result.getAccountId());
         } else {
             throw new UserAlreadyExistsException();
         }
+    }
+
+    public String getSecurityToken(String telegramToken) {
+        String accountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
+        String securityToken = abstractUserJwtUtil.generateToken(accountId);
+        log.trace("SecurityToken-{} was generated for accountId-{}", securityToken, accountId);
+        return securityToken;
     }
 
     public void delete(String telegramToken) {
@@ -51,13 +58,6 @@ public class TelegramUserService {
         TelegramUser inDB = getByChatIdOrThrow(chatId);
         log.trace("delete method was called with token-{} and result-{}", telegramToken, inDB);
         telegramUserRepositoryService.delete(inDB);
-    }
-
-    public String generateSecurityToken(String telegramToken) {
-        String accountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
-        String securityToken = abstractUserJwtUtil.generateToken(accountId);
-        log.trace("SecurityToken-{} was generated for accountId-{}", securityToken, accountId);
-        return securityToken;
     }
 
     public String getAccountInfo(String telegramToken) {

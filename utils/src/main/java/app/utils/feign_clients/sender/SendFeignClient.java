@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "notification", url = "${application.config.sender.url}")
+@FeignClient(name = "send", url = "${application.config.sender.url}")
 public interface SendFeignClient {
 
     @PostMapping("/one")

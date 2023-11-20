@@ -1,0 +1,20 @@
+package app.telegram.bot.commands.callbackCommand;
+
+import app.telegram.bot.BotService;
+import app.telegram.bot.commands.AbstractBotCommand;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.objects.Update;
+
+public class ClearYesBotCommand extends AbstractBotCommand {
+
+    public ClearYesBotCommand(TelegramLongPollingBot bot, Update update, BotService botService) {
+        super(bot, update, botService);
+    }
+
+    @Override
+    public void execute() {
+        String answer = "All  Contacts and Notifications were cleared";
+        botService.clear(chatId);
+        sendAnswer(answer);
+    }
+}

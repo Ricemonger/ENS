@@ -1,6 +1,5 @@
 package app.security.tg_users.controller;
 
-import app.security.tg_users.TelegramUser;
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.security.tg_users.model.TelegramUserService;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +14,16 @@ public class TelegramUserControllerService {
 
     private final TelegramUserService telegramUserService;
 
-    public TelegramUser create(String telegramToken) {
+    public String create(String telegramToken) {
         return telegramUserService.create(telegramToken);
+    }
+
+    public String getSecurityToken(String telegramToken) {
+        return telegramUserService.getSecurityToken(telegramToken);
     }
 
     public void delete(String telegramToken) {
         telegramUserService.delete(telegramToken);
-    }
-
-    public String getSecurityToken(String telegramToken) {
-        return telegramUserService.generateSecurityToken(telegramToken);
     }
 
     public String getAccountInfo(String telegramToken) {

@@ -2,7 +2,6 @@ package app.security.tg_users.controller;
 
 import app.security.abstract_users.exceptions.UserAlreadyExistsException;
 import app.security.abstract_users.exceptions.UserDoesntExistException;
-import app.security.tg_users.TelegramUser;
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.utils.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ public class TelegramUserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TelegramUser create(@RequestHeader(name = "Authorization") String telegramToken) {
+    public String create(@RequestHeader(name = "Authorization") String telegramToken) {
         return service.create(telegramToken);
     }
 

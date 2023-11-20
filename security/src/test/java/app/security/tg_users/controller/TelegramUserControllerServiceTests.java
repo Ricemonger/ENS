@@ -41,7 +41,7 @@ public class TelegramUserControllerServiceTests {
     public void getSecurityToken() {
         telegramUserControllerService.getSecurityToken(TOKEN);
 
-        verify(telegramUserService).generateSecurityToken(TOKEN);
+        verify(telegramUserService).getSecurityToken(TOKEN);
     }
 
     @Test
