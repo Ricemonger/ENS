@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "security-tg-user", url = "${application.config.security-tg-users.url}")
 public interface SecurityTelegramUserFeignClient {
 
-    @GetMapping
+    @PostMapping
     String create(@RequestHeader(name = "Authorization") String telegramToken);
 
     @DeleteMapping

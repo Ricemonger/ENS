@@ -1,9 +1,30 @@
 package app.telegram.bot;
 
-import app.telegram.bot.commands.callbackCommand.*;
-import app.telegram.bot.commands.directCommand.*;
+import app.telegram.bot.commands.Callbacks;
+import app.telegram.bot.commands.cancel.CancelCallback;
+import app.telegram.bot.commands.clear.ClearCallback;
+import app.telegram.bot.commands.clear.ClearDirect;
+import app.telegram.bot.commands.contact.*;
+import app.telegram.bot.commands.data.DataDirect;
+import app.telegram.bot.commands.data.DataRemoveCallback;
+import app.telegram.bot.commands.data.DataShowCallback;
+import app.telegram.bot.commands.help.HelpDirect;
+import app.telegram.bot.commands.invalid.InvalidCallback;
+import app.telegram.bot.commands.invalid.InvalidDirect;
+import app.telegram.bot.commands.link.LinkCallback;
+import app.telegram.bot.commands.link.LinkDirect;
+import app.telegram.bot.commands.link.UnlinkCallback;
+import app.telegram.bot.commands.notification.*;
+import app.telegram.bot.commands.send.SendDirect;
+import app.telegram.bot.commands.send.SendManyCommand;
+import app.telegram.bot.commands.send.SendOneCommand;
+import app.telegram.bot.commands.sendall.SendAllCallback;
+import app.telegram.bot.commands.sendall.SendAllDirect;
+import app.telegram.bot.commands.start.RegisterNoCallback;
+import app.telegram.bot.commands.start.RegisterYesCallback;
+import app.telegram.bot.commands.start.StartDirect;
+import app.telegram.bot.config.BotCommandsConfig;
 import app.telegram.bot.config.TelegramBotAuthorizationConfiguration;
-import app.telegram.bot.config.TelegramBotCommandsConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +45,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
 
     @Autowired
     public MyTelegramLongPollingBot(TelegramBotAuthorizationConfiguration authConfig
-            , TelegramBotCommandsConfiguration config
+            , BotCommandsConfig config
             , BotService botService) {
         super(authConfig.getAPI_TOKEN());
         this.authConfig = authConfig;
@@ -52,27 +73,52 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
 
     public void listenCommandAndExecute(Update update) {
         switch (update.getMessage().getText()) {
-            case "/start" -> new StartBotCommand(this, update, botService).execute();
-            case "/send" -> new SendBotCommand(this, update, botService).execute();
-            case "/sendall" -> new SendAllBotCommand(this, update, botService).execute();
-            case "/help" -> new HelpBotCommand(this, update, botService).execute();
-            case "/contact" -> new ContactBotCommand(this, update, botService).execute();
-            case "/notification" -> new NotificationBotCommand(this, update, botService).execute();
-            case "/clear" -> new ClearBotCommand(this, update, botService).execute();
-            case "/link" -> new LinkBotCommand(this, update, botService).execute();
-            case "/data" -> new DataBotCommand(this, update, botService).execute();
-            default -> new InvalidBotCommand(this, update, botService).execute();
+            case "/start" -> new StartDirect(this, update, botService).execute();
+            case "/send" -> new SendDirect(this, update, botService).execute();
+            case "/sendall" -> new SendAllDirect(this, update, botService).execute();
+            case "/help" -> new HelpDirect(this, update, botService).execute();
+            case "/contact" -> new ContactDirect(this, update, botService).execute();
+            case "/notification" -> new NotificationDirect(this, update, botService).execute();
+            case "/clear" -> new ClearDirect(this, update, botService).execute();
+            case "/link" -> new LinkDirect(this, update, botService).execute();
+            case "/data" -> new DataDirect(this, update, botService).execute();
+            default -> new InvalidDirect(this, update, botService).execute();
         }
     }
 
     public void listenQueryAndExecute(Update update) {
         switch (update.getCallbackQuery().getData()) {
-            case "REGISTER_YES" -> new RegisterYesBotCommand(this, update, botService).execute();
-            case "REGISTER_NO" -> new RegisterNoBotCommand(this, update, botService).execute();
-            case "SEND_ALL_YES" -> new SendAllYesBotCommand(this, update, botService).execute();
-            case "CLEAR_YES" -> new ClearYesBotCommand(this, update, botService).execute();
-            case "SEND_ALL_NO", "CLEAR_NO" -> new CancelBotCommand(this, update, botService).execute();
-            default -> new InvalidCallbackBotCommand(this, update, botService).execute();
+            case Callbacks.REGISTER_YES -> new RegisterYesCallback(this, update, botService).execute();
+            case Callbacks.REGISTER_NO -> new RegisterNoCallback(this, update, botService).execute();
+
+            case Callbacks.SEND_ONE -> new SendOneCommand(this, update, botService).execute();
+            case Callbacks.SEND_MANY -> new SendManyCommand(this, update, botService).execute();
+
+            case Callbacks.SEND_ALL -> new SendAllCallback(this, update, botService).execute();
+
+            case Callbacks.CONTACT_ADD_ONE -> new ContactAddOneCallback(this, update, botService).execute();
+            case Callbacks.CONTACT_ADD_MANY -> new ContactAddManyCallback(this, update, botService).execute();
+            case Callbacks.CONTACT_REMOVE_ONE -> new ContactRemoveOneCallback(this, update, botService).execute();
+            case Callbacks.CONTACT_REMOVE_MANY -> new ContactRemoveManyCallback(this, update, botService).execute();
+
+            case Callbacks.NOTIFICATION_ADD_ONE -> new NotificationAddOneCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_ADD_MANY -> new NotificationAddManyCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_REMOVE_ONE ->
+                    new NotificationRemoveOneCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_REMOVE_MANY ->
+                    new NotificationRemoveManyCallback(this, update, botService).execute();
+
+            case Callbacks.DATA_SHOW -> new DataShowCallback(this, update, botService).execute();
+            case Callbacks.DATA_REMOVE -> new DataRemoveCallback(this, update, botService).execute();
+
+            case Callbacks.CLEAR -> new ClearCallback(this, update, botService).execute();
+
+            case Callbacks.LINK -> new LinkCallback(this, update, botService).execute();
+            case Callbacks.UNLINK -> new UnlinkCallback(this, update, botService).execute();
+
+            case Callbacks.CANCEL -> new CancelCallback(this, update, botService).execute();
+
+            default -> new InvalidCallback(this, update, botService).execute();
         }
     }
 }

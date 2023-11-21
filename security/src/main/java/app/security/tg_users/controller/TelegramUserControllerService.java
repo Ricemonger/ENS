@@ -15,6 +15,7 @@ public class TelegramUserControllerService {
     private final TelegramUserService telegramUserService;
 
     public String create(String telegramToken) {
+        log.trace("create method was called with token-{}", telegramToken);
         return telegramUserService.create(telegramToken);
     }
 

@@ -30,7 +30,11 @@ spring:
         - id: security
           uri: http://localhost:8093
           predicates:
-            - Path=/api/users/**, /api/security/**, /api/tg-users/**
+            - Path=/api/users/**, /api/security/**, /api/security-tg-users/**
+        - id: telegram
+          uri: http://localhost:8094
+          predicates:
+            - Path=/api/telegram/**
 
 application:
   title: gateway

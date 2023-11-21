@@ -25,10 +25,18 @@ public abstract class AbstractBotCommand {
         this.bot = bot;
         this.update = update;
         this.botService = botService;
-        this.chatId = update.getMessage().getChatId();
+        if (update.hasMessage()) {
+            this.chatId = update.getMessage().getChatId();
+        } else {
+            this.chatId = update.getCallbackQuery().getMessage().getChatId();
+        }
     }
 
     public abstract void execute();
+
+    protected final String askString() {
+        return null;
+    }
 
     protected final void executeCommandIfUserExistsOrAskToRegister(MyFunctionalInterface functionalInterface) {
         if (isUserInDb(chatId)) {
@@ -40,22 +48,24 @@ public abstract class AbstractBotCommand {
 
     protected final void askUserToRegister() {
         String answer = "You're not registered in bot.\n Would you like to register?";
-        sendAnswer(answer);
-        askYesOrNoFromInlineKeyboard("REGISTER_YES", "REGISTER_NO");
+        askYesOrNoFromInlineKeyboard(answer, Callbacks.REGISTER_YES, Callbacks.REGISTER_NO);
     }
 
-    protected final void askYesOrNoFromInlineKeyboard(String yesCallbackData, String noCallbackData) {
+    protected final void askYesOrNoFromInlineKeyboard(String text, String yesCallbackData,
+                                                      String noCallbackData) {
         CallbackButton yesButton = new CallbackButton("Yes", yesCallbackData);
         CallbackButton noButton = new CallbackButton("No", noCallbackData);
-        askFromInlineKeyboard(2, yesButton, noButton);
+        askFromInlineKeyboard(text, 2, yesButton, noButton);
     }
 
-    protected final void askFromInlineKeyboard(int buttonsInLine, CallbackButton... buttons) {
+    protected final void askFromInlineKeyboard(String text, int buttonsInLine, CallbackButton... buttons) {
         InlineKeyboardMarkup inlineKeyboardMarkup = createInlineKeyboardMarkup(buttonsInLine, buttons);
 
         SendMessage sendMessage = new SendMessage();
+        sendMessage.setText(text);
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+
         executeMessage(sendMessage);
     }
 
@@ -71,7 +81,7 @@ public abstract class AbstractBotCommand {
             inlineButton.setCallbackData(button.data());
             inlineButtonsList.add(inlineButton);
             if (counter % buttonsInLine == 0) {
-                inlineButtonRowsList.add(inlineButtonsList);
+                inlineButtonRowsList.add(List.copyOf(inlineButtonsList));
                 inlineButtonsList.clear();
             }
         }

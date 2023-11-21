@@ -12,6 +12,7 @@ public class TelegramFeignClientService {
     private final TelegramFeignClient telegramFeignClient;
 
     public String getChatId(String telegramToken) {
+        log.trace("getChatId method was called with token-{}", telegramToken);
         return telegramFeignClient.getChatId(telegramToken);
     }
 }

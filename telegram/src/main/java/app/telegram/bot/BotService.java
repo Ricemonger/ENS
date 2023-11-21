@@ -1,5 +1,7 @@
 package app.telegram.bot;
 
+import app.telegram.bot.exceptions.ClearingException;
+import app.telegram.bot.exceptions.SendingException;
 import app.telegram.bot.feign_clients.ContactFeignClientServiceWrapper;
 import app.telegram.bot.feign_clients.NotificationFeignClientServiceWrapper;
 import app.telegram.bot.feign_clients.SendFeignClientServiceWrapper;
@@ -32,7 +34,12 @@ public class BotService {
     }
 
     public void sendAll(Long chatId) {
-        sendFeignClientServiceWrapper.sendAll(chatId);
+        try {
+            sendFeignClientServiceWrapper.sendAll(chatId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SendingException();
+        }
     }
 
     public void sendOne(Long chatId, Contact contact) {
@@ -69,8 +76,13 @@ public class BotService {
     }
 
     public void clear(Long chatId) {
-        notificationFeignClientServiceWrapper.clear(chatId);
-        contactFeignClientServiceWrapper.clear(chatId);
+        try {
+            notificationFeignClientServiceWrapper.clear(chatId);
+            contactFeignClientServiceWrapper.clear(chatId);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw new ClearingException();
+        }
     }
 
     public boolean isLinked(Long chatId) {

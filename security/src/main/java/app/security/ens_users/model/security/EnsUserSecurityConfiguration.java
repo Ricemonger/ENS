@@ -48,7 +48,7 @@ public class EnsUserSecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/users/login", "/api/users/register", "/api/tg-users")
+                .requestMatchers("/api/users/login", "/api/users/register", "/api/security-tg-users")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
