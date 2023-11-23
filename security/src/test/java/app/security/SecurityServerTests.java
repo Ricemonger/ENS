@@ -12,7 +12,6 @@ import app.security.ens_users.model.EnsUserService;
 import app.security.ens_users.model.db.EnsUserRepository;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
 import app.security.ens_users.model.security.EnsUserDetailsService;
-import app.security.ens_users.model.security.EnsUserJwtAuthFilter;
 import app.security.ens_users.model.security.EnsUserPasswordEncoderConfiguration;
 import app.security.ens_users.model.security.EnsUserSecurityConfiguration;
 import app.security.tg_users.controller.TelegramUserController;
@@ -69,9 +68,6 @@ public class SecurityServerTests {
     private EnsUserDetailsService ensUserDetailsService;
 
     @Autowired
-    private EnsUserJwtAuthFilter ensUserJwtAuthFilter;
-
-    @Autowired
     private EnsUserPasswordEncoderConfiguration ensUserPasswordEncoderConfiguration;
 
     @Autowired
@@ -125,7 +121,6 @@ public class SecurityServerTests {
         assertNotNull(ensUserRepositoryService);
         assertNotNull(ensUserRepository);
         assertNotNull(ensUserDetailsService);
-        assertNotNull(ensUserJwtAuthFilter);
         assertNotNull(ensUserPasswordEncoderConfiguration);
         assertNotNull(ensUserSecurityConfiguration);
         assertNotNull(telegramUserController);

@@ -46,4 +46,8 @@ public class TelegramUserControllerService {
     public boolean isLinked(String telegramToken) {
         return telegramUserService.isLinked(telegramToken);
     }
+
+    public boolean doesUserExists(String telegramToken) {
+        return telegramUserService.doesUserExists(telegramToken);
+    }
 }

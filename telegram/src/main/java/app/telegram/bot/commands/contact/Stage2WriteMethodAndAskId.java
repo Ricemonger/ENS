@@ -2,20 +2,18 @@ package app.telegram.bot.commands.contact;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.users.model.InputGroup;
+import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class ContactAddOneCallback extends AbstractBotCommand {
+public class Stage2WriteMethodAndAskId extends AbstractBotCommand {
 
-    public ContactAddOneCallback(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public Stage2WriteMethodAndAskId(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void execute() {
-        botService.setNextInputGroup(chatId, InputGroup.CONTACT_ADD_ONE);
-
-        new Stage1AskMethod(bot, update, botService).execute();
+        processInput(InputState.CONTACT_METHOD, InputState.CONTACT_CONTACT_ID, "Please input ContactId(Phone or Email):");
     }
 }

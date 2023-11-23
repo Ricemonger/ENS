@@ -21,11 +21,6 @@ public class ContactFeignClientServiceWrapper {
         return contactFeignClientService.findAllById(securityToken);
     }
 
-    public void addMany(Long chatId, List<Contact> contacts) {
-        String securityToken = getSecurityToken(chatId);
-        contactFeignClientService.addMany(securityToken, contacts);
-    }
-
     public void addOne(Long chatId, Contact contact) {
         String securityToken = getSecurityToken(chatId);
         contactFeignClientService.addOne(securityToken, contact);

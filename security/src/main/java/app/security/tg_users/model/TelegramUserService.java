@@ -122,6 +122,12 @@ public class TelegramUserService {
         log.trace("unlinkWithDataToEns method was called with token-{}", telegramToken);
     }
 
+    public boolean doesUserExists(String telegramToken) {
+        boolean result = doesUserExistByChatId(telegramFeignClientService.getChatId(telegramToken));
+        log.trace("doesUserExists method was called for token-{} and with result-{}", telegramToken, result);
+        return result;
+    }
+
     private String recreateWithNewAccountId(String accountId, String chatId) {
         telegramUserRepositoryService.delete(new TelegramUser(chatId));
         return telegramUserRepositoryService.save(new TelegramUser(accountId, chatId)).getAccountId();

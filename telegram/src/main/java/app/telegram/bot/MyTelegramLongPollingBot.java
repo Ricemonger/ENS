@@ -14,7 +14,10 @@ import app.telegram.bot.commands.invalid.InvalidDirect;
 import app.telegram.bot.commands.link.LinkCallback;
 import app.telegram.bot.commands.link.LinkDirect;
 import app.telegram.bot.commands.link.UnlinkCallback;
-import app.telegram.bot.commands.notification.*;
+import app.telegram.bot.commands.notification.NotificationAddOneCallback;
+import app.telegram.bot.commands.notification.NotificationDirect;
+import app.telegram.bot.commands.notification.NotificationRemoveManyCallback;
+import app.telegram.bot.commands.notification.NotificationRemoveOneCallback;
 import app.telegram.bot.commands.send.SendDirect;
 import app.telegram.bot.commands.send.SendManyCommand;
 import app.telegram.bot.commands.send.SendOneCommand;
@@ -25,6 +28,7 @@ import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
 import app.telegram.bot.config.BotCommandsConfig;
 import app.telegram.bot.config.TelegramBotAuthorizationConfiguration;
+import app.telegram.users.model.InputGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,6 +37,8 @@ import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import java.util.Objects;
 
 
 @Slf4j
@@ -44,9 +50,10 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     private final BotService botService;
 
     @Autowired
-    public MyTelegramLongPollingBot(TelegramBotAuthorizationConfiguration authConfig
-            , BotCommandsConfig config
-            , BotService botService) {
+    public MyTelegramLongPollingBot(
+            TelegramBotAuthorizationConfiguration authConfig,
+            BotCommandsConfig config,
+            BotService botService) {
         super(authConfig.getAPI_TOKEN());
         this.authConfig = authConfig;
         this.botService = botService;
@@ -65,13 +72,26 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
-            listenCommandAndExecute(update);
+            InputGroup inputGroup = botService.geUserInputGroup(update.getMessage().getChatId());
+
+            if (inputGroup == InputGroup.BASE) {
+                listenCommandAndExecute(update);
+            } else {
+                listenUserInputAndExecute(inputGroup, update);
+            }
+
         } else if (update.hasCallbackQuery()) {
             listenQueryAndExecute(update);
         }
     }
 
-    public void listenCommandAndExecute(Update update) {
+    private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
+        if (Objects.requireNonNull(inputGroup) == InputGroup.CONTACT_ADD_ONE) {
+            new ContactAddOneChain(this, update, botService).execute();
+        }
+    }
+
+    private void listenCommandAndExecute(Update update) {
         switch (update.getMessage().getText()) {
             case "/start" -> new StartDirect(this, update, botService).execute();
             case "/send" -> new SendDirect(this, update, botService).execute();
@@ -86,7 +106,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
         }
     }
 
-    public void listenQueryAndExecute(Update update) {
+    private void listenQueryAndExecute(Update update) {
         switch (update.getCallbackQuery().getData()) {
             case Callbacks.REGISTER_YES -> new RegisterYesCallback(this, update, botService).execute();
             case Callbacks.REGISTER_NO -> new RegisterNoCallback(this, update, botService).execute();
@@ -97,12 +117,13 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.SEND_ALL -> new SendAllCallback(this, update, botService).execute();
 
             case Callbacks.CONTACT_ADD_ONE -> new ContactAddOneCallback(this, update, botService).execute();
-            case Callbacks.CONTACT_ADD_MANY -> new ContactAddManyCallback(this, update, botService).execute();
+            case Callbacks.CONTACT_ADD_ONE_FINISH ->
+                    new ContactAddOneFinishCallback(this, update, botService).execute();
+
             case Callbacks.CONTACT_REMOVE_ONE -> new ContactRemoveOneCallback(this, update, botService).execute();
             case Callbacks.CONTACT_REMOVE_MANY -> new ContactRemoveManyCallback(this, update, botService).execute();
 
             case Callbacks.NOTIFICATION_ADD_ONE -> new NotificationAddOneCallback(this, update, botService).execute();
-            case Callbacks.NOTIFICATION_ADD_MANY -> new NotificationAddManyCallback(this, update, botService).execute();
             case Callbacks.NOTIFICATION_REMOVE_ONE ->
                     new NotificationRemoveOneCallback(this, update, botService).execute();
             case Callbacks.NOTIFICATION_REMOVE_MANY ->

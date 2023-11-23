@@ -1,10 +1,13 @@
 package app.security.ens_users.model.db;
 
+import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.ens_users.EnsUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -27,7 +30,11 @@ public class EnsUserRepositoryService {
     }
 
     public EnsUser findByAccountIdOrThrow(String accountId) {
-        return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
+        try {
+            return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
+        } catch (NoSuchElementException e) {
+            throw new UserDoesntExistException();
+        }
     }
 
     public void deleteAll() {

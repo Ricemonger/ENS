@@ -32,4 +32,4 @@ eureka:
 logging:
   level:
     app:
-      sender: trace
+      telegram: trace

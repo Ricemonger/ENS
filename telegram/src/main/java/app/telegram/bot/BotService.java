@@ -5,17 +5,27 @@ import app.telegram.bot.exceptions.SendingException;
 import app.telegram.bot.feign_clients.ContactFeignClientServiceWrapper;
 import app.telegram.bot.feign_clients.NotificationFeignClientServiceWrapper;
 import app.telegram.bot.feign_clients.SendFeignClientServiceWrapper;
+import app.telegram.users.model.InputGroup;
+import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.contact.Contact;
+import app.utils.feign_clients.contact.Method;
 import app.utils.feign_clients.notification.Notification;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BotService {
+
+    private final Map<String, Map<InputState, String>> inputsMap = new HashMap<>();
 
     private final TelegramUserService telegramUserService;
 
@@ -89,12 +99,9 @@ public class BotService {
         return telegramUserService.isLinked(chatId);
     }
 
-    public void addManyContacts(Long chatId, List<Contact> contacts) {
-        contactFeignClientServiceWrapper.addMany(chatId, contacts);
-    }
-
-    public void addOneContact(Long chatId, Contact contact) {
-        contactFeignClientServiceWrapper.addOne(chatId, contact);
+    public void addContactFromInputMap(Long chatId) {
+        contactFeignClientServiceWrapper.addOne(chatId, getContactFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
     public void removeManyContacts(Long chatId, List<Contact> contacts) {
@@ -103,10 +110,6 @@ public class BotService {
 
     public void removeOneContact(Long chatId, Contact contact) {
         contactFeignClientServiceWrapper.removeOne(chatId, contact);
-    }
-
-    public void addManyNotifications(Long chatId, List<Notification> notifications) {
-        notificationFeignClientServiceWrapper.addMany(chatId, notifications);
     }
 
     public void addOneNotification(Long chatId, Notification notification) {
@@ -119,5 +122,49 @@ public class BotService {
 
     public void removeOneNotifications(Long chatId, Notification notification) {
         notificationFeignClientServiceWrapper.removeOne(chatId, notification);
+    }
+
+    public void setNextInputGroup(Long chatId, InputGroup inputGroup) {
+        telegramUserService.setNextInputGroup(chatId, inputGroup);
+    }
+
+    public void setNextInput(Long chatId, InputState inputState) {
+        telegramUserService.setNextInput(chatId, inputState);
+    }
+
+    public void saveInput(Long chatId, InputState inputState, String inputText) {
+        String keyChatId = String.valueOf(chatId);
+
+        Map<InputState, String> oldInput = inputsMap.get(keyChatId);
+
+        if (oldInput == null) {
+            oldInput = new HashMap<>();
+        }
+
+        oldInput.put(inputState, inputText);
+
+        inputsMap.put(keyChatId, oldInput);
+    }
+
+    public void clearInputs(Long chatId) {
+        inputsMap.put(String.valueOf(chatId), new HashMap<>());
+    }
+
+    public InputGroup geUserInputGroup(Long chatId) {
+        return telegramUserService.getInputGroup(chatId);
+    }
+
+    public InputState geUserInputState(Long chatId) {
+        return telegramUserService.getInputState(chatId);
+    }
+
+    public Contact getContactFromInputsMap(Long chatId) {
+        Map<InputState, String> contactMap = inputsMap.get(String.valueOf(chatId));
+
+        Method method = Method.valueOf(contactMap.get(InputState.CONTACT_METHOD).trim().toUpperCase(Locale.ROOT));
+        String contactId = contactMap.get(InputState.CONTACT_CONTACT_ID);
+        String notificationName = contactMap.get(InputState.CONTACT_NOTIFICATION_NAME);
+
+        return new Contact(method, contactId, notificationName);
     }
 }

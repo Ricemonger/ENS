@@ -68,15 +68,6 @@ public class ContactFeignClientServiceTests {
     }
 
     @Test
-    public void addMany() {
-        contactFeignClientService.addMany(TOKEN, CONTACTS);
-
-        for (Contact contact : CONTACTS) {
-            verify(contactFeignClient).create(TOKEN, contact);
-        }
-    }
-
-    @Test
     public void addOne() {
         contactFeignClientService.addOne(TOKEN, CONTACT);
 

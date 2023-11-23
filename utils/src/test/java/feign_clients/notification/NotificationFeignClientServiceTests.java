@@ -85,15 +85,6 @@ public class NotificationFeignClientServiceTests {
     }
 
     @Test
-    public void addMany() {
-        notificationFeignClientService.addMany(TOKEN, NOTIFICATIONS);
-
-        for (Notification notification : NOTIFICATIONS) {
-            verify(notificationFeignClient).create(TOKEN, notification);
-        }
-    }
-
-    @Test
     public void addOne() {
         notificationFeignClientService.addOne(TOKEN, NOTIFICATION);
 

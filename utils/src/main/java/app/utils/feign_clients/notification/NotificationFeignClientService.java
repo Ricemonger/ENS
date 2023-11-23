@@ -38,14 +38,6 @@ public class NotificationFeignClientService {
         return list;
     }
 
-    public void addMany(String securityToken, List<Notification> notifications) {
-        for (Notification notification : notifications) {
-            notificationFeignClient.create(securityToken, notification);
-        }
-        log.trace("NotificationFeignClient's method addMany was executed with params: jwt-{} and notifications:{}",
-                securityToken, notifications);
-    }
-
     public void addOne(String securityToken, Notification notification) {
         notificationFeignClient.create(securityToken, notification);
         log.trace("NotificationFeignClient's method addOne was executed with params: jwt-{} and notification:{}",

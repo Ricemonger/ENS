@@ -32,14 +32,6 @@ public class ContactFeignClientService {
         return result;
     }
 
-    public void addMany(String securityToken, List<Contact> contacts) {
-        for (Contact contact : contacts) {
-            contactFeignClient.create(securityToken, contact);
-        }
-        log.trace("contactClient's method addMany was executed with params: jwt-{} and contacts:{}",
-                securityToken, contacts);
-    }
-
     public void addOne(String securityToken, Contact contact) {
         contactFeignClient.create(securityToken, contact);
         log.trace("contactClient's method addOne was executed with params: jwt-{} and contact:{}",

@@ -38,4 +38,8 @@ public class SecurityTelegramUserFeignClientService {
     public String getAccountInfo(String telegramToken) {
         return securityTelegramUserFeignClient.getAccountInfo(telegramToken);
     }
+
+    public boolean doesUserExists(String telegramToken) {
+        return securityTelegramUserFeignClient.doesUserExists(telegramToken);
+    }
 }

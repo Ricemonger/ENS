@@ -21,11 +21,6 @@ public class NotificationFeignClientServiceWrapper {
         return notificationFeignClientService.findAllById(securityToken);
     }
 
-    public void addMany(Long chatId, List<Notification> notifications) {
-        String securityToken = getSecurityToken(chatId);
-        notificationFeignClientService.addMany(securityToken, notifications);
-    }
-
     public void addOne(Long chatId, Notification notification) {
         String securityToken = getSecurityToken(chatId);
         notificationFeignClientService.addOne(securityToken, notification);

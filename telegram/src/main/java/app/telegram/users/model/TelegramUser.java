@@ -5,29 +5,27 @@ import app.telegram.users.model.db.TelegramUserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class TelegramUser {
 
     private TelegramUserEntity entity = new TelegramUserEntity();
 
-    public TelegramUser(String chatId) {
-        entity.setChatId(chatId);
-    }
-
     public TelegramUser(String chatId, String telegramToken, Date telegramTokenExpiration, String securityToken,
                         Date securityTokenExpiration) {
-        entity.setChatId(chatId);
+        this(chatId);
         entity.setTempTelegramToken(telegramToken);
         entity.setTempTelegramTokenExpirationTime(telegramTokenExpiration);
         entity.setTempSecurityToken(securityToken);
         entity.setTempSecurityTokenExpirationTime(securityTokenExpiration);
+    }
+
+    public TelegramUser(String chatId) {
+        entity.setChatId(chatId);
     }
 
     public void setChatId(String chatId) {
@@ -68,6 +66,22 @@ public class TelegramUser {
 
     public Date getTempSecurityTokenExpirationTime() {
         return entity.getTempSecurityTokenExpirationTime();
+    }
+
+    public InputState getInputState() {
+        return entity.getInputState();
+    }
+
+    public void setInputState(InputState inputState) {
+        entity.setInputState(inputState);
+    }
+
+    public InputGroup getInputGroup() {
+        return entity.getInputGroup();
+    }
+
+    public void setInputGroup(InputGroup inputGroup) {
+        entity.setInputGroup(inputGroup);
     }
 
 }

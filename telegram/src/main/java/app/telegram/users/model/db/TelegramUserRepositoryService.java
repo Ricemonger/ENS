@@ -53,7 +53,9 @@ public class TelegramUserRepositoryService {
                 telegramUser.getTempTelegramToken(),
                 telegramUser.getTempTelegramTokenExpirationTime(),
                 telegramUser.getTempSecurityToken(),
-                telegramUser.getTempSecurityTokenExpirationTime());
+                telegramUser.getTempSecurityTokenExpirationTime(),
+                telegramUser.getInputState(),
+                telegramUser.getInputGroup());
     }
 
     private TelegramUser toUser(TelegramUserEntity entity) {

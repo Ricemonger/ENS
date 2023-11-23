@@ -17,6 +17,12 @@ public class TelegramUserController {
 
     private final TelegramUserControllerService service;
 
+    @GetMapping
+    public boolean doesUserExists(@RequestHeader(name = "Authorization") String telegramToken) {
+        log.trace("doesUserExists method was called with token-{}", telegramToken);
+        return service.doesUserExists(telegramToken);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestHeader(name = "Authorization") String telegramToken) {

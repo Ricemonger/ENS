@@ -11,12 +11,11 @@ public class Callbacks {
     public static final String SEND_ALL = "SEND_ALL";
 
     public static final String CONTACT_ADD_ONE = "CONTACT_ADD_ONE";
-    public static final String CONTACT_ADD_MANY = "CONTACT_ADD_MANY";
+    public static final String CONTACT_ADD_ONE_FINISH = "CONTACT_ADD_ONE_FINISH";
     public static final String CONTACT_REMOVE_ONE = "CONTACT_REMOVE_ONE";
     public static final String CONTACT_REMOVE_MANY = "CONTACT_REMOVE_MANY";
 
     public static final String NOTIFICATION_ADD_ONE = "NOTIFICATION_ADD_ONE";
-    public static final String NOTIFICATION_ADD_MANY = "NOTIFICATION_ADD_MANY";
     public static final String NOTIFICATION_REMOVE_ONE = "NOTIFICATION_REMOVE_ONE";
     public static final String NOTIFICATION_REMOVE_MANY = "NOTIFICATION_REMOVE_MANY";
 
@@ -29,4 +28,5 @@ public class Callbacks {
     public static final String UNLINK = "UNLINK";
 
     public static final String CANCEL = "CANCEL";
+
 }

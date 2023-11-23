@@ -13,11 +13,12 @@ public class BotCommandsConfig {
 
     public static final String SEND_HELP_MESSAGE = """
                         Send methods:
-                            Send to one contact
+                            Send to one contact by:
+                                method + contact identifier + notification text
                             Send to many contacts by filters:
                                 contacting method[SMS,VIBER,EMAIL,TELEGRAM]
-                                contact identifier(full or partial)
-                                notification template name(full or partial)
+                                method + contact identifier(partial)
+                                notification template name(partial)
             """;
 
     public static final String CONTACT_HELP_MESSAGE = """
@@ -27,8 +28,8 @@ public class BotCommandsConfig {
                Delete one contact
                Delete multiple contacts by following filters:
                    contacting method[SMS,VIBER,EMAIL,TELEGRAM]
-                   contact identifier(full or partial)
-                   notification template name(full or partial)
+                   method + contact identifier(partial)
+                   notification template name(partial)
             """;
 
     public static final String NOTIFICATION_HELP_MESSAGE = """
@@ -37,8 +38,8 @@ public class BotCommandsConfig {
                Add multiple notification templates
                Delete one notification template
                Delete multiple notification templates by following filters:
-                   notification template name(full or partial)
-                   notification template text(full or partial)
+                   notification template name(partial)
+                   notification template text(partial)
             """;
 
     public static final String DATA_HELP_MESSAGE = """

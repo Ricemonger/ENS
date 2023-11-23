@@ -20,10 +20,9 @@ public class LinkCallback extends AbstractBotCommand {
                 String password;
                 sendAnswer("Linking your telegram account to your ENS account...");
                 sendAnswer("Please enter your ENS account's username:");
-                username = askString();
+
                 sendAnswer("Please enter your ENS account's password:");
-                password = askString();
-                botService.link(chatId, username, password);
+
             } catch (LinkingException e) {
                 sendAnswer("Error occurred during linking operation");
             }

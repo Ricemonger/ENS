@@ -1,9 +1,8 @@
 package app.telegram.users.model.db;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import app.telegram.users.model.InputGroup;
+import app.telegram.users.model.InputState;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +30,20 @@ public class TelegramUserEntity {
 
     @Column(columnDefinition = "TIMESTAMP")
     private Date tempSecurityTokenExpirationTime;
+
+    @Enumerated(value = EnumType.STRING)
+    private InputState inputState = InputState.BASE;
+
+    @Enumerated(value = EnumType.STRING)
+    private InputGroup inputGroup = InputGroup.BASE;
+
+    public TelegramUserEntity(String chatId, String tgToken, Date tgTokenExp, String secToken, Date secTokenExp) {
+        this(chatId);
+        this.tempTelegramToken = tgToken;
+        this.tempTelegramTokenExpirationTime = tgTokenExp;
+        this.tempSecurityToken = secToken;
+        this.tempSecurityTokenExpirationTime = secTokenExp;
+    }
 
     public TelegramUserEntity(String chatId) {
         this.chatId = chatId;
@@ -77,7 +90,11 @@ public class TelegramUserEntity {
                         this.tempSecurityTokenExpirationTime.getTime() == entity.tempSecurityTokenExpirationTime.getTime();
             }
 
-            return chatIdEq && tgTokEq && tgTokExpEq && scTokEq && scTokExpEq;
+            boolean inputStateEq = this.inputState == entity.inputState;
+
+            boolean inputGroupEq = this.inputGroup == entity.inputGroup;
+
+            return chatIdEq && tgTokEq && tgTokExpEq && scTokEq && scTokExpEq && inputStateEq && inputGroupEq;
 
         } else {
             return false;
