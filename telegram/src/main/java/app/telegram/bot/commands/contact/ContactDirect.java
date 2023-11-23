@@ -20,7 +20,7 @@ public class ContactDirect extends AbstractBotCommand {
         sendAnswer(answer);
         String question = "What would you like to do?";
         CallbackButton[] buttons = new CallbackButton[3];
-        buttons[0] = new CallbackButton("Add one", Callbacks.CONTACT_ADD_ONE);
+        buttons[0] = new CallbackButton("Add one", Callbacks.CONTACT_ADD);
         buttons[1] = new CallbackButton("Delete one", Callbacks.CONTACT_REMOVE_ONE);
         buttons[2] = new CallbackButton("Delete many", Callbacks.CONTACT_REMOVE_MANY);
         askFromInlineKeyboard(question, 1, buttons);

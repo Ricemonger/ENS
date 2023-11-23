@@ -1,13 +1,13 @@
-package app.telegram.bot.commands.contact;
+package app.telegram.bot.commands.contact.add;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class ContactAddOneFinishCallback extends AbstractBotCommand {
+public class ContactAddFinishCallback extends AbstractBotCommand {
 
-    public ContactAddOneFinishCallback(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public ContactAddFinishCallback(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 

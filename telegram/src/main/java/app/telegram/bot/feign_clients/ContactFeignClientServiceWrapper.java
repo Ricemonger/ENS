@@ -26,9 +26,9 @@ public class ContactFeignClientServiceWrapper {
         contactFeignClientService.addOne(securityToken, contact);
     }
 
-    public void removeMany(Long chatId, List<Contact> contacts) {
+    public void removeMany(Long chatId, Contact contactFilters) {
         String securityToken = getSecurityToken(chatId);
-        contactFeignClientService.removeMany(securityToken, contacts);
+        contactFeignClientService.removeMany(securityToken, contactFilters);
     }
 
     public void removeOne(Long chatId, Contact contact) {

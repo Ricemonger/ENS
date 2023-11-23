@@ -38,12 +38,19 @@ public class ContactFeignClientService {
                 securityToken, contact);
     }
 
-    public void removeMany(String securityToken, List<Contact> contacts) {
-        for (Contact contact : contacts) {
-            contactFeignClient.delete(securityToken, contact);
-        }
-        log.trace("contactClient's method removeMany was executed with params: jwt-{} and contacts:{}",
-                securityToken, contacts);
+    public void removeMany(String securityToken, Contact filters) {
+        List<Contact> allContacts = contactFeignClient.findAllByAccountId(securityToken);
+        allContacts
+                .stream()
+                .filter(s -> (s.getMethod().equals(filters.getMethod())
+                        && s.getContactId().startsWith(filters.getContactId())
+                        && s.getNotificationName().startsWith(filters.getNotificationName())))
+                .forEach(contact -> {
+                    contactFeignClient.delete(securityToken, contact);
+                });
+
+        log.trace("contactClient's method removeMany was executed with params: jwt-{} and filters:{}",
+                securityToken, filters);
     }
 
     public void removeOne(String securityToken, Contact contact) {

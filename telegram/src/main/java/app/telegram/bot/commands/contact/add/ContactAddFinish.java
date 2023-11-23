@@ -1,14 +1,15 @@
-package app.telegram.bot.commands.contact;
+package app.telegram.bot.commands.contact.add;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
 import app.telegram.bot.commands.Callbacks;
+import app.telegram.bot.commands.contact.Stage4WriteNotificationAndPrint;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class ContactAddOneFinish extends AbstractBotCommand {
+public class ContactAddFinish extends AbstractBotCommand {
 
-    public ContactAddOneFinish(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public ContactAddFinish(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
@@ -16,6 +17,6 @@ public class ContactAddOneFinish extends AbstractBotCommand {
     public void execute() {
         new Stage4WriteNotificationAndPrint(bot, update, botService).execute();
 
-        askYesOrNoFromInlineKeyboard("Would you like to add it?", Callbacks.CONTACT_ADD_ONE_FINISH, Callbacks.CANCEL);
+        askYesOrNoFromInlineKeyboard("Would you like to add it?", Callbacks.CONTACT_ADD_FINISH, Callbacks.CANCEL);
     }
 }

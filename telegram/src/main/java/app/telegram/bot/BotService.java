@@ -104,12 +104,14 @@ public class BotService {
         clearInputs(chatId);
     }
 
-    public void removeManyContacts(Long chatId, List<Contact> contacts) {
-        contactFeignClientServiceWrapper.removeMany(chatId, contacts);
+    public void removeManyContacts(Long chatId) {
+        contactFeignClientServiceWrapper.removeMany(chatId, getContactFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
-    public void removeOneContact(Long chatId, Contact contact) {
-        contactFeignClientServiceWrapper.removeOne(chatId, contact);
+    public void removeOneContact(Long chatId) {
+        contactFeignClientServiceWrapper.removeOne(chatId, getContactFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
     public void addOneNotification(Long chatId, Notification notification) {
