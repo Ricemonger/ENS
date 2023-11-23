@@ -26,9 +26,9 @@ public class NotificationFeignClientServiceWrapper {
         notificationFeignClientService.addOne(securityToken, notification);
     }
 
-    public void removeMany(Long chatId, List<Notification> notifications) {
+    public void removeMany(Long chatId, Notification filters) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignClientService.removeMany(securityToken, notifications);
+        notificationFeignClientService.removeMany(securityToken, filters);
     }
 
     public void removeOne(Long chatId, Notification notification) {

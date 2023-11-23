@@ -44,12 +44,19 @@ public class NotificationFeignClientService {
                 securityToken, notification);
     }
 
-    public void removeMany(String securityToken, List<Notification> notifications) {
-        for (Notification notification : notifications) {
-            notificationFeignClient.delete(securityToken, new NotificationNameRequest(notification.getName()));
-        }
-        log.trace("NotificationFeignClient's method removeMany was executed with params: jwt-{} and notifications:{}",
-                securityToken, notifications);
+    public void removeMany(String securityToken, Notification filters) {
+
+        List<Notification> allNotifications = notificationFeignClient.findAllByAccountId(securityToken);
+        allNotifications
+                .stream()
+                .filter(s -> (s.getName().startsWith(filters.getName())
+                        && s.getText().startsWith(filters.getText())))
+                .forEach(notification -> {
+                    notificationFeignClient.delete(securityToken, new NotificationNameRequest(notification.getName()));
+                });
+
+        log.trace("NotificationFeignClient's method removeMany was executed with params: jwt-{} and filters:{}",
+                securityToken, filters);
     }
 
     public void removeOne(String securityToken, Notification notification) {

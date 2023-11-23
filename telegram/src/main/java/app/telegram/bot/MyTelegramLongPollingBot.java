@@ -23,10 +23,16 @@ import app.telegram.bot.commands.invalid.InvalidDirect;
 import app.telegram.bot.commands.link.LinkCallback;
 import app.telegram.bot.commands.link.LinkDirect;
 import app.telegram.bot.commands.link.UnlinkCallback;
-import app.telegram.bot.commands.notification.NotificationAddOneCallback;
 import app.telegram.bot.commands.notification.NotificationDirect;
-import app.telegram.bot.commands.notification.NotificationRemoveManyCallback;
-import app.telegram.bot.commands.notification.NotificationRemoveOneCallback;
+import app.telegram.bot.commands.notification.add.NotificationAddCallback;
+import app.telegram.bot.commands.notification.add.NotificationAddChain;
+import app.telegram.bot.commands.notification.add.NotificationAddFinishCallback;
+import app.telegram.bot.commands.notification.removeMany.NotificationRemoveManyCallback;
+import app.telegram.bot.commands.notification.removeMany.NotificationRemoveManyChain;
+import app.telegram.bot.commands.notification.removeMany.NotificationRemoveManyFinishCallback;
+import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneCallback;
+import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneChain;
+import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneFinishCallback;
 import app.telegram.bot.commands.send.SendDirect;
 import app.telegram.bot.commands.send.SendManyCommand;
 import app.telegram.bot.commands.send.SendOneCommand;
@@ -92,14 +98,6 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
         }
     }
 
-    private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
-        switch (inputGroup) {
-            case CONTACT_ADD_ONE -> new ContactAddChain(this, update, botService).execute();
-            case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(this, update, botService).execute();
-            case CONTACT_REMOVE_MANY -> new ContactRemoveManyChain(this, update, botService).execute();
-        }
-    }
-
     private void listenCommandAndExecute(Update update) {
         switch (update.getMessage().getText()) {
             case "/start" -> new StartDirect(this, update, botService).execute();
@@ -136,11 +134,20 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.CONTACT_REMOVE_MANY_FINISH ->
                     new ContactRemoveManyFinishCallback(this, update, botService).execute();
 
-            case Callbacks.NOTIFICATION_ADD_ONE -> new NotificationAddOneCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_ADD -> new NotificationAddCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_ADD_FINISH ->
+                    new NotificationAddFinishCallback(this, update, botService).execute();
+
             case Callbacks.NOTIFICATION_REMOVE_ONE ->
                     new NotificationRemoveOneCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_REMOVE_ONE_FINISH -> new NotificationRemoveOneFinishCallback(this, update,
+                    botService).execute();
+
             case Callbacks.NOTIFICATION_REMOVE_MANY ->
                     new NotificationRemoveManyCallback(this, update, botService).execute();
+            case Callbacks.NOTIFICATION_REMOVE_MANY_FINISH -> new NotificationRemoveManyFinishCallback(this, update,
+                    botService).execute();
+
 
             case Callbacks.DATA_SHOW -> new DataShowCallback(this, update, botService).execute();
             case Callbacks.DATA_REMOVE -> new DataRemoveCallback(this, update, botService).execute();
@@ -153,6 +160,18 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.CANCEL -> new CancelCallback(this, update, botService).execute();
 
             default -> new InvalidCallback(this, update, botService).execute();
+        }
+    }
+
+    private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
+        switch (inputGroup) {
+            case CONTACT_ADD_ONE -> new ContactAddChain(this, update, botService).execute();
+            case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(this, update, botService).execute();
+            case CONTACT_REMOVE_MANY -> new ContactRemoveManyChain(this, update, botService).execute();
+
+            case NOTIFICATION_ADD_ONE -> new NotificationAddChain(this, update, botService).execute();
+            case NOTIFICATION_REMOVE_ONE -> new NotificationRemoveOneChain(this, update, botService).execute();
+            case NOTIFICATION_REMOVE_MANY -> new NotificationRemoveManyChain(this, update, botService).execute();
         }
     }
 }

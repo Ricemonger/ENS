@@ -29,4 +29,5 @@ public interface NotificationFeignClient {
 
     @GetMapping("/getByPK")
     List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
+    
 }

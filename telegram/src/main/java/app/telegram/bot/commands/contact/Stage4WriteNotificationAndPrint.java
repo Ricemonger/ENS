@@ -16,12 +16,10 @@ public class Stage4WriteNotificationAndPrint extends AbstractBotCommand {
 
     @Override
     public void execute() {
-        processInput(InputState.CONTACT_NOTIFICATION_NAME, InputState.BASE, "Contact input is finished");
-        botService.setNextInputGroup(chatId, InputGroup.BASE);
-
         Contact contact = botService.getContactFromInputsMap(chatId);
 
-        String question = "Your contact is:" + contact;
-        sendAnswer(question);
+        processInput(InputState.CONTACT_NOTIFICATION_NAME, InputState.BASE, "Your contact is:" + contact);
+
+        botService.setNextInputGroup(chatId, InputGroup.BASE);
     }
 }

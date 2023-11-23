@@ -17,15 +17,12 @@ public class ContactRemoveOneFinish extends AbstractBotCommand {
 
     @Override
     public void execute() {
-        processInput(InputState.CONTACT_CONTACT_ID, InputState.BASE, "Contact input is finished");
-        botService.setNextInputGroup(chatId, InputGroup.BASE);
-
         Contact contact = botService.getContactFromInputsMap(chatId);
 
-        String question = "Your contact is:" + contact;
-        sendAnswer(question);
+        processInput(InputState.CONTACT_CONTACT_ID, InputState.BASE, "Your contact is:" + contact);
+        botService.setNextInputGroup(chatId, InputGroup.BASE);
 
-        askYesOrNoFromInlineKeyboard("Would you like to remove it?", Callbacks.CONTACT_REMOVE_ONE_FINISH,
+        askYesOrNoFromInlineKeyboard("Would you like to remove contact", Callbacks.CONTACT_REMOVE_ONE_FINISH,
                 Callbacks.CANCEL);
     }
 }

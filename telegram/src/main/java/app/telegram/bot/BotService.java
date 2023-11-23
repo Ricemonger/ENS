@@ -114,16 +114,19 @@ public class BotService {
         clearInputs(chatId);
     }
 
-    public void addOneNotification(Long chatId, Notification notification) {
-        notificationFeignClientServiceWrapper.addOne(chatId, notification);
+    public void addNotificationFromInputMap(Long chatId) {
+        notificationFeignClientServiceWrapper.addOne(chatId, getNotificationFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
-    public void removeManyNotifications(Long chatId, List<Notification> notifications) {
-        notificationFeignClientServiceWrapper.removeMany(chatId, notifications);
+    public void removeManyNotifications(Long chatId) {
+        notificationFeignClientServiceWrapper.removeMany(chatId, getNotificationFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
-    public void removeOneNotifications(Long chatId, Notification notification) {
-        notificationFeignClientServiceWrapper.removeOne(chatId, notification);
+    public void removeOneNotification(Long chatId) {
+        notificationFeignClientServiceWrapper.removeOne(chatId, getNotificationFromInputsMap(chatId));
+        clearInputs(chatId);
     }
 
     public void setNextInputGroup(Long chatId, InputGroup inputGroup) {
@@ -168,5 +171,14 @@ public class BotService {
         String notificationName = contactMap.get(InputState.CONTACT_NOTIFICATION_NAME);
 
         return new Contact(method, contactId, notificationName);
+    }
+
+    public Notification getNotificationFromInputsMap(Long chatId) {
+        Map<InputState, String> notificationMap = inputsMap.get(String.valueOf(chatId));
+
+        String name = notificationMap.get(InputState.NOTIFICATION_NAME);
+        String text = notificationMap.get(InputState.NOTIFICATION_TEXT);
+
+        return new Notification(name, text);
     }
 }

@@ -14,6 +14,6 @@ public class ContactRemoveManyFinishCallback extends AbstractBotCommand {
     @Override
     public void execute() {
         botService.removeManyContacts(chatId);
-        sendAnswer("Your Contacts was Deleted!");
+        sendAnswer("Your Contacts were removed!");
     }
 }

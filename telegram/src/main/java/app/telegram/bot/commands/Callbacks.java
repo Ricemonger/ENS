@@ -19,9 +19,14 @@ public class Callbacks {
     public static final String CONTACT_REMOVE_MANY = "CONTACT_REMOVE_MANY";
     public static final String CONTACT_REMOVE_MANY_FINISH = "CONTACT_REMOVE_MANY_FINISH";
 
-    public static final String NOTIFICATION_ADD_ONE = "NOTIFICATION_ADD_ONE";
+    public static final String NOTIFICATION_ADD = "NOTIFICATION_ADD";
+    public static final String NOTIFICATION_ADD_FINISH = "NOTIFICATION_ADD_FINISH";
+
     public static final String NOTIFICATION_REMOVE_ONE = "NOTIFICATION_REMOVE_ONE";
+    public static final String NOTIFICATION_REMOVE_ONE_FINISH = "NOTIFICATION_REMOVE_ONE_FINISH";
+
     public static final String NOTIFICATION_REMOVE_MANY = "NOTIFICATION_REMOVE_MANY";
+    public static final String NOTIFICATION_REMOVE_MANY_FINISH = "NOTIFICATION_REMOVE_MANY_FINISH";
 
     public static final String DATA_SHOW = "DATA_SHOW";
     public static final String DATA_REMOVE = "DATA_REMOVE";
