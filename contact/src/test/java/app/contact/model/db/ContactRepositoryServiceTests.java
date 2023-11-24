@@ -1,8 +1,8 @@
 package app.contact.model.db;
 
-import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.model.Contact;
-import app.contact.model.Method;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

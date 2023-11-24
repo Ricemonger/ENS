@@ -1,4 +1,4 @@
-package app.security.abstract_users.exceptions;
+package app.utils.feign_clients.security.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException() {

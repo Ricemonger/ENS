@@ -1,4 +1,4 @@
-package app.contact.exceptions;
+package app.utils.feign_clients.contact.exceptions;
 
 public class ContactDoesntExistException extends RuntimeException {
     public ContactDoesntExistException() {

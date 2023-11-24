@@ -1,10 +1,10 @@
 package app.notification.controller;
 
-import app.notification.controller.dto.NotificationCreUpdRequest;
-import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;
 import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
+import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import app.utils.feign_clients.security.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

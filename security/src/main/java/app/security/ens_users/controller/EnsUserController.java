@@ -1,12 +1,12 @@
 package app.security.ens_users.controller;
 
-import app.security.abstract_users.exceptions.UserAlreadyExistsException;
-import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.ens_users.controller.dto.EnsUserLoginRequest;
 import app.security.ens_users.controller.dto.EnsUserRegisterRequest;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.utils.ExceptionMessage;
+import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("${application.config.request-mappings.ens}")
 @RequiredArgsConstructor
 @Slf4j
 public class EnsUserController {
@@ -24,12 +24,14 @@ public class EnsUserController {
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public String register(@RequestBody EnsUserRegisterRequest request) {
+        log.trace("register was called for request-{}", request);
         return ensUserControllerService.register(request);
     }
 
     @PostMapping("/login")
     @ResponseStatus(value = HttpStatus.OK)
     public String login(@RequestBody EnsUserLoginRequest request) {
+        log.trace("login was called for request-{}", request);
         return ensUserControllerService.login(request);
     }
 
@@ -75,6 +77,6 @@ public class EnsUserController {
     public ExceptionMessage unknownException(Exception e) {
         log.warn("UnknownException occurred: {}" + e.getMessage());
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
     }
 }

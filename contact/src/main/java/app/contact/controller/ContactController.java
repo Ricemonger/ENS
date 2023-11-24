@@ -1,16 +1,16 @@
 package app.contact.controller;
 
-import app.contact.controller.dto.ContactCreUpdRequest;
-import app.contact.controller.dto.ContactKeyRequest;
-import app.contact.controller.dto.ContactNNRequest;
-import app.contact.exceptions.ContactAlreadyExistsException;
-import app.contact.exceptions.ContactDoesntExistException;
-import app.contact.exceptions.InvalidContactMethodException;
 import app.contact.model.Contact;
-import app.contact.model.Method;
 import app.utils.ExceptionMessage;
 import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.security.JwtRuntimeException;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
+import app.utils.feign_clients.contact.dto.ContactNNRequest;
+import app.utils.feign_clients.contact.exceptions.ContactAlreadyExistsException;
+import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
+import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
+import app.utils.feign_clients.security.exceptions.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/contacts")
+@RequestMapping("${application.config.request-mappings.contact}")
 @RequiredArgsConstructor
 @Slf4j
 public class ContactController {
@@ -30,28 +30,28 @@ public class ContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Contact create(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
-        log.trace("create is called with token-{}, request-{}", securityToken, request);
+        log.trace("create is called with securityToken-{}, request-{}", securityToken, request);
         return service.create(securityToken, request);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
-        log.trace("update is called with token-{}, request-{}", securityToken, request);
+        log.trace("update is called with securityToken-{}, request-{}", securityToken, request);
         return service.update(securityToken, request);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact delete(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
-        log.trace("delete is called with token-{}, request-{}", securityToken, request);
+        log.trace("delete is called with securityToken-{}, request-{}", securityToken, request);
         return service.delete(securityToken, request);
     }
 
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
     public void clear(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("clear is called with token-{}", securityToken);
+        log.trace("clear is called with securityToken-{}", securityToken);
         service.clear(securityToken);
     }
 
@@ -59,35 +59,35 @@ public class ContactController {
     @ResponseStatus(HttpStatus.OK)
     public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken,
                                 @RequestBody ChangeAccountIdRequest request) {
-        log.trace("changeAccountId is called with tokens: old-{} ||| new-{}", oldAccountIdToken, request);
+        log.trace("changeAccountId is called with securityTokens: old-{} ||| new-{}", oldAccountIdToken, request);
         service.changeAccountId(oldAccountIdToken, request);
     }
 
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("findAllByAccountIdUN is called with token-{}", securityToken);
+        log.trace("findAllByAccountIdUN is called with securityToken-{}", securityToken);
         return findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByAI")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("findAllByAccountId is called with token-{}", securityToken);
+        log.trace("findAllByAccountId is called with securityToken-{}", securityToken);
         return service.findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
-        log.trace("findAllLikePrimaryKey is called with token-{}, request-{}", securityToken, request);
+        log.trace("findAllLikePrimaryKey is called with securityToken-{}, request-{}", securityToken, request);
         return service.findAllLikePrimaryKey(securityToken, request);
     }
 
     @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest request) {
-        log.trace("findAllLikeNotificationName is called with token-{}, request-{}", securityToken, request);
+        log.trace("findAllLikeNotificationName is called with securityToken-{}, request-{}", securityToken, request);
         return service.findAllLikeNotificationName(securityToken, request);
     }
 
@@ -116,7 +116,7 @@ public class ContactController {
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ExceptionMessage jwtRuntimeException(JwtRuntimeException e) {
         log.warn("JwtRuntimeException occurred: {}", e.getMessage());
-        return new ExceptionMessage(HttpStatus.FORBIDDEN, "Invalid or expired jwt token, please get new token via users/login or users/register pages");
+        return new ExceptionMessage(HttpStatus.FORBIDDEN, "Invalid or expired jwt token, please get new token via /login or /register pages");
     }
 
     @ExceptionHandler(Exception.class)
@@ -124,6 +124,6 @@ public class ContactController {
     public ExceptionMessage unknownException(Exception e) {
         log.warn("UnknownException occurred: {}" + e.getMessage());
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
     }
 }

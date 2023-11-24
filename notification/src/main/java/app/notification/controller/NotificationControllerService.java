@@ -1,10 +1,10 @@
 package app.notification.controller;
 
-import app.notification.controller.dto.NotificationCreUpdRequest;
-import app.notification.controller.dto.NotificationNameRequest;
 import app.notification.model.Notification;
 import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
+import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import app.utils.feign_clients.security.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class NotificationControllerService {
     void changeAccountId(String oldAccountIdToken, ChangeAccountIdRequest request) {
         String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
         String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        log.trace("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
         notificationService.changeAccountId(oldAccountId, newAccountId);
     }
 

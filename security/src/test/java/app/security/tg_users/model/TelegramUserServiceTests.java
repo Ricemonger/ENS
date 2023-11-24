@@ -1,7 +1,5 @@
 package app.security.tg_users.model;
 
-import app.security.abstract_users.exceptions.UserAlreadyExistsException;
-import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.abstract_users.security.AbstractUserJwtUtil;
 import app.security.any_users.model.db.AnyUserRepositoryService;
 import app.security.ens_users.EnsUser;
@@ -9,10 +7,12 @@ import app.security.ens_users.model.EnsUserService;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_module_client.TelegramFeignClient;
-import app.security.tg_users.model.telegram_module_client.TelegramFeignClientService;
+import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClient;
+import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -52,7 +52,7 @@ public class TelegramUserServiceTests {
     private EnsUserService ensUserService;
 
     @Spy
-    private final TelegramFeignClientService telegramFeignClientService = new MockTelegramFeignClientService(null);
+    private final TelegramModuleFeignClientService telegramModuleFeignClientService = new MockTelegramModuleFeignClientService(null);
 
     @MockBean
     private ContactFeignClientService contactFeignClientService;
@@ -70,7 +70,7 @@ public class TelegramUserServiceTests {
         telegramUserService = new TelegramUserService(
                 telegramUserRepositoryService,
                 ensUserService,
-                telegramFeignClientService,
+                telegramModuleFeignClientService,
                 contactFeignClientService,
                 notificationFeignClientService,
                 abstractUserJwtUtil);
@@ -84,7 +84,7 @@ public class TelegramUserServiceTests {
         String token = telegramUserService.create(TOKEN);
         String accountId = telegramUserRepositoryService.findAll().get(0).getAccountId();
 
-        verify(telegramFeignClientService).getChatId(TOKEN);
+        verify(telegramModuleFeignClientService).getChatId(TOKEN);
 
         verify(telegramUserRepositoryService).save(new TelegramUser(TOKEN));
 
@@ -265,10 +265,10 @@ public class TelegramUserServiceTests {
     }
 
 
-    private static class MockTelegramFeignClientService extends TelegramFeignClientService {
+    private static class MockTelegramModuleFeignClientService extends TelegramModuleFeignClientService {
 
-        public MockTelegramFeignClientService(TelegramFeignClient telegramFeignClient) {
-            super(telegramFeignClient);
+        public MockTelegramModuleFeignClientService(TelegramModuleFeignClient telegramModuleFeignClient) {
+            super(telegramModuleFeignClient);
         }
 
         @Override

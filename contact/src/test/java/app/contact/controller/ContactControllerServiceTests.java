@@ -1,13 +1,13 @@
 package app.contact.controller;
 
-import app.contact.controller.dto.ContactCreUpdRequest;
-import app.contact.controller.dto.ContactKeyRequest;
-import app.contact.controller.dto.ContactNNRequest;
-import app.contact.exceptions.InvalidContactMethodException;
 import app.contact.model.Contact;
 import app.contact.model.ContactService;
-import app.contact.model.Method;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
+import app.utils.feign_clients.contact.dto.ContactNNRequest;
+import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
 import app.utils.feign_clients.security.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

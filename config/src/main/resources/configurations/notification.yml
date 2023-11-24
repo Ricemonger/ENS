@@ -8,6 +8,9 @@ server:
 application:
   title: notification
   version: 0.1
+  config:
+    request-mappings:
+      contact: /api/notifications
 
 spring:
   application:

@@ -1,8 +1,8 @@
 package app.notification.controller;
 
-import app.notification.controller.dto.NotificationCreUpdRequest;
-import app.notification.controller.dto.NotificationNameRequest;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
+import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

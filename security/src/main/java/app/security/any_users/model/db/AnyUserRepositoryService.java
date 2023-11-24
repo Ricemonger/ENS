@@ -14,24 +14,37 @@ public class AnyUserRepositoryService {
 
     private final AnyUserRepository anyUserRepository;
 
+    public AnyUser save(AnyUser anyUser) {
+        AnyUser result = toAnyUser(anyUserRepository.save(toAnyUserEntity(anyUser)));
+        log.trace("save was called for anyUser-{}, result-{}", anyUser, result);
+        return result;
+    }
+
     public boolean existsById(String accountId) {
-        return anyUserRepository.existsById(accountId);
+        boolean result = anyUserRepository.existsById(accountId);
+        log.trace("existsById was called for accountId-{}, result-{}", accountId, result);
+        return result;
     }
 
     public void deleteById(String accountId) {
+        log.trace("deleteById was called for accountId-{}", accountId);
         anyUserRepository.deleteById(accountId);
     }
 
+    public void deleteAll() {
+        log.trace("deleteAll was called");
+        anyUserRepository.deleteAll();
+    }
+
     public AnyUser findByIdOrThrow(String accountId) {
-        return toAnyUser(anyUserRepository.findById(accountId).orElseThrow());
+        AnyUser result = toAnyUser(anyUserRepository.findById(accountId).orElseThrow());
+        log.trace("findByIdOrThrow was called for accountId-{}, result-{}", accountId, result);
+        return result;
     }
 
     public List<AnyUser> findAll() {
+        log.trace("findAll was called");
         return anyUserRepository.findAll().stream().map(AnyUser::new).toList();
-    }
-
-    public AnyUser save(AnyUser anyUser) {
-        return toAnyUser(anyUserRepository.save(toAnyUserEntity(anyUser)));
     }
 
     private AnyUser toAnyUser(AnyUserEntity entity) {
@@ -40,9 +53,5 @@ public class AnyUserRepositoryService {
 
     private AnyUserEntity toAnyUserEntity(AnyUser anyUser) {
         return new AnyUserEntity(anyUser.getAccountId());
-    }
-
-    public void deleteAll() {
-        anyUserRepository.deleteAll();
     }
 }

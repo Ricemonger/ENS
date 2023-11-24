@@ -1,6 +1,7 @@
 package app.utils.feign_clients.notification;
 
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

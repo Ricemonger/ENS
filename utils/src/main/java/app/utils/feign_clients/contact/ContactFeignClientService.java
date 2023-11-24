@@ -1,6 +1,7 @@
 package app.utils.feign_clients.contact;
 
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class ContactFeignClientService {
     private final ContactFeignClient contactFeignClient;
 
     public Contact findOneByPrimaryKey(String securityToken, String method, String contactId) {
-        ContactPKRequest request = new ContactPKRequest(method, contactId);
+        ContactKeyRequest request = new ContactKeyRequest(method, contactId);
         List<Contact> list = contactFeignClient.findAllLikePrimaryKey(securityToken, request);
         log.trace("ContactFeignClient's method findAllLikePrimaryKey was executed with params: jwt-{}, body-{} and result:{}", securityToken, request, list);
         Method m = Method.valueOf(method.toUpperCase(Locale.ROOT).trim());

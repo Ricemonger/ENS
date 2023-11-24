@@ -23,6 +23,11 @@ application:
   config:
     telegram:
       url: http://localhost:8080/api/telegram/security
+    request-mappings:
+      abstract: /api/security
+      ens: /api/users
+      tg: /api/security-tg-users
+
 
 server:
   port: 8093

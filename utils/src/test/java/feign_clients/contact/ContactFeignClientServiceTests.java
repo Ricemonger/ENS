@@ -1,10 +1,15 @@
 package feign_clients.contact;
 
 import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.contact.*;
+import app.utils.feign_clients.contact.Contact;
+import app.utils.feign_clients.contact.ContactFeignClient;
+import app.utils.feign_clients.contact.ContactFeignClientService;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +34,7 @@ public class ContactFeignClientServiceTests {
 
     private final static Contact CONTACT = new Contact(METHOD, CONTACT_ID, NOTIFICATION_NAME);
 
-    private final static ContactPKRequest REQUEST = new ContactPKRequest(METHOD.name(), CONTACT_ID);
+    private final static ContactKeyRequest REQUEST = new ContactKeyRequest(METHOD.name(), CONTACT_ID);
 
     private final static List<Contact> CONTACTS = new ArrayList<>();
 
@@ -76,11 +82,20 @@ public class ContactFeignClientServiceTests {
 
     @Test
     public void removeMany() {
-        contactFeignClientService.removeMany(TOKEN, CONTACTS);
+        contactFeignClientService.removeMany(TOKEN, CONTACT);
 
-        for (Contact contact : CONTACTS) {
-            verify(contactFeignClient).delete(TOKEN, contact);
-        }
+        ArgumentMatcher<Contact> argumentMatcher = c -> {
+            if (c != null) {
+                boolean method = c.getMethod().equals(CONTACT.getMethod());
+                boolean contactId = c.getContactId().startsWith(CONTACT.getContactId());
+                boolean notificationName = c.getNotificationName().startsWith(CONTACT.getNotificationName());
+                return method && contactId && notificationName;
+            } else {
+                return false;
+            }
+        };
+
+        verify(contactFeignClient).delete(TOKEN, argThat(argumentMatcher));
     }
 
     @Test
@@ -139,7 +154,7 @@ public class ContactFeignClientServiceTests {
         }
 
         @Override
-        public List<Contact> findAllLikePrimaryKey(String token, ContactPKRequest request) {
+        public List<Contact> findAllLikePrimaryKey(String token, ContactKeyRequest request) {
             return CONTACTS.stream().filter(s -> (s.getMethod().name().equals(request.method()) && s.getContactId().startsWith(request.contactId()))).toList();
         }
     }

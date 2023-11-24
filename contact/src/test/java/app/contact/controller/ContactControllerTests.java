@@ -1,9 +1,9 @@
 package app.contact.controller;
 
-import app.contact.controller.dto.ContactCreUpdRequest;
-import app.contact.controller.dto.ContactKeyRequest;
-import app.contact.controller.dto.ContactNNRequest;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
+import app.utils.feign_clients.contact.dto.ContactNNRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

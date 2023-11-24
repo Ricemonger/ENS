@@ -1,6 +1,7 @@
 package app.utils.feign_clients.contact;
 
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +29,5 @@ public interface ContactFeignClient {
     List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String token);
 
     @GetMapping("/getByPK")
-    List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactPKRequest request);
+    List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String token, @RequestBody ContactKeyRequest request);
 }

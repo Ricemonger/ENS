@@ -101,7 +101,7 @@ public class BotService {
         return telegramUserService.isLinked(chatId);
     }
 
-    public void addContactFromInputMap(Long chatId) {
+    public void addContact(Long chatId) {
         contactFeignClientServiceWrapper.addOne(chatId, getContactFromInputsMap(chatId));
         clearInputs(chatId);
     }
@@ -116,7 +116,7 @@ public class BotService {
         clearInputs(chatId);
     }
 
-    public void addNotificationFromInputMap(Long chatId) {
+    public void addNotification(Long chatId) {
         notificationFeignClientServiceWrapper.addOne(chatId, getNotificationFromInputsMap(chatId));
         clearInputs(chatId);
     }

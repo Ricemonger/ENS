@@ -8,6 +8,9 @@ server:
 application:
   title: contact
   version: 0.1
+  config:
+    request-mappings:
+      contact: /api/contacts
 
 spring:
   application:

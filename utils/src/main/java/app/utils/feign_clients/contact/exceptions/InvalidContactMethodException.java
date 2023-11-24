@@ -1,4 +1,4 @@
-package app.contact.exceptions;
+package app.utils.feign_clients.contact.exceptions;
 
 public class InvalidContactMethodException extends RuntimeException {
     public InvalidContactMethodException() {

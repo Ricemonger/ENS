@@ -1,8 +1,8 @@
 package app.notification.model;
 
-import app.notification.exceptions.NotificationAlreadyExistsException;
-import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.model.db.NotificationRepositoryService;
+import app.utils.feign_clients.notification.exceptions.NotificationAlreadyExistsException;
+import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

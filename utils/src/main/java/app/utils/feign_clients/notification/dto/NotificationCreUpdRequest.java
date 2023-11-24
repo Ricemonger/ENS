@@ -1,4 +1,4 @@
-package app.notification.controller.dto;
+package app.utils.feign_clients.notification.dto;
 
 
 public record NotificationCreUpdRequest(

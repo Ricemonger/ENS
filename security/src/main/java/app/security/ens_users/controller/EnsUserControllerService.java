@@ -16,13 +16,13 @@ public class EnsUserControllerService {
 
     public String register(EnsUserRegisterRequest request) {
         String token = ensUserService.register(request.toUser());
-        log.trace("register method was called with request-{} and result-{}", request, token);
+        log.trace("register method was called with request-{} and resulting token-{}", request, token);
         return token;
     }
 
     public String login(EnsUserLoginRequest request) {
         String token = ensUserService.login(request.toUser());
-        log.trace("login method was called with request-{} and result-{}", request, token);
+        log.trace("login method was called with request-{} and resulting token-{}", request, token);
         return token;
     }
 }

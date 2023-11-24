@@ -1,7 +1,7 @@
 package app.notification.model.db;
 
-import app.notification.exceptions.NotificationDoesntExistException;
 import app.notification.model.Notification;
+import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

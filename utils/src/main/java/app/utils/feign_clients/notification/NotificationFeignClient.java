@@ -1,6 +1,7 @@
 package app.utils.feign_clients.notification;
 
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,5 +30,5 @@ public interface NotificationFeignClient {
 
     @GetMapping("/getByPK")
     List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
-    
+
 }

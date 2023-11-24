@@ -1,12 +1,12 @@
 package app.security.ens_users.model;
 
-import app.security.abstract_users.exceptions.UserAlreadyExistsException;
-import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.abstract_users.security.AbstractUserJwtUtil;
 import app.security.ens_users.EnsUser;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
+import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

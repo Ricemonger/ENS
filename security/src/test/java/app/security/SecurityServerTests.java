@@ -19,8 +19,8 @@ import app.security.tg_users.controller.TelegramUserControllerService;
 import app.security.tg_users.model.TelegramUserService;
 import app.security.tg_users.model.db.TelegramUserRepository;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_module_client.TelegramFeignClient;
-import app.security.tg_users.model.telegram_module_client.TelegramFeignClientService;
+import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClient;
+import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
 import app.utils.feign_clients.contact.ContactFeignClient;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClient;
@@ -89,10 +89,10 @@ public class SecurityServerTests {
     private TelegramUserRepository telegramUserRepository;
 
     @Autowired
-    private TelegramFeignClientService telegramFeignClientService;
+    private TelegramModuleFeignClientService telegramModuleFeignClientService;
 
     @Autowired
-    private TelegramFeignClient telegramFeignClient;
+    private TelegramModuleFeignClient telegramModuleFeignClient;
 
     @Autowired
     private TelegramUserService telegramUserService;
@@ -127,8 +127,8 @@ public class SecurityServerTests {
         assertNotNull(telegramUserControllerService);
         assertNotNull(telegramUserRepositoryService);
         assertNotNull(telegramUserRepository);
-        assertNotNull(telegramFeignClientService);
-        assertNotNull(telegramFeignClient);
+        assertNotNull(telegramModuleFeignClientService);
+        assertNotNull(telegramModuleFeignClient);
         assertNotNull(notificationFeignClient);
         assertNotNull(notificationFeignClientService);
         assertNotNull(contactFeignClient);

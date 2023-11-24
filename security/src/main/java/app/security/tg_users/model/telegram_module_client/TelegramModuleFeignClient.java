@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "telegram-service", url = "${application.config.telegram.url}")
-public interface TelegramFeignClient {
+public interface TelegramModuleFeignClient {
 
     @GetMapping("/getChatId")
     String getChatId(@RequestHeader("Authorization") String telegramToken);

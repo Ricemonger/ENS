@@ -20,7 +20,9 @@ spring:
 application:
   title: notification
   version: 0.1
-
+  config:
+    request-mappings:
+      notification: /api/notifications
 server:
   port: 8091
 

@@ -1,8 +1,9 @@
 package app.contact.model;
 
-import app.contact.exceptions.ContactAlreadyExistsException;
-import app.contact.exceptions.ContactDoesntExistException;
 import app.contact.model.db.ContactRepositoryService;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.exceptions.ContactAlreadyExistsException;
+import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -51,7 +52,7 @@ public class ContactService {
 
     public void changeAccountId(String oldAccountId, String newAccountId) {
         List<Contact> oldContacts = findAllByAccountId(oldAccountId);
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        log.trace("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
         for (Contact toDelete : oldContacts) {
             contactRepositoryService.delete(toDelete);
             Contact toSave = new Contact();

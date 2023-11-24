@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/security")
+@RequestMapping("${application.config.request-mappings.abstract}")
 @RequiredArgsConstructor
 @Slf4j
 public class AbstractUserController {
@@ -19,6 +19,7 @@ public class AbstractUserController {
     @GetMapping("/getAccountId")
     @ResponseStatus(HttpStatus.OK)
     public String getAccountId(@RequestHeader(name = "Authorization") String securityToken) {
+        log.trace("getAccountId was called with securityToken-{}", securityToken);
         return abstractUserControllerService.getAccountId(securityToken);
     }
 
@@ -26,7 +27,7 @@ public class AbstractUserController {
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ExceptionMessage jwtRuntimeException(JwtException e) {
         log.warn("JwtException occurred: {}", e.getMessage());
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Invalid or expired jwt token provided", e);
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Invalid or expired jwt token provided");
     }
 
     @ExceptionHandler(Exception.class)
@@ -34,6 +35,6 @@ public class AbstractUserController {
     public ExceptionMessage unknownException(Exception e) {
         log.warn("UnknownException occurred: {}", e.getMessage());
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, e);
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
     }
 }

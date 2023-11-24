@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class TelegramFeignClientService {
+public class TelegramModuleFeignClientService {
 
-    private final TelegramFeignClient telegramFeignClient;
+    private final TelegramModuleFeignClient telegramModuleFeignClient;
 
     public String getChatId(String telegramToken) {
         log.trace("getChatId method was called with token-{}", telegramToken);
-        return telegramFeignClient.getChatId(telegramToken);
+        return telegramModuleFeignClient.getChatId(telegramToken);
     }
 }

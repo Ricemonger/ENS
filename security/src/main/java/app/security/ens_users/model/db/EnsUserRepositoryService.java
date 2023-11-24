@@ -1,7 +1,7 @@
 package app.security.ens_users.model.db;
 
-import app.security.abstract_users.exceptions.UserDoesntExistException;
 import app.security.ens_users.EnsUser;
+import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,27 +18,46 @@ public class EnsUserRepositoryService {
     private final EnsUserRepository ensUserRepository;
 
     public EnsUser save(EnsUser ensUser) {
-        return toEnsUser(ensUserRepository.save(toEnsUserEntity(ensUser)));
+        EnsUser result = toEnsUser(ensUserRepository.save(toEnsUserEntity(ensUser)));
+        log.trace("save was called for ensUser-{}, result-{}", ensUser, result);
+        return result;
+    }
+
+    public void deleteAll() {
+        log.trace("deleteAll was called");
+        ensUserRepository.deleteAll();
     }
 
     public boolean existsByAccountId(String accountId) {
-        return ensUserRepository.existsByAnyUserEntityAccountId(accountId);
+        boolean result = ensUserRepository.existsByAnyUserEntityAccountId(accountId);
+        log.trace("save was called for accountId-{}, result-{}", accountId, result);
+        return result;
+    }
+
+    public boolean existsByUsername(String username) {
+        boolean result = ensUserRepository.existsById(username);
+        log.trace("save was called for username-{}, result-{}", username, result);
+        return result;
     }
 
     public EnsUser findByIdOrThrow(String username) {
-        return toEnsUser(ensUserRepository.findById(username).orElseThrow());
-    }
-
-    public EnsUser findByAccountIdOrThrow(String accountId) {
         try {
-            return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
+            log.trace("findByIdOrThrow was called for username-{}", username);
+            return toEnsUser(ensUserRepository.findById(username).orElseThrow());
         } catch (NoSuchElementException e) {
+            log.error("findByIdOrThrow throws UserDoesntExist for username-{}", username);
             throw new UserDoesntExistException();
         }
     }
 
-    public void deleteAll() {
-        ensUserRepository.deleteAll();
+    public EnsUser findByAccountIdOrThrow(String accountId) {
+        try {
+            log.trace("findByAccountIdOrThrow was called for accountId-{}", accountId);
+            return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
+        } catch (NoSuchElementException e) {
+            log.error("findByAccountIdOrThrow throws UserDoesntExist for accountId-{}", accountId);
+            throw new UserDoesntExistException();
+        }
     }
 
     private EnsUser toEnsUser(EnsUserEntity entity) {

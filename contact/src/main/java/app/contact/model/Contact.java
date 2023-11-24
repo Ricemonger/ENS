@@ -1,6 +1,7 @@
 package app.contact.model;
 
 import app.contact.model.db.ContactEntity;
+import app.utils.feign_clients.contact.Method;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

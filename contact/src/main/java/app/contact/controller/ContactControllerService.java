@@ -1,13 +1,13 @@
 package app.contact.controller;
 
-import app.contact.controller.dto.ContactCreUpdRequest;
-import app.contact.controller.dto.ContactKeyRequest;
-import app.contact.controller.dto.ContactNNRequest;
-import app.contact.exceptions.InvalidContactMethodException;
 import app.contact.model.Contact;
 import app.contact.model.ContactService;
-import app.contact.model.Method;
 import app.utils.feign_clients.ChangeAccountIdRequest;
+import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
+import app.utils.feign_clients.contact.dto.ContactKeyRequest;
+import app.utils.feign_clients.contact.dto.ContactNNRequest;
+import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
 import app.utils.feign_clients.security.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,14 +48,14 @@ public class ContactControllerService {
 
     public void clear(String securityToken) {
         String accountId = jwtUtil.extractAccountId(securityToken);
-        log.trace("clear method was called with jwt: {}", securityToken);
+        log.trace("clear method was called with securityToken: {}", securityToken);
         contactService.clear(accountId);
     }
 
     public void changeAccountId(String oldAccountIdToken, ChangeAccountIdRequest request) {
         String oldAccountId = jwtUtil.extractAccountId(oldAccountIdToken);
         String newAccountId = jwtUtil.extractAccountId(request.newAccountIdToken());
-        log.info("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
+        log.trace("changeAccountId method is called with accountIDs old-{}, new-{}", oldAccountId, newAccountId);
         contactService.changeAccountId(oldAccountId, newAccountId);
     }
 

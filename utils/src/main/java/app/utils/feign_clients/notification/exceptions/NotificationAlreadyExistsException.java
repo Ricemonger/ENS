@@ -1,4 +1,4 @@
-package app.notification.exceptions;
+package app.utils.feign_clients.notification.exceptions;
 
 public class NotificationAlreadyExistsException extends RuntimeException {
     public NotificationAlreadyExistsException() {

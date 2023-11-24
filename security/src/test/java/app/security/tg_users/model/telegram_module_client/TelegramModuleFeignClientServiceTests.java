@@ -9,15 +9,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class TelegramFeignClientServiceTests {
+public class TelegramModuleFeignClientServiceTests {
 
     private final static String TOKEN = "TOKEN";
 
     @Mock
-    private TelegramFeignClient feignClient;
+    private TelegramModuleFeignClient feignClient;
 
     @InjectMocks
-    private TelegramFeignClientService service;
+    private TelegramModuleFeignClientService service;
 
     @Test
     public void getChatId() {
