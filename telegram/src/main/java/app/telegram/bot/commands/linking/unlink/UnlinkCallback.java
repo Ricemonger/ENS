@@ -1,8 +1,7 @@
-package app.telegram.bot.commands.link;
+package app.telegram.bot.commands.linking.unlink;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.exceptions.UnlinkException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -14,11 +13,8 @@ public class UnlinkCallback extends AbstractBotCommand {
 
     @Override
     public void execute() {
-        try {
-            sendAnswer("Removing your account linking...");
-            botService.unlink(chatId);
-        } catch (UnlinkException e) {
-            sendAnswer("Error occurred during unlinking exception");
-        }
+        botService.unlink(chatId);
+
+        sendAnswer("Your account to ENS linking was removed");
     }
 }

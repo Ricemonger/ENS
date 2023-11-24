@@ -30,55 +30,65 @@ public class ContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Contact create(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
+        log.trace("create is called with token-{}, request-{}", securityToken, request);
         return service.create(securityToken, request);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
+        log.trace("update is called with token-{}, request-{}", securityToken, request);
         return service.update(securityToken, request);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact delete(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
+        log.trace("delete is called with token-{}, request-{}", securityToken, request);
         return service.delete(securityToken, request);
     }
 
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
     public void clear(@RequestHeader(name = "Authorization") String securityToken) {
+        log.trace("clear is called with token-{}", securityToken);
         service.clear(securityToken);
     }
 
-    @PostMapping("/changeAccountId")
+    @RequestMapping("/changeAccountId")
     @ResponseStatus(HttpStatus.OK)
-    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, ChangeAccountIdRequest request) {
+    public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken,
+                                @RequestBody ChangeAccountIdRequest request) {
+        log.trace("changeAccountId is called with tokens: old-{} ||| new-{}", oldAccountIdToken, request);
         service.changeAccountId(oldAccountIdToken, request);
     }
 
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String securityToken) {
+        log.trace("findAllByAccountIdUN is called with token-{}", securityToken);
         return findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByAI")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String securityToken) {
+        log.trace("findAllByAccountId is called with token-{}", securityToken);
         return service.findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
-    public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest pkRequest) {
-        return service.findAllLikePrimaryKey(securityToken, pkRequest);
+    public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
+        log.trace("findAllLikePrimaryKey is called with token-{}, request-{}", securityToken, request);
+        return service.findAllLikePrimaryKey(securityToken, request);
     }
 
     @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
-    public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest nnRequest) {
-        return service.findAllLikeNotificationName(securityToken, nnRequest);
+    public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest request) {
+        log.trace("findAllLikeNotificationName is called with token-{}, request-{}", securityToken, request);
+        return service.findAllLikeNotificationName(securityToken, request);
     }
 
     @ExceptionHandler(ContactDoesntExistException.class)

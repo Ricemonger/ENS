@@ -1,7 +1,6 @@
 package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
-import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -37,17 +36,15 @@ public abstract class AbstractBotCommand {
     public abstract void execute();
 
     protected final void processInput(InputState currentState, InputState nextState, String question) {
+        processInput(currentState, nextState);
+        sendAnswer(question);
+    }
+
+    protected final void processInput(InputState currentState, InputState nextState) {
         String userInput = update.getMessage().getText();
-        if (userInput.equalsIgnoreCase("cancel") || userInput.equalsIgnoreCase("finish")) {
-            botService.setNextInput(chatId, InputState.BASE);
-            botService.setNextInputGroup(chatId, InputGroup.BASE);
-            botService.clearInputs(chatId);
-            sendAnswer("Input is canceled");
-        } else {
-            botService.saveInput(chatId, currentState, userInput);
-            botService.setNextInput(chatId, nextState);
-            sendAnswer(question);
-        }
+
+        botService.saveInput(chatId, currentState, userInput);
+        botService.setNextInput(chatId, nextState);
     }
 
     protected final void executeCommandIfUserExistsOrAskToRegister(MyFunctionalInterface functionalInterface) {

@@ -34,6 +34,8 @@ public class Callbacks {
     public static final String CLEAR = "CLEAR";
 
     public static final String LINK = "LINK";
+    public static final String LINK_FINISH = "LINK_FINISH";
+
     public static final String UNLINK = "UNLINK";
 
     public static final String CANCEL = "CANCEL";

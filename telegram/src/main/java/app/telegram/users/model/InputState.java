@@ -2,8 +2,8 @@ package app.telegram.users.model;
 
 public enum InputState {
     BASE,
-    REGISTRATION_USERNAME,
-    REGISTRATION_PASSWORD,
+    LINK_USERNAME,
+    LINK_PASSWORD,
     CONTACT_METHOD,
     CONTACT_CONTACT_ID,
     CONTACT_NOTIFICATION_NAME,

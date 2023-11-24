@@ -136,6 +136,9 @@ public class TelegramUserService {
     private void changeNotificationsAndContactsAccountIds(String oldAccountId, String newAccountId) {
         String oldAccountIdToken = abstractUserJwtUtil.generateToken(oldAccountId);
         String newAccountIdToken = abstractUserJwtUtil.generateToken(newAccountId);
+        log.trace("changeNotificationsAndContactsIds is executing with tokens: old-{} ||| new-{}", oldAccountIdToken,
+                newAccountIdToken);
+
         contactFeignClientService.changeAccountId(oldAccountIdToken, newAccountIdToken);
         notificationFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
     }

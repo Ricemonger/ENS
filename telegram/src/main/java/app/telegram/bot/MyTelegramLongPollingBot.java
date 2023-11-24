@@ -20,9 +20,11 @@ import app.telegram.bot.commands.data.DataShowCallback;
 import app.telegram.bot.commands.help.HelpDirect;
 import app.telegram.bot.commands.invalid.InvalidCallback;
 import app.telegram.bot.commands.invalid.InvalidDirect;
-import app.telegram.bot.commands.link.LinkCallback;
-import app.telegram.bot.commands.link.LinkDirect;
-import app.telegram.bot.commands.link.UnlinkCallback;
+import app.telegram.bot.commands.linking.LinkOrUnlinkDirect;
+import app.telegram.bot.commands.linking.link.LinkCallback;
+import app.telegram.bot.commands.linking.link.LinkChain;
+import app.telegram.bot.commands.linking.link.LinkFinishCallback;
+import app.telegram.bot.commands.linking.unlink.UnlinkCallback;
 import app.telegram.bot.commands.notification.NotificationDirect;
 import app.telegram.bot.commands.notification.add.NotificationAddCallback;
 import app.telegram.bot.commands.notification.add.NotificationAddChain;
@@ -107,7 +109,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case "/contact" -> new ContactDirect(this, update, botService).execute();
             case "/notification" -> new NotificationDirect(this, update, botService).execute();
             case "/clear" -> new ClearDirect(this, update, botService).execute();
-            case "/link" -> new LinkDirect(this, update, botService).execute();
+            case "/link" -> new LinkOrUnlinkDirect(this, update, botService).execute();
             case "/data" -> new DataDirect(this, update, botService).execute();
             default -> new InvalidDirect(this, update, botService).execute();
         }
@@ -155,6 +157,8 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.CLEAR -> new ClearCallback(this, update, botService).execute();
 
             case Callbacks.LINK -> new LinkCallback(this, update, botService).execute();
+            case Callbacks.LINK_FINISH -> new LinkFinishCallback(this, update, botService).execute();
+
             case Callbacks.UNLINK -> new UnlinkCallback(this, update, botService).execute();
 
             case Callbacks.CANCEL -> new CancelCallback(this, update, botService).execute();
@@ -172,6 +176,8 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case NOTIFICATION_ADD_ONE -> new NotificationAddChain(this, update, botService).execute();
             case NOTIFICATION_REMOVE_ONE -> new NotificationRemoveOneChain(this, update, botService).execute();
             case NOTIFICATION_REMOVE_MANY -> new NotificationRemoveManyChain(this, update, botService).execute();
+
+            case LINK -> new LinkChain(this, update, botService).execute();
         }
     }
 }

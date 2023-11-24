@@ -1,8 +1,9 @@
-package app.telegram.bot.commands.link;
+package app.telegram.bot.commands.linking.link;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.exceptions.LinkingException;
+import app.telegram.bot.commands.linking.Stage1AskUsername;
+import app.telegram.users.model.InputGroup;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -15,17 +16,9 @@ public class LinkCallback extends AbstractBotCommand {
     @Override
     public void execute() {
         MyFunctionalInterface function = () -> {
-            try {
-                String username;
-                String password;
-                sendAnswer("Linking your telegram account to your ENS account...");
-                sendAnswer("Please enter your ENS account's username:");
+            botService.setNextInputGroup(chatId, InputGroup.LINK);
 
-                sendAnswer("Please enter your ENS account's password:");
-
-            } catch (LinkingException e) {
-                sendAnswer("Error occurred during linking operation");
-            }
+            new Stage1AskUsername(bot, update, botService).execute();
         };
         executeCommandIfUserExistsOrAskToRegister(function);
     }

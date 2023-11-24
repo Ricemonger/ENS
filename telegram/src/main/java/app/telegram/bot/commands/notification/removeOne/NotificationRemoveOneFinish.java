@@ -16,8 +16,11 @@ public class NotificationRemoveOneFinish extends AbstractBotCommand {
 
     @Override
     public void execute() {
+        processInput(InputState.NOTIFICATION_NAME, InputState.BASE);
+
         String name = botService.getNotificationFromInputsMap(chatId).getName();
-        processInput(InputState.NOTIFICATION_NAME, InputState.BASE, "Your notification name is: " + name);
+
+        sendAnswer("Your notification name is: " + name);
 
         botService.setNextInputGroup(chatId, InputGroup.BASE);
 

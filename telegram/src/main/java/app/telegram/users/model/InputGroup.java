@@ -10,5 +10,6 @@ public enum InputGroup {
     NOTIFICATION_REMOVE_ONE,
     NOTIFICATION_REMOVE_MANY,
     SEND_ONE,
-    SEND_MANY
+    SEND_MANY,
+    LINK
 }

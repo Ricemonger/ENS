@@ -65,7 +65,8 @@ public class ContactFeignClientService {
     }
 
     public void changeAccountId(String oldAccountIdToken, String newAccountIdToken) {
-        contactFeignClient.changeAccountId(oldAccountIdToken, new ChangeAccountIdRequest(newAccountIdToken));
-        log.info("contactClient's method changeAccountId was executed with params: oldToken-{}, newToken-{}", oldAccountIdToken, newAccountIdToken);
+        ChangeAccountIdRequest request = new ChangeAccountIdRequest(newAccountIdToken);
+        log.trace("changeAccountId was executed with params: oldToken-{}, request-{}", oldAccountIdToken, request);
+        contactFeignClient.changeAccountId(oldAccountIdToken, request);
     }
 }

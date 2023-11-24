@@ -20,10 +20,10 @@ public class AnyUserEntity {
     @Column(name = "account_id")
     private String accountId = "";
 
-    @OneToOne(mappedBy = "anyUserEntity")
+    @OneToOne(mappedBy = "anyUserEntity", cascade = CascadeType.ALL)
     private EnsUserEntity ensUserEntity;
 
-    @OneToOne(mappedBy = "anyUserEntity")
+    @OneToOne(mappedBy = "anyUserEntity", cascade = CascadeType.ALL)
     private TelegramUserEntity telegramUserEntity;
 
     public AnyUserEntity(String accountId) {

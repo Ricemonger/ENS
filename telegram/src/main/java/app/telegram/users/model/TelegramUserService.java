@@ -143,7 +143,8 @@ public class TelegramUserService {
 
     private String findTelegramTokenOrNull(Long chatId) {
         TelegramUser user = findByIdOrThrow(chatId);
-        if (user.getTempTelegramTokenExpirationTime().before(new Date())) {
+        Date time = user.getTempTelegramTokenExpirationTime();
+        if (time == null || time.before(new Date())) {
             return null;
         }
         return user.getTempTelegramToken();
@@ -158,7 +159,8 @@ public class TelegramUserService {
 
     private String findSecurityTokenOrNull(Long chatId) {
         TelegramUser user = findByIdOrThrow(chatId);
-        if (user.getTempSecurityTokenExpirationTime().before(new Date())) {
+        Date time = user.getTempSecurityTokenExpirationTime();
+        if (time == null || time.before(new Date())) {
             return null;
         }
         return user.getTempSecurityToken();

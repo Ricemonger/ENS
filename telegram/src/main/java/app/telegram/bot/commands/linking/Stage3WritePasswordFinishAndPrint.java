@@ -1,24 +1,25 @@
-package app.telegram.bot.commands.contact;
+package app.telegram.bot.commands.linking;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
-import app.utils.feign_clients.contact.Contact;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage4WriteNotificationAndPrint extends AbstractBotCommand {
+public class Stage3WritePasswordFinishAndPrint extends AbstractBotCommand {
 
-    public Stage4WriteNotificationAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public Stage3WritePasswordFinishAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void execute() {
-        Contact contact = botService.getContactFromInputsMap(chatId);
+        processInput(InputState.LINK_PASSWORD, InputState.BASE);
 
-        processInput(InputState.CONTACT_NOTIFICATION_NAME, InputState.BASE, "Your contact is:" + contact);
+        String[] s = botService.getUsernameAndPasswordFromInputMap(chatId);
+
+        sendAnswer("Input is finished. Your ENS account is:" + s[0] + "|" + s[1]);
 
         botService.setNextInputGroup(chatId, InputGroup.BASE);
     }

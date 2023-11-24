@@ -60,8 +60,10 @@ public class BotService {
         telegramUserService.unlink(chatId);
     }
 
-    public void link(Long chatId, String username, String password) {
-        telegramUserService.link(chatId, username, password);
+    public void link(Long chatId) {
+        String[] s = getUsernameAndPasswordFromInputMap(chatId);
+        telegramUserService.link(chatId, s[0], s[1]);
+        clearInputs(chatId);
     }
 
     public String getUserData(Long chatId) {
@@ -180,5 +182,12 @@ public class BotService {
         String text = notificationMap.get(InputState.NOTIFICATION_TEXT);
 
         return new Notification(name, text);
+    }
+
+    public String[] getUsernameAndPasswordFromInputMap(Long chatId) {
+        Map<InputState, String> userInputsMap = inputsMap.get(String.valueOf(chatId));
+        String username = userInputsMap.get(InputState.LINK_USERNAME);
+        String password = userInputsMap.get(InputState.LINK_PASSWORD);
+        return new String[]{username, password};
     }
 }
