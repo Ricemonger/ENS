@@ -46,11 +46,14 @@ public class TelegramUserRepositoryServiceTests {
     public void deleteShouldCallDeleteOnRepository() {
         repository.save(new TelegramUserEntity(CHAT_ID));
 
-        service.delete(new TelegramUser(CHAT_ID));
+        String accountId = repository.findAll().get(0).getAccountId();
+
+        service.delete(new TelegramUser(accountId, CHAT_ID));
 
         assertEquals(0, repository.findAll().size());
 
-        verify(repository).delete(new TelegramUserEntity(CHAT_ID));
+        verify(repository).deleteById(CHAT_ID);
+        verify(repository).deleteByAnyUserEntityAccountId(accountId);
     }
 
     @Test

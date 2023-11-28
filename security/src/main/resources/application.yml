@@ -22,7 +22,7 @@ application:
   version: 0.1
   config:
     telegram:
-      url: http://localhost:8080/api/telegram/security
+      url: http://localhost:8080/api/telegram/security/
     request-mappings:
       abstract: /api/security
       ens: /api/users

@@ -10,7 +10,7 @@ application:
   version: 0.1
   config:
     request-mappings:
-      contact: /api/notifications
+      notification: /api/notifications
 
 spring:
   application:

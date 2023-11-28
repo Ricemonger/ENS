@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,15 +29,15 @@ public class EnsUserService {
 
     public String register(EnsUser ensUser) {
         validateUsernamePassword(ensUser);
-        if (ensUserRepositoryService.existsByUsername(ensUser.getUsername())) {
+        if (!ensUserRepositoryService.existsByUsername(ensUser.getUsername())) {
             String notEncodedPassword = ensUser.getPassword();
             ensUser.setPassword(passwordEncoder.encode(notEncodedPassword));
             ensUserRepositoryService.save(ensUser);
 
             ensUser.setPassword(notEncodedPassword);
-            log.trace("register method was executed with params:{}", ensUser);
             return login(ensUser);
         } else {
+            log.info("register called for ensUser-{}, user already exists", ensUser);
             throw new UserAlreadyExistsException();
         }
     }
@@ -50,12 +51,8 @@ public class EnsUserService {
 
         String accountId = inDb.getAccountId();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        String result = abstractUserJwtUtil.generateToken(accountId);
-        log.trace("login method was executed with params: accountId-{}, username-{}, password-{} and result: {}",
-                accountId,
-                username,
-                passwordEncoder.encode(password), result);
-        return result;
+
+        return abstractUserJwtUtil.generateToken(accountId);
     }
 
     public boolean canLogin(String username, String password) {
@@ -64,22 +61,18 @@ public class EnsUserService {
             validateUsername(username);
             validatePassword(password);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (Exception e) {
+        } catch (InvalidUsernameException | InvalidPasswordException | AuthenticationException e) {
             result = false;
         }
-        log.trace("canLogin was executed for username-{}, password-{} with result-{}", username, password, result);
         return result;
     }
 
     public EnsUser getByUsernameOrThrow(String username) {
-        log.trace("getByUsernameOrThrow was called for username-{}", username);
         return ensUserRepositoryService.findByIdOrThrow(username);
     }
 
     public boolean doesUserExist(String accountId) {
-        boolean result = ensUserRepositoryService.existsByAccountId(accountId);
-        log.trace("doesUserExists was called for accountId-{} with result-{}", accountId, result);
-        return result;
+        return ensUserRepositoryService.existsByAccountId(accountId);
     }
 
     private void validateUsernamePassword(EnsUser ensUser) {
@@ -90,7 +83,7 @@ public class EnsUserService {
     private void validateUsername(String username) {
         String regex = ".*\\W+.*";
         if (username.length() < 6 || username.length() > 24 || username.matches(regex)) {
-            log.trace("Username {} is not valid!", username);
+            log.info("validateUsername executed for username-{}, invalid username", username);
             throw new InvalidUsernameException();
         }
     }
@@ -98,7 +91,7 @@ public class EnsUserService {
     private void validatePassword(String password) {
         String regex = ".*[\\{\\}\\[\\]\\(\\):;'\".,<>/|\\ ]+.*";
         if (password.length() < 6 || password.length() > 16 || password.matches(regex)) {
-            log.trace("Password {} is not valid!", password);
+            log.info("validateUsername executed for password-{}, invalid password", password);
             throw new InvalidPasswordException();
         }
     }

@@ -117,7 +117,7 @@ public class TelegramUserServiceTests {
     }
 
     @Test
-    public void generateSecurityTokenShouldReturnValidToken() {
+    public void getSecurityTokenShouldReturnValidToken() {
         telegramUserRepositoryService.save(new TelegramUser(TOKEN));
         String accountId = telegramUserRepositoryService.findAll().get(0).getAccountId();
 
@@ -127,7 +127,7 @@ public class TelegramUserServiceTests {
     }
 
     @Test
-    public void generateSecurityTokenShouldThrowIfUserDoesntExist() {
+    public void getSecurityTokenShouldThrowIfUserDoesntExist() {
         Executable executable = () -> telegramUserService.getSecurityToken(TOKEN);
 
         assertThrows(UserDoesntExistException.class, executable);
@@ -155,19 +155,17 @@ public class TelegramUserServiceTests {
 
     @Test
     public void linkShouldChangeAccountIdsIfAuthorized() {
-        String username = USERNAME;
-        String password = PASSWORD;
-        ensUserService.register(new EnsUser(username, password));
+        ensUserService.register(new EnsUser(USERNAME, PASSWORD));
 
         String oldAccountId = telegramUserRepositoryService.save(new TelegramUser(TOKEN)).getAccountId();
-        String newAccountId = ensUserService.getByUsernameOrThrow(username).getAccountId();
+        String newAccountId = ensUserService.getByUsernameOrThrow(USERNAME).getAccountId();
 
         reset(abstractUserJwtUtil);
-        telegramUserService.link(TOKEN, username, password);
+        telegramUserService.link(TOKEN, USERNAME, PASSWORD);
 
         assertEquals(newAccountId, telegramUserRepositoryService.findAll().get(0).getAccountId());
 
-        verify(ensUserService).canLogin(username, password);
+        verify(ensUserService).canLogin(USERNAME, PASSWORD);
         verify(abstractUserJwtUtil).generateToken(oldAccountId);
         verify(abstractUserJwtUtil).generateToken(newAccountId);
         verify(contactFeignClientService).changeAccountId(anyString(), anyString());
@@ -225,6 +223,7 @@ public class TelegramUserServiceTests {
         verify(contactFeignClientService).changeAccountId(anyString(), anyString());
 
         assertNotEquals(oldAccountId, telegramUserRepositoryService.findAll().get(0).getAccountId());
+
         assertEquals(oldAccountId, ensUserRepositoryService.findByIdOrThrow(username).getAccountId());
     }
 
@@ -262,6 +261,20 @@ public class TelegramUserServiceTests {
         Executable executable = () -> telegramUserService.unlinkWithDataToEns(TOKEN);
 
         assertThrows(UserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void doesUserExistsShouldReturnTrueIfExists() {
+        telegramUserRepositoryService.save(new TelegramUser(TOKEN));
+
+        assertTrue(telegramUserService.doesUserExists(TOKEN));
+    }
+
+    @Test
+    public void doesUserExistsShouldReturnFalseIfDoesntExist() {
+        telegramUserRepositoryService.save(new TelegramUser("NOT TOKEN"));
+
+        assertFalse(telegramUserService.doesUserExists(TOKEN));
     }
 
 

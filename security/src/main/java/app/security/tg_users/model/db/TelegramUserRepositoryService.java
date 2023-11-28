@@ -16,45 +16,35 @@ public class TelegramUserRepositoryService {
     private final TelegramUserRepository telegramUserRepository;
 
     public TelegramUser save(TelegramUser user) {
-        TelegramUser result = toTelegramUser(telegramUserRepository.save(toTelegramUserEntity(user)));
-        log.trace("save was executed with user-{} and result-{}", user, result);
-        return result;
+        return toTelegramUser(telegramUserRepository.save(toTelegramUserEntity(user)));
     }
 
     public void delete(TelegramUser user) {
-        log.trace("delete was called for user-{}", user);
-        telegramUserRepository.delete(toTelegramUserEntity(user));
+        telegramUserRepository.deleteById(user.getChatId());
+        telegramUserRepository.deleteByAnyUserEntityAccountId(user.getAccountId());
     }
 
     public void deleteAll() {
-        log.trace("deleteAll was called");
         telegramUserRepository.deleteAll();
     }
 
     public boolean existsByChatId(String chatId) {
-        boolean result = telegramUserRepository.existsById(chatId);
-        log.trace("existsByChatId was executed for chatId-{} with result-{}", chatId, result);
-        return result;
+        return telegramUserRepository.existsById(chatId);
     }
 
     public boolean existsByAccountId(String accountId) {
-        boolean result = telegramUserRepository.existsByAnyUserEntityAccountId(accountId);
-        log.trace("existsByAccountId was executed for accountId-{} with result-{}", accountId, result);
-        return result;
+        return telegramUserRepository.existsByAnyUserEntityAccountId(accountId);
     }
 
     public TelegramUser findByChatIdOrThrow(String chatId) {
-        log.trace("findByChatIdOrThrow was called for chatId-{}", chatId);
         return toTelegramUser(telegramUserRepository.findById(chatId).orElseThrow());
     }
 
     public TelegramUser findByAccountIdOrThrow(String accountId) {
-        log.trace("findByAccountIdOrThrow was called for accountId-{}", accountId);
         return toTelegramUser(telegramUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
     }
 
     public List<TelegramUser> findAll() {
-        log.trace("findAll was called");
         return telegramUserRepository.findAll().stream().map(TelegramUser::new).collect(Collectors.toList());
     }
 

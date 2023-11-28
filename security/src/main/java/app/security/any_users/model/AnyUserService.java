@@ -19,26 +19,21 @@ public class AnyUserService {
 
 
     public AnyUser create() {
-        AnyUser result = anyUserRepositoryService.save(new AnyUser());
-        log.trace("create method called with result:{}", result);
-        return result;
+        return anyUserRepositoryService.save(new AnyUser());
     }
 
     public AnyUser delete(String accountId) {
         try {
             AnyUser deleted = anyUserRepositoryService.findByIdOrThrow(accountId);
             anyUserRepositoryService.deleteById(accountId);
-            log.trace("user {} was deleted", deleted);
             return deleted;
         } catch (NoSuchElementException e) {
-            log.error("delete method was called for accountID {}, but user doesn't exist", accountId);
+            log.info("delete method was called for accountID-{}, user doesn't exist", accountId);
             throw new UserDoesntExistException();
         }
     }
 
     public boolean doesUserExist(String accountId) {
-        boolean result = anyUserRepositoryService.existsById(accountId);
-        log.trace("doesUserExist method was called with accountID-{} and result-{}", accountId, result);
-        return result;
+        return anyUserRepositoryService.existsById(accountId);
     }
 }

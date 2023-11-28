@@ -23,6 +23,7 @@ application:
   config:
     request-mappings:
       notification: /api/notifications
+
 server:
   port: 8091
 

@@ -18,44 +18,35 @@ public class EnsUserRepositoryService {
     private final EnsUserRepository ensUserRepository;
 
     public EnsUser save(EnsUser ensUser) {
-        EnsUser result = toEnsUser(ensUserRepository.save(toEnsUserEntity(ensUser)));
-        log.trace("save was called for ensUser-{}, result-{}", ensUser, result);
-        return result;
+        return toEnsUser(ensUserRepository.save(toEnsUserEntity(ensUser)));
     }
 
     public void deleteAll() {
-        log.trace("deleteAll was called");
         ensUserRepository.deleteAll();
     }
 
     public boolean existsByAccountId(String accountId) {
-        boolean result = ensUserRepository.existsByAnyUserEntityAccountId(accountId);
-        log.trace("save was called for accountId-{}, result-{}", accountId, result);
-        return result;
+        return ensUserRepository.existsByAnyUserEntityAccountId(accountId);
     }
 
     public boolean existsByUsername(String username) {
-        boolean result = ensUserRepository.existsById(username);
-        log.trace("save was called for username-{}, result-{}", username, result);
-        return result;
+        return ensUserRepository.existsById(username);
     }
 
     public EnsUser findByIdOrThrow(String username) {
         try {
-            log.trace("findByIdOrThrow was called for username-{}", username);
             return toEnsUser(ensUserRepository.findById(username).orElseThrow());
         } catch (NoSuchElementException e) {
-            log.error("findByIdOrThrow throws UserDoesntExist for username-{}", username);
+            log.info("findByIdOrThrow executed for username-{}, user doesn't exist", username);
             throw new UserDoesntExistException();
         }
     }
 
     public EnsUser findByAccountIdOrThrow(String accountId) {
         try {
-            log.trace("findByAccountIdOrThrow was called for accountId-{}", accountId);
             return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
         } catch (NoSuchElementException e) {
-            log.error("findByAccountIdOrThrow throws UserDoesntExist for accountId-{}", accountId);
+            log.info("findByAccountIdOrThrow executed for accountId-{}, user doesn't exist", accountId);
             throw new UserDoesntExistException();
         }
     }

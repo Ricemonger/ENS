@@ -17,12 +17,14 @@ spring:
 application:
   title: notification-test
   version: 0.1
+  config:
+    request-mappings:
+      notification: /api/notifications
 
 server:
   port: 8091
 
 logging:
   level:
-    app:
-      contact: trace
+    app: trace
 

@@ -25,6 +25,7 @@ import app.utils.feign_clients.contact.ContactFeignClient;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClient;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.logger.AroundLogger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class SecurityServerTests {
+
+    @Autowired
+    private AroundLogger aroundLogger;
 
     @Autowired
     private AbstractUserJwtUtil abstractUserJwtUtil;
@@ -111,15 +115,18 @@ public class SecurityServerTests {
 
     @Test
     public void contextLoads() {
+        assertNotNull(aroundLogger);
         assertNotNull(abstractUserJwtUtil);
         assertNotNull(abstractUserController);
         assertNotNull(abstractUserControllerService);
         assertNotNull(anyUserRepositoryService);
         assertNotNull(anyUserRepository);
+        assertNotNull(anyUserService);
         assertNotNull(ensUserController);
         assertNotNull(ensUserControllerService);
         assertNotNull(ensUserRepositoryService);
         assertNotNull(ensUserRepository);
+        assertNotNull(ensUserService);
         assertNotNull(ensUserDetailsService);
         assertNotNull(ensUserPasswordEncoderConfiguration);
         assertNotNull(ensUserSecurityConfiguration);
@@ -127,14 +134,12 @@ public class SecurityServerTests {
         assertNotNull(telegramUserControllerService);
         assertNotNull(telegramUserRepositoryService);
         assertNotNull(telegramUserRepository);
+        assertNotNull(telegramUserService);
         assertNotNull(telegramModuleFeignClientService);
         assertNotNull(telegramModuleFeignClient);
         assertNotNull(notificationFeignClient);
         assertNotNull(notificationFeignClientService);
         assertNotNull(contactFeignClient);
         assertNotNull(contactFeignClientService);
-        assertNotNull(anyUserService);
-        assertNotNull(ensUserService);
-        assertNotNull(telegramUserService);
     }
 }

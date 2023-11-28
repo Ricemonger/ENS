@@ -8,6 +8,9 @@ server:
 application:
   title: telegram
   version: 0.1
+  config:
+    request-mappings:
+      telegram-security: /api/telegram/security
 
 spring:
   application:

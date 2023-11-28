@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @RestController
-@RequestMapping("/api/send")
+@RequestMapping("${application.config.request-mappings.sender}")
 @RequiredArgsConstructor
 @Slf4j
 public class SendController {

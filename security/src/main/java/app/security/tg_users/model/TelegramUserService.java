@@ -39,24 +39,21 @@ public class TelegramUserService {
         String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
         if (!doesUserExistByChatId(chatId)) {
             TelegramUser result = telegramUserRepositoryService.save(new TelegramUser(chatId));
-            log.trace("create method was called with telegramToken-{} and result-{}", telegramToken, result);
             return abstractUserJwtUtil.generateToken(result.getAccountId());
         } else {
+            log.info("create executed for telegramToken-{}, user already exists", telegramToken);
             throw new UserAlreadyExistsException();
         }
     }
 
     public String getSecurityToken(String telegramToken) {
         String accountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
-        String securityToken = abstractUserJwtUtil.generateToken(accountId);
-        log.trace("SecurityToken-{} was generated for telegramToken-{}", securityToken, telegramToken);
-        return securityToken;
+        return abstractUserJwtUtil.generateToken(accountId);
     }
 
     public void delete(String telegramToken) {
         String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
         TelegramUser inDB = getByChatIdOrThrow(chatId);
-        log.trace("delete method was called with telegramToken-{} and result-{}", telegramToken, inDB);
         telegramUserRepositoryService.delete(inDB);
     }
 
@@ -66,7 +63,6 @@ public class TelegramUserService {
         String securityToken = abstractUserJwtUtil.generateToken(accountId);
         List<Notification> notifications = notificationFeignService.findAllById(securityToken);
         List<Contact> contacts = contactFeignClientService.findAllById(securityToken);
-        log.trace("getAccountInfo was called for telegramToken-{}", telegramToken);
 
         String sb = "ChatId: " + chatId + "\n" +
                 "AccountId: " + accountId + "\n" +
@@ -86,20 +82,17 @@ public class TelegramUserService {
             TelegramUser updatedAccountIdUser = new TelegramUser(newAccountId, getChatId(telegramToken));
             recreateWithNewAccountId(updatedAccountIdUser.getAccountId(), updatedAccountIdUser.getChatId());
 
-            log.trace("link method was called with request: telegramToken-{}, username-{} and accountIds: old-{}, new-{}",
-                    telegramToken, username, oldAccountId, newAccountId);
-
             changeNotificationsAndContactsAccountIds(oldAccountId, newAccountId);
         } else {
+            log.info("link was called for telegramToken-{}, username-{}, password-{}, user doesn't exist",
+                    telegramToken, username, password);
             throw new UserDoesntExistException();
         }
     }
 
     public boolean isLinked(String telegramToken) {
         String accountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
-        boolean result = ensUserService.doesUserExist(accountId);
-        log.trace("isLinked was executed for telegramToken-{} and result-{}", telegramToken, result);
-        return result;
+        return ensUserService.doesUserExist(accountId);
     }
 
     public void unlinkWithDataToTelegram(String telegramToken) {
@@ -109,9 +102,6 @@ public class TelegramUserService {
         String oldAccountId = inDb.getAccountId();
         String newAccountId = recreateWithNewAccountId(null, inDb.getChatId());
 
-        log.trace("unlinkWithDataToTelegram method was called with telegramToken-{} and accountIds: old-{}, new-{}",
-                telegramToken, oldAccountId, newAccountId);
-
         changeNotificationsAndContactsAccountIds(oldAccountId, newAccountId);
     }
 
@@ -120,58 +110,64 @@ public class TelegramUserService {
         TelegramUser inDb = getByChatIdOrThrow(chatId);
 
         recreateWithNewAccountId(null, inDb.getChatId());
-
-        log.trace("unlinkWithDataToEns method was called with token-{}", telegramToken);
     }
 
     public boolean doesUserExists(String telegramToken) {
-        boolean result = doesUserExistByChatId(telegramModuleFeignClientService.getChatId(telegramToken));
-        log.trace("doesUserExists method was called for token-{} and with result-{}", telegramToken, result);
-        return result;
+        return doesUserExistByChatId(telegramModuleFeignClientService.getChatId(telegramToken));
     }
 
     private String recreateWithNewAccountId(String accountId, String chatId) {
-        log.trace("recreateWithNewAccountId was called for accountId-{} and chatId-{}", accountId, chatId);
+        log.debug("recreateWithNewAccountId called for accountId-{} and chatId-{}", accountId, chatId);
         telegramUserRepositoryService.delete(new TelegramUser(chatId));
-        return telegramUserRepositoryService.save(new TelegramUser(accountId, chatId)).getAccountId();
+        String newAccountId = telegramUserRepositoryService.save(new TelegramUser(accountId, chatId)).getAccountId();
+        log.trace("recreateWithNewAccountId executed for accountId-{} and chatId-{} with new accountId-{}", accountId,
+                chatId, newAccountId);
+        return newAccountId;
     }
 
     private void changeNotificationsAndContactsAccountIds(String oldAccountId, String newAccountId) {
+        log.debug("changeNotificationsAndContactsIds called for oldAccountId-{} and newAccountId-{}", oldAccountId
+                , newAccountId);
         String oldAccountIdToken = abstractUserJwtUtil.generateToken(oldAccountId);
         String newAccountIdToken = abstractUserJwtUtil.generateToken(newAccountId);
-        log.trace("changeNotificationsAndContactsIds is executing with tokens: old-{} ||| new-{}", oldAccountIdToken,
-                newAccountIdToken);
 
         contactFeignClientService.changeAccountId(oldAccountIdToken, newAccountIdToken);
         notificationFeignService.changeAccountId(oldAccountIdToken, newAccountIdToken);
+        log.trace("changeNotificationsAndContactsIds executed for oldAccountId={}, oldAccountIdToken-{} | " +
+                "newAccountId-{}, newAccountIdToken-{}", oldAccountId, oldAccountIdToken, newAccountId, newAccountIdToken);
     }
 
     private String getAccountIdByTelegramTokenOrThrow(String telegramToken) {
-        log.trace("getAccountIdByTelegramToken was called with telegramToken-{}", telegramToken);
+        log.debug("getAccountIdByTelegramToken called with telegramToken-{}", telegramToken);
         String chatId = getChatId(telegramToken);
-        TelegramUser inDb = getByChatIdOrThrow(chatId);
-        return inDb.getAccountId();
+        String accountId = getByChatIdOrThrow(chatId).getAccountId();
+        log.trace("getAccountIdByTelegramToken executed for telegramToken-{} with result-{}", telegramToken, accountId);
+        return accountId;
     }
 
     private String getChatId(String telegramToken) {
-        log.trace("getChatId was called for telegramToken-{}", telegramToken);
-        return telegramModuleFeignClientService.getChatId(telegramToken);
+        log.debug("getChatId called for telegramToken-{}", telegramToken);
+        String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
+        log.trace("getChatId executed for telegramToken-{} with result-{}", telegramToken, chatId);
+        return chatId;
     }
 
     private TelegramUser getByChatIdOrThrow(String chatId) {
+        log.debug("getByChatIdOrThrow called for chatId-{}", chatId);
         try {
             TelegramUser result = telegramUserRepositoryService.findByChatIdOrThrow(chatId);
-            log.trace("getByChatId method was called for chatId-{} with result:{}", chatId, result);
+            log.trace("getByChatIdOrThrow executed for chatId-{} with result-{}", chatId, result);
             return result;
         } catch (NoSuchElementException e) {
-            log.error("UserDoesntExistsException was thrown during getByChatId method for chatID-{}", chatId);
+            log.info("getByChatIdOrThrow executed for chatID-{}, user doesn't exist", chatId);
             throw new UserDoesntExistException();
         }
     }
 
     private boolean doesUserExistByChatId(String chatId) {
-        boolean byChatId = telegramUserRepositoryService.existsByChatId(chatId);
-        log.trace("doesUserExistByChatId method was called for user-{} with result:{}", chatId, byChatId);
-        return byChatId;
+        log.debug("doesUserExistByChatId called for chatId-{}", chatId);
+        boolean result = telegramUserRepositoryService.existsByChatId(chatId);
+        log.trace("doesUserExistByChatId executed for user-{} with result-{}", chatId, result);
+        return result;
     }
 }

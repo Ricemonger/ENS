@@ -67,14 +67,14 @@ public class NotificationService {
     private boolean doesNotificationExist(Notification notification) {
         log.debug("doesNotificationExists called for notification-{}", notification);
         boolean result = repositoryService.doesNotificationExist(notification);
-        log.trace("doesNotificationExists called for notification-{} with result-{}", notification, result);
+        log.trace("doesNotificationExists executed for notification-{} with result-{}", notification, result);
         return result;
     }
 
     private Notification getByKeyOrThrow(Notification notification) {
         log.debug("getByKeyOrThrow called for notification-{}", notification);
         Notification result = repositoryService.findByIdOrThrow(notification.getAccountId(), notification.getName());
-        log.trace("getByKeyOrThrow called for notification-{} with result-{}", notification, result);
+        log.trace("getByKeyOrThrow executed for notification-{} with result-{}", notification, result);
         return result;
     }
 }

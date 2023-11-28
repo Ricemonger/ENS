@@ -37,6 +37,13 @@ public class TelegramUserControllerTests {
     }
 
     @Test
+    public void doesUserExists() {
+        controller.doesUserExists(TOKEN);
+
+        verify(service).doesUserExists(TOKEN);
+    }
+
+    @Test
     public void getSecurityToken() {
         controller.getSecurityToken(TOKEN);
 

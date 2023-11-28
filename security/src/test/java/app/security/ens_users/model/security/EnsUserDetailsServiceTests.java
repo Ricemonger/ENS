@@ -2,13 +2,12 @@ package app.security.ens_users.model.security;
 
 import app.security.ens_users.EnsUser;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
+import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -53,7 +52,7 @@ public class EnsUserDetailsServiceTests {
 
         Executable executable = () -> userDetailsService.loadUserByUsername(USER.getUsername());
 
-        assertThrows(NoSuchElementException.class, executable);
+        assertThrows(UserDoesntExistException.class, executable);
     }
 
     @Test
@@ -78,6 +77,6 @@ public class EnsUserDetailsServiceTests {
 
         Executable executable = () -> userDetailsService.loadUserByAccountId("uyuyt657");
 
-        assertThrows(NoSuchElementException.class, executable);
+        assertThrows(UserDoesntExistException.class, executable);
     }
 }

@@ -15,12 +15,13 @@ spring:
 application:
   title: contact-test
   version: 0.1
-
+  config:
+    request-mappings:
+      contact: /api/contacts
 server:
   port: 8090
 
 logging:
   level:
-    app:
-      contact: trace
+    app: trace
 

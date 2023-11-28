@@ -8,6 +8,10 @@ server:
 application:
   title: sender
   version: 0.1
+  config:
+    request-mappings:
+      sender: /api/send
+
 
 spring:
   application:
