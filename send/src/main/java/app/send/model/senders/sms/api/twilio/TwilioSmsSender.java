@@ -6,6 +6,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
 import com.twilio.type.PhoneNumber;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TwilioSmsSender implements SmsSender {
 
     private final TwilioAuthConfiguration twilioAuthConfiguration;
@@ -29,6 +31,7 @@ public class TwilioSmsSender implements SmsSender {
             MessageCreator creator = Message.creator(toNumber, fromNumber, text);
             creator.create();
         } catch (ApiException e) {
+            log.info("send throws: {}", e);
             throw new TwilioApiException(e.getMessage());
         }
     }
@@ -48,6 +51,7 @@ public class TwilioSmsSender implements SmsSender {
                 }
             });
         } catch (ApiException e) {
+            log.info("bulkSend throws: {}", e);
             throw new TwilioApiException(e);
         }
     }

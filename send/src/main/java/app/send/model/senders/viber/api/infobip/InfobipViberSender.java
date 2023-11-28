@@ -1,6 +1,7 @@
 package app.send.model.senders.viber.api.infobip;
 
 import app.send.model.senders.viber.ViberSender;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class InfobipViberSender implements ViberSender {
 
     private final String URL;
@@ -45,6 +47,7 @@ public class InfobipViberSender implements ViberSender {
                     .block();
             System.out.println(response);
         } catch (WebClientResponseException e) {
+            log.info("send throws: {}", e);
             throw new InfobipException(e.getMessage());
         }
     }
@@ -79,6 +82,7 @@ public class InfobipViberSender implements ViberSender {
                     .block();
             System.out.println(response);
         } catch (WebClientResponseException e) {
+            log.info("bulkSend throws: {}", e);
             throw new InfobipException(e.getMessage());
         }
     }

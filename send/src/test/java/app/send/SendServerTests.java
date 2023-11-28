@@ -14,6 +14,7 @@ import app.utils.feign_clients.contact.ContactFeignClient;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClient;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.logger.AroundLogger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
 public class SendServerTests {
+
+    @Autowired
+    private AroundLogger aroundLogger;
 
     @Autowired
     private SendController sendController;
@@ -67,6 +71,7 @@ public class SendServerTests {
 
     @Test
     public void contextLoads() {
+        assertNotNull(aroundLogger);
         assertNotNull(sendController);
         assertNotNull(sendControllerService);
         assertNotNull(emailSender);

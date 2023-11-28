@@ -9,6 +9,9 @@ spring:
 application:
   title: sender
   version: 0.1
+  config:
+    request-mappings:
+      sender: /api/send
 
 server:
   port: 8092

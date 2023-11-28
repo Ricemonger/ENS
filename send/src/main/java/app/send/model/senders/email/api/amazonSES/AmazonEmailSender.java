@@ -9,6 +9,7 @@ import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Properties;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AmazonEmailSender implements EmailSender {
 
     private final AmazonAuthConfiguration auth;
@@ -52,10 +54,13 @@ public class AmazonEmailSender implements EmailSender {
     }
 
     private Session createSession() {
-        return Session.getDefaultInstance(PROPERTIES);
+        Session session = Session.getDefaultInstance(PROPERTIES);
+        log.debug("createSession created session-{}", session);
+        return session;
     }
 
     private void sendToOneEmail(String to, String text, Session session) {
+        log.debug("sendToOneEmail called with to-{}, text-{}, session-{}", to, text, session);
         MimeMessage msg = new MimeMessage(session);
         try {
             msg.setFrom(new InternetAddress(auth.getSentFrom()));
@@ -66,12 +71,15 @@ public class AmazonEmailSender implements EmailSender {
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
             transport.sendMessage(msg, msg.getAllRecipients());
             closeTransport(transport);
+            log.trace("sendToOneEmail executed with to-{}, text-{}, session-{}", to, text, session);
         } catch (MessagingException e) {
+            log.info("sendToOneEmail throws with to-{}, text-{}, session-{}, exception was thrown", to, text, session);
             throw new AmazonEmailException(e);
         }
     }
 
     private void sendToManyEmails(List<String> sendToList, String text, Session session) {
+        log.debug("sendToManyEmails called with text-{}, session-{}", text, session);
         try {
             Transport transport = session.getTransport();
             transport.connect(auth.getHost(), auth.getUsername(), auth.getPassword());
@@ -89,15 +97,20 @@ public class AmazonEmailSender implements EmailSender {
             msg.setContent(text, "text/plain");
             transport.sendMessage(msg, msg.getAllRecipients());
             closeTransport(transport);
+            log.trace("sendToManyEmails executed with text-{}, session-{}", text, session);
         } catch (MessagingException e) {
+            log.info("sendToManyEmails throws with text-{}, session-{}, exception was thrown", text, session);
             throw new AmazonEmailException(e);
         }
     }
 
     private void closeTransport(Transport transport) {
+        log.debug("closeTransport called for transport-{}", transport);
         try {
             transport.close();
+            log.trace("closeTransport executed for transport-{}", transport);
         } catch (MessagingException e) {
+            log.info("closeTransport throws for transport-{}", transport);
             throw new AmazonEmailException();
         }
     }

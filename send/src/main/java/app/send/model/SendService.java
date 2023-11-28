@@ -10,19 +10,17 @@ import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.contact.Method;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SendService {
 
     public final static String DEFAULT_TEXT_PATTERN = "EMERGENCY NOTIFICATION MESSAGE!!";
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContactFeignClientService contactFeignClientService;
 
@@ -35,8 +33,6 @@ public class SendService {
     private final ViberSender viberSender;
 
     public void sendOne(String token, String method, String contactId, String notificationText) {
-        log.trace("sendOne method is executing with params: token-{}, method-{}, contactId-{}, notificationText-{}",
-                token, method, contactId, notificationText);
         String notifText = DEFAULT_TEXT_PATTERN;
         if (notificationText != null && !notificationText.isBlank()) {
             notifText = notificationText;
@@ -47,7 +43,7 @@ public class SendService {
             } catch (NoSuchElementException e) {
             }
         }
-        switch (method.toUpperCase()) {
+        switch (method.toUpperCase().trim()) {
             case "SMS":
                 send(smsSender, contactId, notifText);
                 break;
@@ -58,12 +54,13 @@ public class SendService {
                 send(viberSender, contactId, notifText);
                 break;
             default:
-                throw new IllegalArgumentException("WRONG METHOD NAME");
+                log.info("sendOne executed for token-{}, method-{}, contactId-{}, notificationText-{}, wrong method " +
+                        "name was entered", token, method, contactId, notificationText);
+                throw new IllegalArgumentException();
         }
     }
 
     public void sendAll(String token) {
-        log.trace("sendAll method is executing with param: token-{}", token);
         List<Contact> contacts = contactFeignClientService.findAllById(token);
         List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
         List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
@@ -75,25 +72,33 @@ public class SendService {
     }
 
     private void sendAllViberMessages(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendAllViberMessages called");
         bulkSend(viberSender, contacts, notifications);
+        log.trace("sendAllViberMessages executed");
     }
 
     private void sendAllSms(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendAllSms called");
         bulkSend(smsSender, contacts, notifications);
+        log.trace("sendAllSms executed");
     }
 
     private void sendAllEmails(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendAllEmails called");
         bulkSend(emailSender, contacts, notifications);
+        log.trace("sendAllEmails executed");
     }
 
     private void bulkSend(Sender sender, List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("bulkSend called for sender-{}", sender);
         sender.bulkSend(toSendMap(contacts, notifications));
-        log.trace("bulk send notifications were sent with params: sender-{}, contacts-{}, notifications-{}", sender, contacts, notifications);
+        log.trace("bulkSend executed for sender-{}", sender);
     }
 
     private void send(Sender sender, String contactId, String notificationText) {
+        log.debug("send called for sender-{}, contactId-{}, notificationText-{}", sender, contactId, notificationText);
         sender.send(contactId, notificationText);
-        log.trace("notification was sent with params: sender-{}, contactId-{}, notificationText-{}", sender, contactId, notificationText);
+        log.trace("send executed for sender-{}, contactId-{}, notificationText-{}", sender, contactId, notificationText);
     }
 
     private Map<String, List<String>> toSendMap(List<Contact> contacts, Map<String, String> notifications) {
