@@ -1,4 +1,4 @@
-package app.send.exceptions;
+package app.utils.feign_clients.sender.exceptions;
 
 public class SenderApiException extends RuntimeException {
     public SenderApiException() {

@@ -1,9 +1,9 @@
 package app.send.controller;
 
-import app.send.controller.dto.SendOneRequest;
-import app.send.exceptions.SenderApiException;
 import app.utils.ExceptionMessage;
 import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.sender.dto.SendOneRequest;
+import app.utils.feign_clients.sender.exceptions.SenderApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

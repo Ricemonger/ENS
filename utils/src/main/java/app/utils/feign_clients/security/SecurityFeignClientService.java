@@ -11,9 +11,9 @@ public class SecurityFeignClientService {
 
     private final SecurityFeignClient securityFeignClient;
 
-    public String extractAccountId(String token) {
-        System.out.println("Token : " + token);
-        return securityFeignClient.getAccountId(token);
+    public String extractAccountId(String securityToken) {
+        log.trace("extractAccountId was called with securityToken-{}", securityToken);
+        return securityFeignClient.getAccountId(securityToken);
     }
 
 }

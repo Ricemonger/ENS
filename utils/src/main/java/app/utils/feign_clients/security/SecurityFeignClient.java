@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface SecurityFeignClient {
 
     @GetMapping("/getAccountId")
-    String getAccountId(@RequestHeader(name = "Authorization") String token);
+    String getAccountId(@RequestHeader(name = "Authorization") String securityToken);
 
 }

@@ -2,6 +2,7 @@ package app.utils.feign_clients.sender;
 
 import app.utils.feign_clients.contact.Contact;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.feign_clients.sender.dto.SendOneRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package app.send.controller;
 
-import app.send.controller.dto.SendOneRequest;
 import app.send.model.SendService;
+import app.utils.feign_clients.sender.dto.SendOneRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

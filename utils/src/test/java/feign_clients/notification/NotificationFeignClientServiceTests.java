@@ -129,22 +129,22 @@ public class NotificationFeignClientServiceTests {
     private static class MockNotificationFeignClient implements NotificationFeignClient {
 
         @Override
-        public Notification create(String token, Notification request) {
+        public Notification create(String securityToken, Notification request) {
             return request;
         }
 
         @Override
-        public Notification update(String token, Notification request) {
+        public Notification update(String securityToken, Notification request) {
             return request;
         }
 
         @Override
-        public Notification delete(String token, NotificationNameRequest request) {
-            return new Notification(request.name(), token);
+        public Notification delete(String securityToken, NotificationNameRequest request) {
+            return new Notification(request.name(), securityToken);
         }
 
         @Override
-        public void clear(String token) {
+        public void clear(String securityToken) {
         }
 
         @Override
@@ -152,12 +152,12 @@ public class NotificationFeignClientServiceTests {
         }
 
         @Override
-        public List<Notification> findAllByAccountId(String token) {
+        public List<Notification> findAllByAccountId(String securityToken) {
             return NOTIFICATIONS;
         }
 
         @Override
-        public List<Notification> findAllByPrimaryKey(String token, NotificationNameRequest request) {
+        public List<Notification> findAllByPrimaryKey(String securityToken, NotificationNameRequest request) {
             return NOTIFICATIONS.stream().filter(s -> s.getName().startsWith(request.name())).toList();
         }
     }

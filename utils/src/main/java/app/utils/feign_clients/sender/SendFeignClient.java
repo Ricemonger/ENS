@@ -1,5 +1,6 @@
 package app.utils.feign_clients.sender;
 
+import app.utils.feign_clients.sender.dto.SendOneRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

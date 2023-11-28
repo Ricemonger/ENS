@@ -1,7 +1,7 @@
 package app.send.controller;
 
-import app.send.controller.dto.SendOneRequest;
 import app.send.model.SendService;
+import app.utils.feign_clients.sender.dto.SendOneRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

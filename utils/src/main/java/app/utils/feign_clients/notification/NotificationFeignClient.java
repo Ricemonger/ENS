@@ -11,24 +11,24 @@ import java.util.List;
 public interface NotificationFeignClient {
 
     @PostMapping
-    Notification create(@RequestHeader("Authorization") String token, @RequestBody Notification request);
+    Notification create(@RequestHeader("Authorization") String securityToken, @RequestBody Notification request);
 
     @PatchMapping
-    Notification update(@RequestHeader(name = "Authorization") String token, @RequestBody Notification request);
+    Notification update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody Notification request);
 
     @DeleteMapping
-    Notification delete(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
+    Notification delete(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request);
 
     @DeleteMapping("/clear")
-    void clear(@RequestHeader("Authorization") String token);
+    void clear(@RequestHeader("Authorization") String securityToken);
 
     @PostMapping("/changeAccountId")
     void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken, @RequestBody ChangeAccountIdRequest request);
 
     @GetMapping("/getByAI")
-    List<Notification> findAllByAccountId(@RequestHeader("Authorization") String token);
+    List<Notification> findAllByAccountId(@RequestHeader("Authorization") String securityToken);
 
     @GetMapping("/getByPK")
-    List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String token, @RequestBody NotificationNameRequest request);
+    List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request);
 
 }

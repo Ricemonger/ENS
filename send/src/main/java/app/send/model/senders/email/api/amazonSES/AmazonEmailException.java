@@ -1,6 +1,6 @@
 package app.send.model.senders.email.api.amazonSES;
 
-import app.send.exceptions.SenderApiException;
+import app.utils.feign_clients.sender.exceptions.SenderApiException;
 
 public class AmazonEmailException extends SenderApiException {
 

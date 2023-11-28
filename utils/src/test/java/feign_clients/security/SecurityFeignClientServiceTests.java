@@ -36,7 +36,7 @@ public class SecurityFeignClientServiceTests {
     private static class MockSecurityFeignClient implements SecurityFeignClient {
 
         @Override
-        public String getAccountId(String token) {
+        public String getAccountId(String securityToken) {
             return MOCK_STRING;
         }
     }

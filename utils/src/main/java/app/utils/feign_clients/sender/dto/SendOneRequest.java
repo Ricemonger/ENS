@@ -1,4 +1,4 @@
-package app.utils.feign_clients.sender;
+package app.utils.feign_clients.sender.dto;
 
 public record SendOneRequest(
         String method,
