@@ -14,5 +14,4 @@ spring:
     name: sender
 logging:
   level:
-    app:
-      sender: trace
+    app: trace

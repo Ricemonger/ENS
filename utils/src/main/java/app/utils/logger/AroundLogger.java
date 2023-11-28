@@ -1,4 +1,4 @@
-package app.telegram;
+package app.utils.logger;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class TelegramLogger {
+public class AroundLogger {
 
-    @Around("execution(* app.telegram..*.*(..))")
+    @Around("execution(* app.*..*.*(..))")
     public Object logMethodCall(ProceedingJoinPoint joinPoint) throws Throwable {
         String className = joinPoint.getTarget().getClass().getSimpleName();
         String methodName = ((MethodSignature) joinPoint.getSignature()).getMethod().getName();

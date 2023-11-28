@@ -31,5 +31,4 @@ spring:
       ddl-auto: update
 logging:
   level:
-    app:
-      security: trace
+    app: trace

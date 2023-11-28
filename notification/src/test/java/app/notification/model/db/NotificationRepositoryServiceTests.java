@@ -1,8 +1,6 @@
-package app.notification.model;
+package app.notification.model.db;
 
-import app.notification.model.db.NotificationEntity;
-import app.notification.model.db.NotificationRepository;
-import app.notification.model.db.NotificationRepositoryService;
+import app.notification.model.Notification;
 import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

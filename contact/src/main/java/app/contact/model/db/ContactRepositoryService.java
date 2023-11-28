@@ -18,48 +18,44 @@ public class ContactRepositoryService {
     private final ContactRepository contactRepository;
 
     public Contact save(Contact contact) {
-        Contact result = toContact(contactRepository.save(toEntity(contact)));
-        log.trace("save was executed for contact-{}", contact);
-        return result;
+        return toContact(contactRepository.save(toEntity(contact)));
+    }
+
+    public boolean doesContactExists(Contact contact) {
+        ContactCompositeKey key = new ContactCompositeKey(contact.getAccountId(), contact.getMethod(),
+                contact.getContactId());
+        return contactRepository.existsById(key);
     }
 
     public Contact findByIdOrThrow(String accountId, Method method, String contactId) {
         ContactCompositeKey key = new ContactCompositeKey(accountId, method, contactId);
         try {
-            Contact contact = toContact(contactRepository.findById(key).orElseThrow());
-            log.trace("findByIdOrThrow was executed with key-{} and result-{}", key, contact);
-            return contact;
+            return toContact(contactRepository.findById(key).orElseThrow());
         } catch (NoSuchElementException e) {
-            log.trace("findByIdOrThrow couldn't find contact with key-{}", key);
+            log.info("findByIdOrThrow executed for key-{}, contact doesnt exists", key);
             throw new ContactDoesntExistException();
         }
     }
 
     public List<Contact> findAllByAccountId(String accountId) {
-        List<Contact> contacts = contactRepository.findAllByAccountId(accountId).stream().map(this::toContact).toList();
-        log.trace("findAllByAccountId was executed with accountId-{} and result-{}", accountId, contacts);
-        return contacts;
+        return contactRepository.findAllByAccountId(accountId).stream().map(this::toContact).toList();
     }
 
     public List<Contact> findAll() {
-        log.trace("findAll was executed");
         return contactRepository.findAll().stream().map(this::toContact).toList();
     }
 
     public void delete(Contact contact) {
         contactRepository.delete(toEntity(contact));
-        log.trace("delete was executed for contact-{}", contact);
     }
 
     public void deleteAll(List<Contact> toDelete) {
         List<ContactEntity> entitiesToDelete = toDelete.stream().map(this::toEntity).toList();
         contactRepository.deleteAll(entitiesToDelete);
-        log.trace("deleteAll was executed for list-{}", toDelete);
     }
 
     public void deleteAll() {
         contactRepository.deleteAll();
-        log.trace("deleteAll was executed");
     }
 
     private ContactEntity toEntity(Contact contact) {

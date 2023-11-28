@@ -31,5 +31,4 @@ eureka:
 
 logging:
   level:
-    app:
-      telegram: info
+    app: trace

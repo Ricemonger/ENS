@@ -20,6 +20,5 @@ eureka:
 
 logging:
   level:
-    app:
-      sender: trace
+    app: trace
 

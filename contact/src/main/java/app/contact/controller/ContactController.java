@@ -12,7 +12,6 @@ import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
 import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
 import app.utils.feign_clients.security.exceptions.JwtRuntimeException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("${application.config.request-mappings.contact}")
 @RequiredArgsConstructor
-@Slf4j
 public class ContactController {
 
     private final ContactControllerService service;
@@ -30,28 +28,24 @@ public class ContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Contact create(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
-        log.trace("create is called with securityToken-{}, request-{}", securityToken, request);
         return service.create(securityToken, request);
     }
 
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact update(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactCreUpdRequest request) {
-        log.trace("update is called with securityToken-{}, request-{}", securityToken, request);
         return service.update(securityToken, request);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public Contact delete(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
-        log.trace("delete is called with securityToken-{}, request-{}", securityToken, request);
         return service.delete(securityToken, request);
     }
 
     @DeleteMapping("/clear")
     @ResponseStatus(HttpStatus.OK)
     public void clear(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("clear is called with securityToken-{}", securityToken);
         service.clear(securityToken);
     }
 
@@ -59,70 +53,60 @@ public class ContactController {
     @ResponseStatus(HttpStatus.OK)
     public void changeAccountId(@RequestHeader(name = "Authorization") String oldAccountIdToken,
                                 @RequestBody ChangeAccountIdRequest request) {
-        log.trace("changeAccountId is called with securityTokens: old-{} ||| new-{}", oldAccountIdToken, request);
         service.changeAccountId(oldAccountIdToken, request);
     }
 
     @RequestMapping("/getByUN")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountIdUN(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("findAllByAccountIdUN is called with securityToken-{}", securityToken);
         return findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByAI")
     @ResponseStatus(code = HttpStatus.OK)
     public List<Contact> findAllByAccountId(@RequestHeader(name = "Authorization") String securityToken) {
-        log.trace("findAllByAccountId is called with securityToken-{}", securityToken);
         return service.findAllByAccountId(securityToken);
     }
 
     @RequestMapping("/getByPK")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikePrimaryKey(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactKeyRequest request) {
-        log.trace("findAllLikePrimaryKey is called with securityToken-{}, request-{}", securityToken, request);
         return service.findAllLikePrimaryKey(securityToken, request);
     }
 
     @RequestMapping("/getByNN")
     @ResponseStatus(HttpStatus.OK)
     public List<Contact> findAllLikeNotificationName(@RequestHeader(name = "Authorization") String securityToken, @RequestBody ContactNNRequest request) {
-        log.trace("findAllLikeNotificationName is called with securityToken-{}, request-{}", securityToken, request);
         return service.findAllLikeNotificationName(securityToken, request);
     }
 
     @ExceptionHandler(ContactDoesntExistException.class)
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     public ExceptionMessage contactDoesntExistException(ContactDoesntExistException e) {
-        log.warn("ContactDoesntExistException was thrown: {}", e.getMessage());
         return new ExceptionMessage(HttpStatus.NOT_FOUND, "Contact with such method and contactId doesnt exist");
     }
 
     @ExceptionHandler(ContactAlreadyExistsException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ExceptionMessage contactAlreadyExistsException(ContactAlreadyExistsException e) {
-        log.warn("ContactAlreadyExistsException was thrown: {}", e.getMessage());
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "Contact with such method and contactId already exists");
     }
 
     @ExceptionHandler(InvalidContactMethodException.class)
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public ExceptionMessage invalidContactMethodException(InvalidContactMethodException e) {
-        log.warn("InvalidContactMethodException occurred, wrong Method name: {}", e.getMessage());
         return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Wrong method name, valid method names are: " + Arrays.toString(Method.values()));
     }
 
     @ExceptionHandler(JwtRuntimeException.class)
     @ResponseStatus(code = HttpStatus.FORBIDDEN)
     public ExceptionMessage jwtRuntimeException(JwtRuntimeException e) {
-        log.warn("JwtRuntimeException occurred: {}", e.getMessage());
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "Invalid or expired jwt token, please get new token via /login or /register pages");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e) {
-        log.warn("UnknownException occurred: {}" + e.getMessage());
         e.printStackTrace();
         return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
     }

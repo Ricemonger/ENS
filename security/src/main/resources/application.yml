@@ -39,8 +39,7 @@ eureka:
 
 logging:
   level:
-    app:
-      security: trace
+    app: trace
 
 
 

@@ -34,6 +34,5 @@ eureka:
 
 logging:
   level:
-    app:
-      contact: trace
+    app: trace
 

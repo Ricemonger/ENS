@@ -33,5 +33,4 @@ eureka:
 
 logging:
   level:
-    app:
-      notification: trace
+    app: trace
