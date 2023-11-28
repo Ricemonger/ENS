@@ -13,8 +13,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -55,6 +54,20 @@ public class ContactRepositoryServiceTests {
         verify(repository).save(ENTITY);
 
         assertEquals(new Contact(repository.findAll().get(0)), CONTACT);
+    }
+
+    @Test
+    public void doesContactExistsShouldReturnTrueIfExists() {
+        repository.save(ENTITY);
+
+        assertTrue(service.doesContactExists(CONTACT));
+    }
+
+    @Test
+    public void doesContactExistsShouldReturnFalseIfDoesntExist() {
+        repository.save(ANOTHER_ENTITY);
+
+        assertFalse(service.doesContactExists(CONTACT));
     }
 
     @Test

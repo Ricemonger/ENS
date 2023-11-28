@@ -49,13 +49,13 @@ public class ContactRepositoryService {
         contactRepository.delete(toEntity(contact));
     }
 
+    public void deleteAll() {
+        contactRepository.deleteAll();
+    }
+
     public void deleteAll(List<Contact> toDelete) {
         List<ContactEntity> entitiesToDelete = toDelete.stream().map(this::toEntity).toList();
         contactRepository.deleteAll(entitiesToDelete);
-    }
-
-    public void deleteAll() {
-        contactRepository.deleteAll();
     }
 
     private ContactEntity toEntity(Contact contact) {

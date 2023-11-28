@@ -18,17 +18,19 @@ public class NotificationRepositoryService {
 
 
     public Notification save(Notification notification) {
-        log.trace("save method is called for notification-{}", notification);
         return toNotification(repository.save(toEntity(notification)));
+    }
+
+    public boolean doesNotificationExist(Notification notification) {
+        return repository.existsById(new NotificationCompositeKey(notification.getAccountId(), notification.getName()));
     }
 
     public Notification findByIdOrThrow(String accountId, String name) {
         NotificationCompositeKey key = new NotificationCompositeKey(accountId, name);
         try {
-            Notification result = toNotification(repository.findById(key).orElseThrow());
-            log.trace("findByIdOrThrow was executed for accountId-{}, name-{} and result-{}", accountId, name, result);
-            return result;
+            return toNotification(repository.findById(key).orElseThrow());
         } catch (NoSuchElementException e) {
+            log.info("findByIdOrThrow executed for accountId-{} and name-{}, notification doesnt exist", accountId, name);
             throw new NotificationDoesntExistException();
         }
     }
@@ -36,29 +38,24 @@ public class NotificationRepositoryService {
     public List<Notification> findAllByAccountId(String accountId) {
         List<Notification> result =
                 repository.findAllByAccountId(accountId).stream().map(this::toNotification).toList();
-        log.trace("findAllByAccountId was executed for accountId-{} and result-{}", accountId, result);
         return result;
     }
 
     public List<Notification> findAll() {
-        log.trace("findAll method was called");
         return repository.findAll().stream().map(this::toNotification).toList();
     }
 
     public void delete(Notification notification) {
         repository.delete(toEntity(notification));
-        log.trace("delete method was called for notification-{}", notification);
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 
     public void deleteAll(List<Notification> notifications) {
         List<NotificationEntity> entitiesToDelete = notifications.stream().map(this::toEntity).toList();
         repository.deleteAll(entitiesToDelete);
-        log.trace("deleteAll method was called for notifications-{}", notifications);
-    }
-
-    public void deleteAll() {
-        repository.deleteAll();
-        log.trace("deleteAll method was called");
     }
 
     private NotificationEntity toEntity(Notification notification) {

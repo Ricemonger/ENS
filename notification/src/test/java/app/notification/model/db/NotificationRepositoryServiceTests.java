@@ -12,8 +12,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 
@@ -52,6 +51,20 @@ public class NotificationRepositoryServiceTests {
         verify(repository).save(ENTITY);
 
         assertEquals(new Notification(repository.findAll().get(0)), NOTIFICATION);
+    }
+
+    @Test
+    public void doesNotificationExistsShouldReturnTrueIfExists() {
+        repository.save(ENTITY);
+
+        assertTrue(service.doesNotificationExist(NOTIFICATION));
+    }
+
+    @Test
+    public void doesNotificationExistsShouldReturnFalseIfDoesntExist() {
+        repository.save(ANOTHER_ENTITY);
+
+        assertFalse(service.doesNotificationExist(NOTIFICATION));
     }
 
     @Test
