@@ -13,7 +13,7 @@ public class Stage2WriteNameAskText extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.setNextInput(chatId, InputState.NOTIFICATION_NAME);
         processInput(InputState.NOTIFICATION_NAME, InputState.NOTIFICATION_TEXT, "Please input notification template's " +
                 "text:");

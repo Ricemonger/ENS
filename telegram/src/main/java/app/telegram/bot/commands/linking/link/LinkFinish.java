@@ -14,7 +14,7 @@ public class LinkFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         new Stage3WritePasswordFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you link to confirm linking?", Callbacks.LINK_FINISH, Callbacks.CANCEL);

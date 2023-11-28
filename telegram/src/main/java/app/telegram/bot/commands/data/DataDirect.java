@@ -15,7 +15,7 @@ public class DataDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = BotCommandsConfig.DATA_HELP_MESSAGE;
         sendAnswer(answer);
         String question = "What would you like to do?";

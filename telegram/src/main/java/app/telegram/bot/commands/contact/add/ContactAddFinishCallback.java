@@ -12,7 +12,7 @@ public class ContactAddFinishCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.addContact(chatId);
         sendAnswer("Your Contact was Saved!");
     }

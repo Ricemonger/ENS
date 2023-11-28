@@ -77,10 +77,4 @@ public class BotCommandsConfig {
         publicCommands.add(new BotCommand("/link", "(Un)Link telegram with existing ENS account"));
         publicCommands.add(new BotCommand("/settings", "Account related settings"));
     }
-
-    private final List<BotCommand> allCommands = new ArrayList<>();
-
-    {
-        allCommands.addAll(publicCommands);
-    }
 }

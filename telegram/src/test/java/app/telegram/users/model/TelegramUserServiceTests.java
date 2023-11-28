@@ -4,8 +4,8 @@ import app.telegram.users.exceptions.InvalidTelegramTokenException;
 import app.telegram.users.exceptions.TelegramUserAlreadyExistsException;
 import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.telegram.users.model.security_client.SecurityTelegramUserFeignClient;
-import app.telegram.users.model.security_client.SecurityTelegramUserFeignClientService;
+import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClient;
+import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -181,7 +181,7 @@ public class TelegramUserServiceTests {
     public void getSecurityTokenShouldGetSecurityTokenFromSecurityModuleAndPutInDb() {
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
 
-        String securityToken = userService.getAndPutSecurityToken(CHAT_ID);
+        String securityToken = userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
 
         verify(securityService).getSecurityToken(argThat(s -> jwtUtil.isTokenValidAndContainsChatId(s, CHAT_ID)));
 
@@ -190,7 +190,7 @@ public class TelegramUserServiceTests {
 
     @Test
     public void getSecurityTokenShouldThrowInDoesntExist() {
-        Executable executable = () -> userService.getAndPutSecurityToken(CHAT_ID);
+        Executable executable = () -> userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
 
         assertThrows(TelegramUserDoesntExistException.class, executable);
     }

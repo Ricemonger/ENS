@@ -4,7 +4,7 @@ import app.telegram.users.exceptions.InvalidTelegramTokenException;
 import app.telegram.users.exceptions.TelegramUserAlreadyExistsException;
 import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.telegram.users.model.security_client.SecurityTelegramUserFeignClientService;
+import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClientService;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +31,24 @@ public class TelegramUserService {
     public TelegramUser create(Long chatId) {
         if (!doesUserExist(chatId)) {
             telegramUserRepositoryService.save(new TelegramUser(String.valueOf(chatId)));
+
             String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
             String securityToken = securityTelegramUserFeignClientService.create(telegramToken);
+
             putSecurityToken(chatId, securityToken);
-            TelegramUser inDb = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
-            log.trace("Create method was executed for chatId-{}", chatId);
-            return inDb;
-        } else throw new TelegramUserAlreadyExistsException();
+
+            return telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        } else {
+            log.info("create was called for chatId-{}, but user already exists", chatId);
+            throw new TelegramUserAlreadyExistsException();
+        }
     }
 
     public String getChatIdByToken(String telegramToken) {
         try {
             return telegramUserJwtUtil.extractChatId(telegramToken);
         } catch (JwtException | IllegalArgumentException | NullPointerException e) {
+            log.info("getChatIdByToken was called for telegramToken-{}, token is invalid", telegramToken);
             throw new InvalidTelegramTokenException();
         }
     }
@@ -101,16 +106,6 @@ public class TelegramUserService {
         return inputState != null ? inputState : InputState.BASE;
     }
 
-    public String getAndPutSecurityToken(Long chatId) {
-        String securityToken = findSecurityTokenOrNull(chatId);
-        if (securityToken == null) {
-            String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-            securityToken = securityTelegramUserFeignClientService.getSecurityToken(telegramToken);
-            putSecurityToken(chatId, securityToken);
-        }
-        return securityToken;
-    }
-
     public boolean doesUserExist(Long chatId) {
         try {
             findByIdOrThrow(chatId);
@@ -120,56 +115,91 @@ public class TelegramUserService {
         }
     }
 
+    public String findSecurityTokenOrGenerateAndPut(Long chatId) {
+        String securityToken = findSecurityTokenOrNull(chatId);
+        if (securityToken == null) {
+            String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
+            securityToken = securityTelegramUserFeignClientService.getSecurityToken(telegramToken);
+            putSecurityToken(chatId, securityToken);
+        }
+        return securityToken;
+    }
+
+    private String findSecurityTokenOrNull(Long chatId) {
+        log.debug("findSecurityTokenOrNull called with chatId-{}", chatId);
+        String token;
+        TelegramUser user = findByIdOrThrow(chatId);
+        Date time = user.getTempSecurityTokenExpirationTime();
+        if (time == null || time.before(new Date())) {
+            token = null;
+        } else {
+            token = user.getTempSecurityToken();
+        }
+        log.trace("findSecurityTokenOrNull executed with chatId-{} and result-{}", chatId, token);
+        return token;
+    }
+
+    private TelegramUser putSecurityToken(Long chatId, String securityToken) {
+        log.debug("putSecurityToken called with chatId-{} and securityToken-{}", chatId, securityToken);
+        TelegramUser user = findByIdOrThrow(chatId);
+        user.setTempSecurityToken(securityToken);
+        user.setTempSecurityTokenExpirationTime(new Date(new Date().getTime() + SECURITY_TOKEN_EXPIRATION_TIME));
+        TelegramUser result = telegramUserRepositoryService.save(user);
+        log.trace("putSecurityToken executed with chatId-{}, securityToken-{} and result-{}", chatId, securityToken,
+                result);
+        return result;
+    }
+
     private String findTelegramTokenOrGenerateAndPut(Long chatId) {
+        log.debug("findTelegramTokenOrGenerateAndPut called with chatId-{}", chatId);
         String token = findTelegramTokenOrNull(chatId);
         if (token == null || token.isBlank()) {
             token = generateAndPutTelegramToken(chatId);
         }
+        log.trace("findTelegramTokenOrGenerateAndPut executed with chatId-{} and result-{}", chatId, token);
+        return token;
+    }
+
+    private String findTelegramTokenOrNull(Long chatId) {
+        log.debug("findTelegramTokenOrNull called for chatId-{}", chatId);
+        String token;
+        TelegramUser user = findByIdOrThrow(chatId);
+        Date time = user.getTempTelegramTokenExpirationTime();
+        if (time == null || time.before(new Date())) {
+            token = null;
+        } else {
+            token = user.getTempTelegramToken();
+        }
+        log.trace("findTelegramTokenOrNull executed for chatId-{} and result-{}", chatId, token);
         return token;
     }
 
     private String generateAndPutTelegramToken(Long chatId) {
+        log.debug("generateAndPutTelegramToken called for chatId-{}", chatId);
         String token = telegramUserJwtUtil.generateToken(chatId);
         putTelegramToken(chatId, token);
+        log.trace("generateAndPutTelegramToken executed for chatId-{} and result-{}", chatId, token);
         return token;
     }
 
     private TelegramUser putTelegramToken(Long chatId, String token) {
+        log.debug("putTelegramToken called for chatId-{}", chatId);
         TelegramUser user = findByIdOrThrow(chatId);
         user.setTempTelegramToken(token);
         user.setTempTelegramTokenExpirationTime(new Date(new Date().getTime() + TELEGRAM_TOKEN_EXPIRATION_TIME));
-        return telegramUserRepositoryService.save(user);
-    }
-
-    private String findTelegramTokenOrNull(Long chatId) {
-        TelegramUser user = findByIdOrThrow(chatId);
-        Date time = user.getTempTelegramTokenExpirationTime();
-        if (time == null || time.before(new Date())) {
-            return null;
-        }
-        return user.getTempTelegramToken();
-    }
-
-    private TelegramUser putSecurityToken(Long chatId, String token) {
-        TelegramUser user = findByIdOrThrow(chatId);
-        user.setTempSecurityToken(token);
-        user.setTempSecurityTokenExpirationTime(new Date(new Date().getTime() + SECURITY_TOKEN_EXPIRATION_TIME));
-        return telegramUserRepositoryService.save(user);
-    }
-
-    private String findSecurityTokenOrNull(Long chatId) {
-        TelegramUser user = findByIdOrThrow(chatId);
-        Date time = user.getTempSecurityTokenExpirationTime();
-        if (time == null || time.before(new Date())) {
-            return null;
-        }
-        return user.getTempSecurityToken();
+        TelegramUser result = telegramUserRepositoryService.save(user);
+        log.trace("putTelegramToken executed for chatId-{} and result-{}", chatId, result);
+        return result;
     }
 
     private TelegramUser findByIdOrThrow(Long chatId) {
+        log.debug("findByIdOrThrow called with chatId-{}", chatId);
         try {
-            return telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+            TelegramUser result = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+            log.trace("findByIdOrThrow executed with chatId-{} and result-{}", chatId, result);
+            return result;
         } catch (NoSuchElementException e) {
+            log.info("findByIdOrThrow called with chatId-{}, user doesnt exists", chatId);
             throw new TelegramUserDoesntExistException();
         }
     }

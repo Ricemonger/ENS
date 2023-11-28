@@ -2,6 +2,7 @@ package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
 import app.telegram.users.model.InputState;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,6 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 public abstract class AbstractBotCommand {
 
     protected final TelegramLongPollingBot bot;
@@ -33,7 +35,13 @@ public abstract class AbstractBotCommand {
         }
     }
 
-    public abstract void execute();
+    public final void execute() {
+        log.debug("execute called for command - {}", this);
+        executeCommand();
+        log.trace("execute executed for command - {}", this);
+    }
+
+    protected abstract void executeCommand();
 
     protected final void processInput(InputState currentState, InputState nextState, String question) {
         processInput(currentState, nextState);
@@ -132,5 +140,11 @@ public abstract class AbstractBotCommand {
     @FunctionalInterface
     protected interface MyFunctionalInterface {
         void executeCommand();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s(bot=%s,update=%s,botService=%s,chatId=%s)", this.getClass().getSimpleName(), bot, update, botService,
+                chatId);
     }
 }

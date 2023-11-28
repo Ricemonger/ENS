@@ -12,7 +12,7 @@ public class RegisterNoCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = "You chose not to register in bot's database.\n Most of the functionality will not be " +
                 "available for you, but you can register at any time";
         sendAnswer(answer);

@@ -12,7 +12,7 @@ public class NotificationAddFinishCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.addNotification(chatId);
         sendAnswer("Your Notification was Saved!");
     }

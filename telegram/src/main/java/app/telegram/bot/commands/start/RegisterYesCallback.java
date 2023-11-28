@@ -12,7 +12,7 @@ public class RegisterYesCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = "Registering you in Bot's Database...";
         sendAnswer(answer);
         addUserToDb();

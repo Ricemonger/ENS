@@ -13,7 +13,7 @@ public class HelpDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = BotCommandsConfig.HELP_MESSAGE;
         sendAnswer(answer);
     }

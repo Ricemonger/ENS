@@ -15,7 +15,7 @@ public class SendDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             String answer = BotCommandsConfig.SEND_HELP_MESSAGE;
             sendAnswer(answer);

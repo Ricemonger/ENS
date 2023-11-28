@@ -13,7 +13,7 @@ public class SendAllCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         try {
             botService.sendAll(chatId);
             String answer = "All notifications were successfully sent";

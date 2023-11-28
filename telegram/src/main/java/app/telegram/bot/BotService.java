@@ -46,7 +46,8 @@ public class BotService {
     public void sendAll(Long chatId) {
         try {
             sendFeignClientServiceWrapper.sendAll(chatId);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
+            log.info("Exception {} occurred during sending operation for chatId-{}", e, chatId);
             e.printStackTrace();
             throw new SendingException();
         }
@@ -92,6 +93,7 @@ public class BotService {
             notificationFeignClientServiceWrapper.clear(chatId);
             contactFeignClientServiceWrapper.clear(chatId);
         } catch (RuntimeException e) {
+            log.info("Exception {} occurred during clearing operation for chatId-{}", e, chatId);
             e.printStackTrace();
             throw new ClearingException();
         }

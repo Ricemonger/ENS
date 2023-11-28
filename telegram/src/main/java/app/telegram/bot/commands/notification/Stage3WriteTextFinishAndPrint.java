@@ -15,7 +15,7 @@ public class Stage3WriteTextFinishAndPrint extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         processInput(InputState.NOTIFICATION_TEXT, InputState.BASE);
 
         Notification notification = botService.getNotificationFromInputsMap(chatId);

@@ -12,7 +12,7 @@ public class SendManyCommand extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
 
     }
 }

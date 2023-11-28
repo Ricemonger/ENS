@@ -14,7 +14,7 @@ public class ContactRemoveManyFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         new Stage4WriteNotificationFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you like to remove matching contacts?",

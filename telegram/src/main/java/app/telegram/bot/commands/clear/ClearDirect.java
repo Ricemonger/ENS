@@ -13,7 +13,7 @@ public class ClearDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             String answer = "Do you really want to clear all your Contacts and Notifications?";
             sendAnswer(answer);

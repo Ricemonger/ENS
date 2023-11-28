@@ -1,6 +1,6 @@
-package app.telegram.users.model.security_client;
+package app.telegram.users.model.security_telegram_client;
 
-import app.telegram.users.model.security_client.dto.UsernamePasswordRequest;
+import app.telegram.users.model.security_telegram_client.dto.UsernamePasswordRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

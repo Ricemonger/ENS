@@ -15,7 +15,7 @@ public class NotificationRemoveManyChain extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
             case NOTIFICATION_NAME -> new Stage2WriteNameAskText(bot, update, botService).execute();

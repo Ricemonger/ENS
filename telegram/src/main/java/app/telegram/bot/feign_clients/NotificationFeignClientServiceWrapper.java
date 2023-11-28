@@ -4,12 +4,14 @@ import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.notification.Notification;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationFeignClientServiceWrapper {
 
     private final NotificationFeignClientService notificationFeignClientService;
@@ -26,9 +28,9 @@ public class NotificationFeignClientServiceWrapper {
         notificationFeignClientService.addOne(securityToken, notification);
     }
 
-    public void removeMany(Long chatId, Notification filters) {
+    public void removeMany(Long chatId, Notification notificationFilters) {
         String securityToken = getSecurityToken(chatId);
-        notificationFeignClientService.removeMany(securityToken, filters);
+        notificationFeignClientService.removeMany(securityToken, notificationFilters);
     }
 
     public void removeOne(Long chatId, Notification notification) {
@@ -42,6 +44,9 @@ public class NotificationFeignClientServiceWrapper {
     }
 
     private String getSecurityToken(Long chatId) {
-        return telegramUserService.getAndPutSecurityToken(chatId);
+        log.debug("getSecurityToken called for chatId-{}", chatId);
+        String result = telegramUserService.findSecurityTokenOrGenerateAndPut(chatId);
+        log.trace("getSecurityToken executed for chatId-{} and result-{}", chatId, result);
+        return result;
     }
 }

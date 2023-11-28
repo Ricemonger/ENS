@@ -1,11 +1,13 @@
-package app.telegram.users.model.security_client;
+package app.telegram.users.model.security_telegram_client;
 
-import app.telegram.users.model.security_client.dto.UsernamePasswordRequest;
+import app.telegram.users.model.security_telegram_client.dto.UsernamePasswordRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SecurityTelegramUserFeignClientService {
 
     private final SecurityTelegramUserFeignClient securityTelegramUserFeignClient;

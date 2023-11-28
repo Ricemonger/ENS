@@ -17,23 +17,18 @@ public class TelegramUserRepositoryService {
     private final TelegramUserRepository repository;
 
     public TelegramUser save(TelegramUser telegramUser) {
-        TelegramUserEntity saved = repository.save(toEntity(telegramUser));
-        log.trace("Save method was called for user-{}", telegramUser);
-        return toUser(saved);
+        return toUser(repository.save(toEntity(telegramUser)));
     }
 
     public void delete(TelegramUser telegramUser) {
         repository.delete(toEntity(telegramUser));
-        log.trace("Delete method was called for user-{}", telegramUser);
     }
 
     public TelegramUser findByChatIdOrThrow(String chatId) {
         try {
-            TelegramUserEntity entity = repository.findById(chatId).orElseThrow();
-            log.trace("findByChatId was executed with chatId-{}, result-{}", chatId, entity);
-            return toUser(entity);
+            return toUser(repository.findById(chatId).orElseThrow());
         } catch (NoSuchElementException e) {
-            log.trace("findByChatId was executed with chatId-{}, result wasn't found in DB", chatId);
+            log.info("findByChatId was executed with chatId-{}, result wasn't found in DB", chatId);
             throw new TelegramUserDoesntExistException();
         }
     }
@@ -44,7 +39,6 @@ public class TelegramUserRepositoryService {
 
     public void deleteAll() {
         repository.deleteAll();
-        log.trace("DeleteAll method was called for repository");
     }
 
     private TelegramUserEntity toEntity(TelegramUser telegramUser) {

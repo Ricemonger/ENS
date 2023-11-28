@@ -14,7 +14,7 @@ public class ContactRemoveOneCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             botService.setNextInputGroup(chatId, InputGroup.CONTACT_REMOVE_ONE);
 

@@ -25,4 +25,4 @@ spring:
 logging:
   level:
     app:
-      telegram: trace
+      telegram: info

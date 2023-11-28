@@ -12,7 +12,7 @@ public class UnlinkCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.unlink(chatId);
 
         sendAnswer("Your account to ENS linking was removed");

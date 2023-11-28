@@ -72,6 +72,8 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
         super(authConfig.getAPI_TOKEN());
         this.authConfig = authConfig;
         this.botService = botService;
+        log.info("MyTelegramLongPollingBot was initialized with Api Token-{}, Username-{}", authConfig.getAPI_TOKEN(),
+                authConfig.getBOT_NAME());
         try {
             this.execute(new SetMyCommands(config.getPublicCommands(), new BotCommandScopeDefault(), null));
         } catch (TelegramApiException e) {
@@ -86,21 +88,22 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        log.info("onUpdateReceived received update-{}", update);
         if (update.hasMessage()) {
             InputGroup inputGroup = botService.geUserInputGroup(update.getMessage().getChatId());
-
+            log.info("update is-{}, user's inputGroup-{}", update, inputGroup);
             if (inputGroup == InputGroup.BASE) {
                 listenCommandAndExecute(update);
             } else {
                 listenUserInputAndExecute(inputGroup, update);
             }
-
         } else if (update.hasCallbackQuery()) {
             listenQueryAndExecute(update);
         }
     }
 
     private void listenCommandAndExecute(Update update) {
+        log.info("listenCommandAndExecute was called for update-{}", update);
         switch (update.getMessage().getText()) {
             case "/start" -> new StartDirect(this, update, botService).execute();
             case "/send" -> new SendDirect(this, update, botService).execute();
@@ -116,6 +119,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     }
 
     private void listenQueryAndExecute(Update update) {
+        log.info("listenQueryAndExecute was called for update-{}", update);
         switch (update.getCallbackQuery().getData()) {
             case Callbacks.REGISTER_YES -> new RegisterYesCallback(this, update, botService).execute();
             case Callbacks.REGISTER_NO -> new RegisterNoCallback(this, update, botService).execute();
@@ -168,6 +172,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     }
 
     private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
+        log.info("listenUserInputAndExecute was called for update-{} and inputGroup-{}", update, inputGroup);
         switch (inputGroup) {
             case CONTACT_ADD_ONE -> new ContactAddChain(this, update, botService).execute();
             case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(this, update, botService).execute();

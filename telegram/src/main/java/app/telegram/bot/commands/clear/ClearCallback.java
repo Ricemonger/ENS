@@ -13,7 +13,7 @@ public class ClearCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer;
         try {
             botService.clear(chatId);

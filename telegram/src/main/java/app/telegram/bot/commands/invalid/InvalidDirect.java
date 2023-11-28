@@ -12,7 +12,7 @@ public class InvalidDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = "Sorry, command is not recognized";
         sendAnswer(answer);
     }

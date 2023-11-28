@@ -13,7 +13,7 @@ public class LinkOrUnlinkDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         if (!isAccountLinked()) {
             String answer = "Would you like to link your telegram account to existing ENS account?";
             askYesOrNoFromInlineKeyboard(answer, Callbacks.LINK, Callbacks.CANCEL);

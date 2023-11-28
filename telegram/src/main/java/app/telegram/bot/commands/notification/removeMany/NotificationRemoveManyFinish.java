@@ -14,7 +14,7 @@ public class NotificationRemoveManyFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         new Stage3WriteTextFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you remove matching notifications?",

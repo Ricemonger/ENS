@@ -14,7 +14,7 @@ public class NotificationRemoveOneCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             botService.setNextInputGroup(chatId, InputGroup.NOTIFICATION_REMOVE_ONE);
 

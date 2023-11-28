@@ -12,7 +12,7 @@ public class InvalidCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = "Sorry, query is not recognized";
         sendAnswer(answer);
     }

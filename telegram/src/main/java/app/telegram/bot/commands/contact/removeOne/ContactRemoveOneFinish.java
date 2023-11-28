@@ -16,7 +16,7 @@ public class ContactRemoveOneFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         processInput(InputState.CONTACT_CONTACT_ID, InputState.BASE);
 
         Contact contact = botService.getContactFromInputsMap(chatId);

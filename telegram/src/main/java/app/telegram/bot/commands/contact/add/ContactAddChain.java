@@ -16,7 +16,7 @@ public class ContactAddChain extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
             case CONTACT_METHOD -> new Stage2WriteMethodAndAskId(bot, update, botService).execute();

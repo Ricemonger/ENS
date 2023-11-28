@@ -4,12 +4,14 @@ import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.contact.Contact;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ContactFeignClientServiceWrapper {
 
     private final ContactFeignClientService contactFeignClientService;
@@ -42,6 +44,9 @@ public class ContactFeignClientServiceWrapper {
     }
 
     private String getSecurityToken(Long chatId) {
-        return telegramUserService.getAndPutSecurityToken(chatId);
+        log.debug("getSecurityToken called for chatId-{}", chatId);
+        String result = telegramUserService.findSecurityTokenOrGenerateAndPut(chatId);
+        log.trace("getSecurityToken executed for chatId-{} and result-{}", chatId, result);
+        return result;
     }
 }

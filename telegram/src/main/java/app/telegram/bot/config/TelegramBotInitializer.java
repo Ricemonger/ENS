@@ -23,7 +23,7 @@ public class TelegramBotInitializer {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(myTelegramLongPollingBot);
         } catch (TelegramApiException e) {
-            log.warn("Exception {} was thrown", e);
+            log.info("Exception {} occurred during initialization", e);
             e.printStackTrace();
         }
     }

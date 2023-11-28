@@ -13,7 +13,7 @@ public class Stage1AskMethod extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.setNextInput(chatId, InputState.CONTACT_METHOD);
         sendAnswer("Please input Contact Method[SMS,VIBER,EMAIL,TELEGRAM]:");
     }

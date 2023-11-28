@@ -12,7 +12,7 @@ public class NotificationRemoveOneFinishCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.removeOneNotification(chatId);
         sendAnswer("Your Notification was Removed!");
     }

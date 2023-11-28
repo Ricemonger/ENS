@@ -13,7 +13,7 @@ public class StartDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = "Welcome to Emergency Notification Service Bot!";
         if (!isUserInDb(chatId)) {
             sendAnswer(answer);

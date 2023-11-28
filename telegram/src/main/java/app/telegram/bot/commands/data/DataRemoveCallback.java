@@ -13,7 +13,7 @@ public class DataRemoveCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         try {
             botService.removeAllData(chatId);
             sendAnswer("All your data was removed");

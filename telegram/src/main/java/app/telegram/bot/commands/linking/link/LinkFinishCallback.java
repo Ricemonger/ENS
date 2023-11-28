@@ -12,7 +12,7 @@ public class LinkFinishCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         botService.link(chatId);
 
         sendAnswer("Linking finished successfully!");

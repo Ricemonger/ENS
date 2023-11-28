@@ -13,7 +13,7 @@ public class Stage3WriteIdAndAskNotification extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         processInput(InputState.CONTACT_CONTACT_ID, InputState.CONTACT_NOTIFICATION_NAME, "Please input your " +
                 "Notification Template's name");
     }

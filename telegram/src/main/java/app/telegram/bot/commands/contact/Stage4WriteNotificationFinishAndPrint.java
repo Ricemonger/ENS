@@ -15,7 +15,7 @@ public class Stage4WriteNotificationFinishAndPrint extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         processInput(InputState.CONTACT_NOTIFICATION_NAME, InputState.BASE);
 
         Contact contact = botService.getContactFromInputsMap(chatId);

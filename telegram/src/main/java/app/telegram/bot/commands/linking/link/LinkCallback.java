@@ -14,7 +14,7 @@ public class LinkCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             botService.setNextInputGroup(chatId, InputGroup.LINK);
 

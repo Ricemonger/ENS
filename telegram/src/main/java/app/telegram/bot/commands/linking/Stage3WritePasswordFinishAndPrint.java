@@ -14,7 +14,7 @@ public class Stage3WritePasswordFinishAndPrint extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         processInput(InputState.LINK_PASSWORD, InputState.BASE);
 
         String[] s = botService.getUsernameAndPasswordFromInputMap(chatId);

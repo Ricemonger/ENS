@@ -14,7 +14,7 @@ public class ContactAddFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         new Stage4WriteNotificationFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you like to add it?", Callbacks.CONTACT_ADD_FINISH, Callbacks.CANCEL);

@@ -15,7 +15,7 @@ public class NotificationDirect extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         String answer = BotCommandsConfig.NOTIFICATION_HELP_MESSAGE;
         sendAnswer(answer);
         String question = "What would you like to do?";

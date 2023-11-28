@@ -15,7 +15,7 @@ public class LinkChain extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
             case LINK_USERNAME -> new Stage2WriteUsernameAndAskPassword(bot, update, botService).execute();

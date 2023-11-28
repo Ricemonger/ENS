@@ -14,7 +14,7 @@ public class NotificationAddFinish extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         new Stage3WriteTextFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you like to add it?", Callbacks.NOTIFICATION_ADD_FINISH, Callbacks.CANCEL);

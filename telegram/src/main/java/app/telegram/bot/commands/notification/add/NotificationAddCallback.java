@@ -14,7 +14,7 @@ public class NotificationAddCallback extends AbstractBotCommand {
     }
 
     @Override
-    public void execute() {
+    public void executeCommand() {
         MyFunctionalInterface function = () -> {
             botService.setNextInputGroup(chatId, InputGroup.NOTIFICATION_ADD_ONE);
 
