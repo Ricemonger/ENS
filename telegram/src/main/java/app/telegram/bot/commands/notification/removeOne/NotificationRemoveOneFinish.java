@@ -1,10 +1,8 @@
 package app.telegram.bot.commands.notification.removeOne;
 
 import app.telegram.bot.BotService;
+import app.telegram.bot.Callbacks;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.commands.Callbacks;
-import app.telegram.users.model.InputGroup;
-import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -16,13 +14,7 @@ public class NotificationRemoveOneFinish extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        processInput(InputState.NOTIFICATION_NAME, InputState.BASE);
-
-        String name = botService.getNotificationFromInputsMap(chatId).getName();
-
-        sendAnswer("Your notification name is: " + name);
-
-        botService.setNextInputGroup(chatId, InputGroup.BASE);
+        new NotificationRemoveOneStage2WriteNameFinishAndPrint(bot, update, botService).execute();
 
         askYesOrNoFromInlineKeyboard("Would you remove notification?", Callbacks.NOTIFICATION_REMOVE_ONE_FINISH, Callbacks.CANCEL);
     }

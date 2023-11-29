@@ -2,9 +2,9 @@ package app.telegram.bot;
 
 import app.telegram.bot.exceptions.ClearingException;
 import app.telegram.bot.exceptions.SendingException;
-import app.telegram.bot.feign_clients.ContactFeignClientServiceWrapper;
-import app.telegram.bot.feign_clients.NotificationFeignClientServiceWrapper;
-import app.telegram.bot.feign_clients.SendFeignClientServiceWrapper;
+import app.telegram.bot.feign_client_wrappers.ContactFeignClientServiceWrapper;
+import app.telegram.bot.feign_client_wrappers.NotificationFeignClientServiceWrapper;
+import app.telegram.bot.feign_client_wrappers.SendFeignClientServiceWrapper;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;

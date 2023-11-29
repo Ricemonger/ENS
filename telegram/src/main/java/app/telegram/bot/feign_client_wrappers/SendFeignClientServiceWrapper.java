@@ -1,4 +1,4 @@
-package app.telegram.bot.feign_clients;
+package app.telegram.bot.feign_client_wrappers;
 
 import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.sender.SendFeignClientService;

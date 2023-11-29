@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.contact;
+package app.telegram.bot.commands.notification;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,14 +6,15 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage2WriteMethodAndAskId extends AbstractBotCommand {
+public class NotificationStage1AskName extends AbstractBotCommand {
 
-    public Stage2WriteMethodAndAskId(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public NotificationStage1AskName(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void executeCommand() {
-        processInput(InputState.CONTACT_METHOD, InputState.CONTACT_ID, "Please input ContactId(Phone or Email):");
+        botService.setNextInput(chatId, InputState.NOTIFICATION_NAME);
+        sendAnswer("Please input notification template's name:");
     }
 }

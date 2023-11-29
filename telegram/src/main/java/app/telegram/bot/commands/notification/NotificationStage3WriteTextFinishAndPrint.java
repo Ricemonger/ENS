@@ -8,9 +8,9 @@ import app.utils.feign_clients.notification.Notification;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage3WriteTextFinishAndPrint extends AbstractBotCommand {
+public class NotificationStage3WriteTextFinishAndPrint extends AbstractBotCommand {
 
-    public Stage3WriteTextFinishAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public NotificationStage3WriteTextFinishAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 

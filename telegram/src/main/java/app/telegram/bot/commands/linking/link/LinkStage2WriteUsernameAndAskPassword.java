@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.contact;
+package app.telegram.bot.commands.linking.link;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,15 +6,14 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage1AskMethod extends AbstractBotCommand {
+public class LinkStage2WriteUsernameAndAskPassword extends AbstractBotCommand {
 
-    public Stage1AskMethod(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public LinkStage2WriteUsernameAndAskPassword(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void executeCommand() {
-        botService.setNextInput(chatId, InputState.CONTACT_METHOD);
-        sendAnswer("Please input Contact Method[SMS,VIBER,EMAIL,TELEGRAM]:");
+        processInput(InputState.USERNAME, InputState.PASSWORD, "Please input your ENS account's Password:");
     }
 }

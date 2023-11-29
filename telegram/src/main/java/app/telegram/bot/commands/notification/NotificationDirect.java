@@ -1,10 +1,10 @@
 package app.telegram.bot.commands.notification;
 
 import app.telegram.bot.BotService;
+import app.telegram.bot.Callbacks;
 import app.telegram.bot.commands.AbstractBotCommand;
+import app.telegram.bot.commands.BotCommandsConfig;
 import app.telegram.bot.commands.CallbackButton;
-import app.telegram.bot.commands.Callbacks;
-import app.telegram.bot.config.BotCommandsConfig;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

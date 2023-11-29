@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.linking;
+package app.telegram.bot.commands.contact;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,14 +6,14 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage2WriteUsernameAndAskPassword extends AbstractBotCommand {
+public class ContactStage2WriteMethodAndAskId extends AbstractBotCommand {
 
-    public Stage2WriteUsernameAndAskPassword(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public ContactStage2WriteMethodAndAskId(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     public void executeCommand() {
-        processInput(InputState.USERNAME, InputState.PASSWORD, "Please input your ENS account's Password:");
+        processInput(InputState.CONTACT_METHOD, InputState.CONTACT_ID, "Please input ContactId(Phone or Email):");
     }
 }

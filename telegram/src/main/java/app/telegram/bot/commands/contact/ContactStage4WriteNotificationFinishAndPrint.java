@@ -8,9 +8,9 @@ import app.utils.feign_clients.contact.Contact;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage4WriteNotificationFinishAndPrint extends AbstractBotCommand {
+public class ContactStage4WriteNotificationFinishAndPrint extends AbstractBotCommand {
 
-    public Stage4WriteNotificationFinishAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public ContactStage4WriteNotificationFinishAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 

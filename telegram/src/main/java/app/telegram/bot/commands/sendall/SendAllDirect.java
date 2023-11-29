@@ -1,8 +1,8 @@
 package app.telegram.bot.commands.sendall;
 
 import app.telegram.bot.BotService;
+import app.telegram.bot.Callbacks;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.commands.Callbacks;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

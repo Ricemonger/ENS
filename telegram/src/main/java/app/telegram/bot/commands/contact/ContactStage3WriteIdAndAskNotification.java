@@ -6,9 +6,9 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class Stage3WriteIdAndAskNotification extends AbstractBotCommand {
+public class ContactStage3WriteIdAndAskNotification extends AbstractBotCommand {
 
-    public Stage3WriteIdAndAskNotification(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public ContactStage3WriteIdAndAskNotification(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 

@@ -1,4 +1,4 @@
-package app.telegram.bot.config;
+package app.telegram.bot.commands;
 
 import lombok.Getter;
 import org.springframework.context.annotation.Configuration;

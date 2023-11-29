@@ -1,6 +1,7 @@
 package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
+import app.telegram.bot.Callbacks;
 import app.telegram.users.model.InputState;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

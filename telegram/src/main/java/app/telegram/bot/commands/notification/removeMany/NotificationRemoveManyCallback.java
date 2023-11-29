@@ -2,7 +2,7 @@ package app.telegram.bot.commands.notification.removeMany;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.commands.notification.Stage1AskName;
+import app.telegram.bot.commands.notification.NotificationStage1AskName;
 import app.telegram.users.model.InputGroup;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -17,6 +17,6 @@ public class NotificationRemoveManyCallback extends AbstractBotCommand {
     public void executeCommand() {
         botService.setNextInputGroup(chatId, InputGroup.NOTIFICATION_REMOVE_MANY);
 
-        new Stage1AskName(bot, update, botService).execute();
+        new NotificationStage1AskName(bot, update, botService).execute();
     }
 }

@@ -1,4 +1,4 @@
-package app.telegram.bot.commands;
+package app.telegram.bot;
 
 public class Callbacks {
 
