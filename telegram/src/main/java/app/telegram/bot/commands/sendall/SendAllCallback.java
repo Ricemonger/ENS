@@ -16,11 +16,9 @@ public class SendAllCallback extends AbstractBotCommand {
     public void executeCommand() {
         try {
             botService.sendAll(chatId);
-            String answer = "All notifications were successfully sent";
-            sendAnswer(answer);
+            sendAnswer("All notifications were successfully sent");
         } catch (SendingException e) {
-            String answer = "Error during sending occurred";
-            sendAnswer(answer);
+            sendAnswer("Error during sending occurred");
         }
     }
 }

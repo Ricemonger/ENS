@@ -15,11 +15,8 @@ public class LinkCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        MyFunctionalInterface function = () -> {
-            botService.setNextInputGroup(chatId, InputGroup.LINK);
+        botService.setNextInputGroup(chatId, InputGroup.LINK);
 
-            new Stage1AskUsername(bot, update, botService).execute();
-        };
-        executeCommandIfUserExistsOrAskToRegister(function);
+        new Stage1AskUsername(bot, update, botService).execute();
     }
 }

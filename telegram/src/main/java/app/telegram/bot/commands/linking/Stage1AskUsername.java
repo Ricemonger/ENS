@@ -14,7 +14,7 @@ public class Stage1AskUsername extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInput(chatId, InputState.LINK_USERNAME);
+        botService.setNextInput(chatId, InputState.USERNAME);
         sendAnswer("Please input your ENS account's Username:");
     }
 }

@@ -19,24 +19,18 @@ public class ContactFeignClientService {
     public Contact findOneByPrimaryKey(String securityToken, String method, String contactId) {
         ContactKeyRequest request = new ContactKeyRequest(method, contactId);
         List<Contact> list = contactFeignClient.findAllLikePrimaryKey(securityToken, request);
-        log.trace("ContactFeignClient's method findAllLikePrimaryKey was executed with params: jwt-{}, body-{} and result:{}", securityToken, request, list);
+
         Method m = Method.valueOf(method.toUpperCase(Locale.ROOT).trim());
-        Contact result = list.stream().filter(l -> (l.getMethod().equals(m) && l.getContactId().equals(contactId))).findFirst().orElseThrow();
-        log.trace("method findOneByPrimaryKey was executed with params: jwt-{}, body-{} and result:{}", securityToken, request, result);
-        return result;
+
+        return list.stream().filter(l -> (l.getMethod().equals(m) && l.getContactId().equals(contactId))).findFirst().orElseThrow();
     }
 
     public List<Contact> findAllById(String securityToken) {
-        List<Contact> result = contactFeignClient.findAllByAccountId(securityToken);
-        log.trace("ContactFeignClient's and Service's method findAllByAccountId was executed with params: jwt-{},result:{}",
-                securityToken, result);
-        return result;
+        return contactFeignClient.findAllByAccountId(securityToken);
     }
 
     public void addOne(String securityToken, Contact contact) {
         contactFeignClient.create(securityToken, contact);
-        log.trace("contactClient's method addOne was executed with params: jwt-{} and contact:{}",
-                securityToken, contact);
     }
 
     public void removeMany(String securityToken, Contact filters) {
@@ -49,25 +43,18 @@ public class ContactFeignClientService {
                 .forEach(contact -> {
                     contactFeignClient.delete(securityToken, contact);
                 });
-
-        log.trace("contactClient's method removeMany was executed with params: jwt-{} and filters:{}",
-                securityToken, filters);
     }
 
     public void removeOne(String securityToken, Contact contact) {
         contactFeignClient.delete(securityToken, contact);
-        log.trace("contactClient's method removeOne was executed with params: jwt-{} and contacts:{}",
-                securityToken, contact);
     }
 
     public void removeAllById(String securityToken) {
         contactFeignClient.clear(securityToken);
-        log.trace("contactClient's method removeAllById was executed with params: jwt-{}", securityToken);
     }
 
     public void changeAccountId(String oldAccountIdToken, String newAccountIdToken) {
         ChangeAccountIdRequest request = new ChangeAccountIdRequest(newAccountIdToken);
-        log.trace("changeAccountId was executed with params: oldToken-{}, request-{}", oldAccountIdToken, request);
         contactFeignClient.changeAccountId(oldAccountIdToken, request);
     }
 }

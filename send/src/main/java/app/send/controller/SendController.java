@@ -2,6 +2,7 @@ package app.send.controller;
 
 import app.utils.ExceptionMessage;
 import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.sender.dto.SendManyRequest;
 import app.utils.feign_clients.sender.dto.SendOneRequest;
 import app.utils.feign_clients.sender.exceptions.SenderApiException;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,12 @@ public class SendController {
     @ResponseStatus(HttpStatus.OK)
     public void sendOne(@RequestHeader(name = "Authorization") String securityToken, @RequestBody SendOneRequest request) {
         service.sendOne(securityToken, request);
+    }
+
+    @PostMapping("/many")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendMany(@RequestHeader(name = "Authorization") String securityToken, @RequestBody SendManyRequest request) {
+        service.sendMany(securityToken, request);
     }
 
     @PostMapping("/all")

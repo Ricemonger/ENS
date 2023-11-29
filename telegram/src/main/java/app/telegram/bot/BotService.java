@@ -11,6 +11,8 @@ import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.contact.Contact;
 import app.utils.feign_clients.contact.Method;
 import app.utils.feign_clients.notification.Notification;
+import app.utils.feign_clients.sender.dto.SendManyRequest;
+import app.utils.feign_clients.sender.dto.SendOneRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,20 +43,6 @@ public class BotService {
 
     public boolean doesUserExist(Long chatId) {
         return telegramUserService.doesUserExist(chatId);
-    }
-
-    public void sendAll(Long chatId) {
-        try {
-            sendFeignClientServiceWrapper.sendAll(chatId);
-        } catch (RuntimeException e) {
-            log.info("Exception {} occurred during sending operation for chatId-{}", e, chatId);
-            e.printStackTrace();
-            throw new SendingException();
-        }
-    }
-
-    public void sendOne(Long chatId, Contact contact) {
-        sendFeignClientServiceWrapper.sendOne(chatId, contact);
     }
 
     public void unlink(Long chatId) {
@@ -101,6 +89,26 @@ public class BotService {
 
     public boolean isLinked(Long chatId) {
         return telegramUserService.isLinked(chatId);
+    }
+
+    public void sendOne(Long chatId) {
+        sendFeignClientServiceWrapper.sendOne(chatId, getSendOneRequestFromInputsMap(chatId));
+        clearInputs(chatId);
+    }
+
+    public void sendMany(Long chatId) {
+        sendFeignClientServiceWrapper.sendMany(chatId, getSendManyRequestFromInputsMap(chatId));
+        clearInputs(chatId);
+    }
+
+    public void sendAll(Long chatId) {
+        try {
+            sendFeignClientServiceWrapper.sendAll(chatId);
+        } catch (RuntimeException e) {
+            log.info("Exception {} occurred during sending operation for chatId-{}", e, chatId);
+            e.printStackTrace();
+            throw new SendingException();
+        }
     }
 
     public void addContact(Long chatId) {
@@ -171,8 +179,8 @@ public class BotService {
         Map<InputState, String> contactMap = inputsMap.get(String.valueOf(chatId));
 
         Method method = Method.valueOf(contactMap.get(InputState.CONTACT_METHOD).trim().toUpperCase(Locale.ROOT));
-        String contactId = contactMap.get(InputState.CONTACT_CONTACT_ID);
-        String notificationName = contactMap.get(InputState.CONTACT_NOTIFICATION_NAME);
+        String contactId = contactMap.get(InputState.CONTACT_ID);
+        String notificationName = contactMap.get(InputState.NOTIFICATION_NAME);
 
         return new Contact(method, contactId, notificationName);
     }
@@ -188,8 +196,30 @@ public class BotService {
 
     public String[] getUsernameAndPasswordFromInputMap(Long chatId) {
         Map<InputState, String> userInputsMap = inputsMap.get(String.valueOf(chatId));
-        String username = userInputsMap.get(InputState.LINK_USERNAME);
-        String password = userInputsMap.get(InputState.LINK_PASSWORD);
+
+        String username = userInputsMap.get(InputState.USERNAME);
+        String password = userInputsMap.get(InputState.PASSWORD);
+
         return new String[]{username, password};
+    }
+
+    public SendOneRequest getSendOneRequestFromInputsMap(Long chatId) {
+        Map<InputState, String> requestMap = inputsMap.get(String.valueOf(chatId));
+
+        String method = requestMap.get(InputState.CONTACT_METHOD);
+        String contactId = requestMap.get(InputState.CONTACT_ID);
+        String notificationText = requestMap.get(InputState.NOTIFICATION_TEXT);
+
+        return new SendOneRequest(method, contactId, notificationText);
+    }
+
+    public SendManyRequest getSendManyRequestFromInputsMap(Long chatId) {
+        Map<InputState, String> requestMap = inputsMap.get(String.valueOf(chatId));
+
+        String method = requestMap.get(InputState.CONTACT_METHOD);
+        String contactId = requestMap.get(InputState.CONTACT_ID);
+        String notificationName = requestMap.get(InputState.NOTIFICATION_NAME);
+
+        return new SendManyRequest(method, contactId, notificationName);
     }
 }

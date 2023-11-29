@@ -19,7 +19,7 @@ public class ContactRemoveOneChain extends AbstractBotCommand {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
             case CONTACT_METHOD -> new Stage2WriteMethodAndAskId(bot, update, botService).execute();
-            case CONTACT_CONTACT_ID -> new ContactRemoveOneFinish(bot, update, botService).execute();
+            case CONTACT_ID -> new ContactRemoveOneFinish(bot, update, botService).execute();
             default -> new CancelCallback(bot, update, botService).execute();
         }
     }

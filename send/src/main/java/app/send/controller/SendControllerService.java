@@ -1,6 +1,7 @@
 package app.send.controller;
 
 import app.send.model.SendService;
+import app.utils.feign_clients.sender.dto.SendManyRequest;
 import app.utils.feign_clients.sender.dto.SendOneRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ public class SendControllerService {
 
     public void sendOne(String securityToken, SendOneRequest request) {
         sendService.sendOne(securityToken, request.method(), request.contactId(), request.notificationText());
+    }
+
+    public void sendMany(String securityToken, SendManyRequest request) {
+        sendService.sendMany(securityToken, request.method(), request.contactId(), request.notificationName());
     }
 
     public void sendAll(String securityToken) {

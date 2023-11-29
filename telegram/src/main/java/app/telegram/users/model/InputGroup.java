@@ -2,7 +2,6 @@ package app.telegram.users.model;
 
 public enum InputGroup {
     BASE,
-    REGISTRATION,
     CONTACT_ADD_ONE,
     CONTACT_REMOVE_ONE,
     CONTACT_REMOVE_MANY,

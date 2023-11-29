@@ -6,7 +6,10 @@ public class Callbacks {
     public static final String REGISTER_NO = "REGISTER_NO";
 
     public static final String SEND_ONE = "SEND_ONE";
+    public static final String SEND_ONE_FINISH = "SEND_ONE_FINISH";
+
     public static final String SEND_MANY = "SEND_MANY";
+    public static final String SEND_MANY_FINISH = "SEND_MANY_FINISH";
 
     public static final String SEND_ALL = "SEND_ALL";
 
@@ -29,7 +32,9 @@ public class Callbacks {
     public static final String NOTIFICATION_REMOVE_MANY_FINISH = "NOTIFICATION_REMOVE_MANY_FINISH";
 
     public static final String DATA_SHOW = "DATA_SHOW";
+
     public static final String DATA_REMOVE = "DATA_REMOVE";
+    public static final String DATA_REMOVE_FINISH = "DATA_REMOVE_FINISH";
 
     public static final String CLEAR = "CLEAR";
 

@@ -16,12 +16,14 @@ public class DataDirect extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        String answer = BotCommandsConfig.DATA_HELP_MESSAGE;
-        sendAnswer(answer);
-        String question = "What would you like to do?";
-        CallbackButton[] buttons = new CallbackButton[2];
-        buttons[0] = new CallbackButton("Show data", Callbacks.DATA_SHOW);
-        buttons[1] = new CallbackButton("Remove data", Callbacks.DATA_REMOVE);
-        askFromInlineKeyboard(question, 2, buttons);
+        MyFunctionalInterface function = () -> {
+            sendAnswer(BotCommandsConfig.DATA_HELP_MESSAGE);
+            String question = "What would you like to do?";
+            CallbackButton[] buttons = new CallbackButton[2];
+            buttons[0] = new CallbackButton("Show data", Callbacks.DATA_SHOW);
+            buttons[1] = new CallbackButton("Remove data", Callbacks.DATA_REMOVE);
+            askFromInlineKeyboard(question, 2, buttons);
+        };
+        executeCommandIfUserExistsOrAskToRegister(function);
     }
 }

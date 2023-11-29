@@ -1,5 +1,6 @@
 package app.send.controller;
 
+import app.utils.feign_clients.sender.dto.SendManyRequest;
 import app.utils.feign_clients.sender.dto.SendOneRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +15,9 @@ public class SendControllerTests {
 
     private final static String TOKEN = "TOKEN";
 
-    private final static SendOneRequest REQUEST = new SendOneRequest("SMS", "1111", "text");
+    private final static SendManyRequest MANY_REQUEST = new SendManyRequest("SMS", "1111", "name");
+
+    private final static SendOneRequest ONE_REQUEST = new SendOneRequest("SMS", "1111", "text");
 
     @Mock
     private SendControllerService service;
@@ -24,9 +27,16 @@ public class SendControllerTests {
 
     @Test
     public void sendOne() {
-        controller.sendOne(TOKEN, REQUEST);
+        controller.sendOne(TOKEN, ONE_REQUEST);
 
-        verify(service).sendOne(TOKEN, REQUEST);
+        verify(service).sendOne(TOKEN, ONE_REQUEST);
+    }
+
+    @Test
+    public void sendMany() {
+        controller.sendMany(TOKEN, MANY_REQUEST);
+
+        verify(service).sendMany(TOKEN, MANY_REQUEST);
     }
 
     @Test

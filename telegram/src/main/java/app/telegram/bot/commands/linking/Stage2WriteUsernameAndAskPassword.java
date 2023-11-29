@@ -14,6 +14,6 @@ public class Stage2WriteUsernameAndAskPassword extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        processInput(InputState.LINK_USERNAME, InputState.LINK_PASSWORD, "Please input your ENS account's Password:");
+        processInput(InputState.USERNAME, InputState.PASSWORD, "Please input your ENS account's Password:");
     }
 }

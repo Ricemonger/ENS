@@ -14,13 +14,16 @@ public class LinkOrUnlinkDirect extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        if (!isAccountLinked()) {
-            String answer = "Would you like to link your telegram account to existing ENS account?";
-            askYesOrNoFromInlineKeyboard(answer, Callbacks.LINK, Callbacks.CANCEL);
-        } else {
-            String answer = "You already have linked ENS Account. Would you like to unlink it?";
-            askYesOrNoFromInlineKeyboard(answer, Callbacks.UNLINK, Callbacks.CANCEL);
-        }
+        MyFunctionalInterface function = () -> {
+            if (!isAccountLinked()) {
+                String answer = "Would you like to link your telegram account to existing ENS account?";
+                askYesOrNoFromInlineKeyboard(answer, Callbacks.LINK, Callbacks.CANCEL);
+            } else {
+                String answer = "You already have linked ENS Account. Would you like to unlink it?";
+                askYesOrNoFromInlineKeyboard(answer, Callbacks.UNLINK, Callbacks.CANCEL);
+            }
+        };
+        executeCommandIfUserExistsOrAskToRegister(function);
     }
 
     private boolean isAccountLinked() {

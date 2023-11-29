@@ -34,6 +34,8 @@ public class SendServiceTests {
 
     private final static String NOTIFICATION_TEXT = "NOTIFICATION_TEXT";
 
+    private final static String NOTIFICATION_NAME = "NOTIFICATION_NAME";
+
     private final static String MOCK_STRING = "MOCK_STRING";
 
     private final static Map<String, String> MOCK_NOTIFICATION_MAP = Collections.singletonMap("MOCK", "MOCK");
@@ -108,7 +110,42 @@ public class SendServiceTests {
     }
 
     @Test
-    public void bulkSendShouldCallAllSenders() {
+    public void sendManyShouldUseSmsSenderIfSmsMethod() {
+        sendService.sendMany(TOKEN, Method.SMS.name(), CONTACT_ID, NOTIFICATION_NAME);
+
+        verify(smsSender).bulkSend(anyMap());
+        verifyNoInteractions(viberSender);
+        verifyNoInteractions(emailSender);
+    }
+
+    @Test
+    public void sendManyShouldUseViberSenderIfViberMethod() {
+        sendService.sendMany(TOKEN, Method.VIBER.name(), CONTACT_ID, NOTIFICATION_NAME);
+
+        verify(viberSender).bulkSend(anyMap());
+        verifyNoInteractions(smsSender);
+        verifyNoInteractions(emailSender);
+    }
+
+    @Test
+    public void sendManyShouldUseEmailSenderIfEmailMethod() {
+        sendService.sendMany(TOKEN, Method.EMAIL.name(), CONTACT_ID, NOTIFICATION_NAME);
+
+        verify(emailSender).bulkSend(anyMap());
+        verifyNoInteractions(viberSender);
+        verifyNoInteractions(smsSender);
+    }
+
+    @Test
+    public void sendManyShouldFindAllByIdAndFilter() {
+        Contact mock = MOCK_CONTACT_LIST.get(0);
+        sendService.sendMany(TOKEN, mock.getMethod().name(), mock.getContactId(), mock.getNotificationName());
+
+        verify(contactFeignClientService).findAllById(TOKEN);
+    }
+
+    @Test
+    public void sendAllShouldCallAllSenders() {
         sendService.sendAll(TOKEN);
 
         verify(contactFeignClientService).findAllById(TOKEN);

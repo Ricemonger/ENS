@@ -18,8 +18,8 @@ public class LinkChain extends AbstractBotCommand {
     public void executeCommand() {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
-            case LINK_USERNAME -> new Stage2WriteUsernameAndAskPassword(bot, update, botService).execute();
-            case LINK_PASSWORD -> new LinkFinish(bot, update, botService).execute();
+            case USERNAME -> new Stage2WriteUsernameAndAskPassword(bot, update, botService).execute();
+            case PASSWORD -> new LinkFinish(bot, update, botService).execute();
             default -> new CancelCallback(bot, update, botService).execute();
         }
     }

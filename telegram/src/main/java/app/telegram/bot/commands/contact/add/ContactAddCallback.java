@@ -15,11 +15,8 @@ public class ContactAddCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        MyFunctionalInterface function = () -> {
-            botService.setNextInputGroup(chatId, InputGroup.CONTACT_ADD_ONE);
+        botService.setNextInputGroup(chatId, InputGroup.CONTACT_ADD_ONE);
 
-            new Stage1AskMethod(bot, update, botService).execute();
-        };
-        executeCommandIfUserExistsOrAskToRegister(function);
+        new Stage1AskMethod(bot, update, botService).execute();
     }
 }

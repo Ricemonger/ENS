@@ -20,8 +20,8 @@ public class ContactAddChain extends AbstractBotCommand {
         InputState inputState = botService.geUserInputState(chatId);
         switch (inputState) {
             case CONTACT_METHOD -> new Stage2WriteMethodAndAskId(bot, update, botService).execute();
-            case CONTACT_CONTACT_ID -> new Stage3WriteIdAndAskNotification(bot, update, botService).execute();
-            case CONTACT_NOTIFICATION_NAME -> new ContactAddFinish(bot, update, botService).execute();
+            case CONTACT_ID -> new Stage3WriteIdAndAskNotification(bot, update, botService).execute();
+            case NOTIFICATION_NAME -> new ContactAddFinish(bot, update, botService).execute();
             default -> new CancelCallback(bot, update, botService).execute();
         }
     }

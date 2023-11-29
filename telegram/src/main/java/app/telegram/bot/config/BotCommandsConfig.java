@@ -13,9 +13,9 @@ public class BotCommandsConfig {
 
     public static final String SEND_HELP_MESSAGE = """
                         Send methods:
-                            Send to one contact by:
+                            Send to one contact, not necessary saved, by:
                                 method + contact identifier + notification text
-                            Send to many contacts by filters:
+                            Send to many, already saved, contacts, by filters:
                                 contacting method[SMS,VIBER,EMAIL,TELEGRAM]
                                 method + contact identifier(partial)
                                 notification template name(partial)
@@ -45,7 +45,7 @@ public class BotCommandsConfig {
     public static final String DATA_HELP_MESSAGE = """
             Data methods:
                Show me all my data
-               Remove ALL my data, including telegram account entry in bot's database
+               Remove ALL my data, including my account's entry in bot's database
             """;
 
     public static final String HELP_MESSAGE = "/start - Start communication with bot and register in bot's database\n" +

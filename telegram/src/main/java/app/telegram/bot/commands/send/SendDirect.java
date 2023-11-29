@@ -21,8 +21,8 @@ public class SendDirect extends AbstractBotCommand {
             sendAnswer(answer);
             String question = "What would you like to do?";
             CallbackButton[] buttons = new CallbackButton[3];
-            buttons[0] = new CallbackButton("Send to one contact", Callbacks.SEND_ONE);
-            buttons[1] = new CallbackButton("Send to many by filter", Callbacks.SEND_MANY);
+            buttons[0] = new CallbackButton("Send to one", Callbacks.SEND_ONE);
+            buttons[1] = new CallbackButton("Send to many", Callbacks.SEND_MANY);
             buttons[2] = new CallbackButton("Cancel operation", Callbacks.CANCEL);
             askFromInlineKeyboard(question, 2, buttons);
         };

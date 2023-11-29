@@ -1,5 +1,6 @@
 package app.utils.feign_clients.sender;
 
+import app.utils.feign_clients.sender.dto.SendManyRequest;
 import app.utils.feign_clients.sender.dto.SendOneRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface SendFeignClient {
 
     @PostMapping("/one")
-    void sendOne(@RequestHeader(name = "Authorization") String securityToken,
-                 @RequestBody SendOneRequest request);
+    void sendOne(@RequestHeader(name = "Authorization") String securityToken, @RequestBody SendOneRequest request);
+
+    @PostMapping("/many")
+    void sendMany(@RequestHeader(name = "Authorization") String securityToken, @RequestBody SendManyRequest request);
 
     @PostMapping("/all")
     void sendAll(@RequestHeader(name = "Authorization") String securityToken);

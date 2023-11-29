@@ -33,6 +33,49 @@ public class SendService {
     private final ViberSender viberSender;
 
     public void sendOne(String token, String method, String contactId, String notificationText) {
+        String notifText = getNotifTextFromDbIfEmptyOrDefaultIfEmptyInDb(token, method, contactId, notificationText);
+
+        switch (getMethod(method)) {
+            case SMS -> send(smsSender, contactId, notifText);
+            case EMAIL -> send(emailSender, contactId, notifText);
+            case VIBER -> send(viberSender, contactId, notifText);
+        }
+    }
+
+    public void sendMany(String securityToken, String method, String contactId, String notificationName) {
+        Method meth = getMethod(method);
+
+        List<Contact> contacts =
+                contactFeignClientService
+                        .findAllById(securityToken)
+                        .stream()
+                        .filter(c -> (
+                                c.getMethod().equals(meth)
+                                        && c.getContactId().startsWith(contactId)
+                                        && c.getNotificationName().startsWith(notificationName)))
+                        .toList();
+
+        Map<String, String> notifications = notificationFeignClientService.getMapByAccountId(securityToken);
+
+        switch (meth) {
+            case SMS -> sendManySmsMessages(contacts, notifications);
+            case EMAIL -> sendManyEmailMessages(contacts, notifications);
+            case VIBER -> sendManyViberMessages(contacts, notifications);
+        }
+    }
+
+    public void sendAll(String token) {
+        List<Contact> contacts = contactFeignClientService.findAllById(token);
+        List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
+        List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
+        List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
+        Map<String, String> notifications = notificationFeignClientService.getMapByAccountId(token);
+        sendManySmsMessages(smsContacts, notifications);
+        sendManyEmailMessages(emailContacts, notifications);
+        sendManyViberMessages(viberContacts, notifications);
+    }
+
+    private String getNotifTextFromDbIfEmptyOrDefaultIfEmptyInDb(String token, String method, String contactId, String notificationText) {
         String notifText = DEFAULT_TEXT_PATTERN;
         if (notificationText != null && !notificationText.isBlank()) {
             notifText = notificationText;
@@ -43,50 +86,36 @@ public class SendService {
             } catch (NoSuchElementException e) {
             }
         }
-        switch (method.toUpperCase().trim()) {
-            case "SMS":
-                send(smsSender, contactId, notifText);
-                break;
-            case "EMAIL":
-                send(emailSender, contactId, notifText);
-                break;
-            case "VIBER":
-                send(viberSender, contactId, notifText);
-                break;
-            default:
-                log.info("sendOne executed for token-{}, method-{}, contactId-{}, notificationText-{}, wrong method " +
-                        "name was entered", token, method, contactId, notificationText);
-                throw new IllegalArgumentException();
+        return notifText;
+    }
+
+    private Method getMethod(String method) {
+        Method meth;
+        try {
+            meth = Method.valueOf(method.trim().toUpperCase(Locale.ROOT));
+            return meth;
+        } catch (NullPointerException | IllegalArgumentException e) {
+            log.info("getMethod throws with method-{}, wrong method name entered", method);
+            throw new IllegalArgumentException();
         }
     }
 
-    public void sendAll(String token) {
-        List<Contact> contacts = contactFeignClientService.findAllById(token);
-        List<Contact> smsContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.SMS)).toList();
-        List<Contact> emailContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.EMAIL)).toList();
-        List<Contact> viberContacts = contacts.stream().filter(contact -> contact.getMethod().equals(Method.VIBER)).toList();
-        Map<String, String> notifications = notificationFeignClientService.getMapByAccountId(token);
-        sendAllSms(smsContacts, notifications);
-        sendAllEmails(emailContacts, notifications);
-        sendAllViberMessages(viberContacts, notifications);
-    }
-
-    private void sendAllViberMessages(List<Contact> contacts, Map<String, String> notifications) {
-        log.debug("sendAllViberMessages called");
+    private void sendManyViberMessages(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendManyViberMessages called");
         bulkSend(viberSender, contacts, notifications);
-        log.trace("sendAllViberMessages executed");
+        log.trace("sendManyViberMessages executed");
     }
 
-    private void sendAllSms(List<Contact> contacts, Map<String, String> notifications) {
-        log.debug("sendAllSms called");
+    private void sendManySmsMessages(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendManySmsMessages called");
         bulkSend(smsSender, contacts, notifications);
-        log.trace("sendAllSms executed");
+        log.trace("sendManySmsMessages executed");
     }
 
-    private void sendAllEmails(List<Contact> contacts, Map<String, String> notifications) {
-        log.debug("sendAllEmails called");
+    private void sendManyEmailMessages(List<Contact> contacts, Map<String, String> notifications) {
+        log.debug("sendManyEmailsMessages called");
         bulkSend(emailSender, contacts, notifications);
-        log.trace("sendAllEmails executed");
+        log.trace("sendManyEmailsMessages executed");
     }
 
     private void bulkSend(Sender sender, List<Contact> contacts, Map<String, String> notifications) {

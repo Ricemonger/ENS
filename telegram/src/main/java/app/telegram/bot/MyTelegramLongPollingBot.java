@@ -16,6 +16,7 @@ import app.telegram.bot.commands.contact.removeOne.ContactRemoveOneChain;
 import app.telegram.bot.commands.contact.removeOne.ContactRemoveOneFinishCallback;
 import app.telegram.bot.commands.data.DataDirect;
 import app.telegram.bot.commands.data.DataRemoveCallback;
+import app.telegram.bot.commands.data.DataRemoveCallbackFinish;
 import app.telegram.bot.commands.data.DataShowCallback;
 import app.telegram.bot.commands.help.HelpDirect;
 import app.telegram.bot.commands.invalid.InvalidCallback;
@@ -36,8 +37,12 @@ import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneCal
 import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneChain;
 import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneFinishCallback;
 import app.telegram.bot.commands.send.SendDirect;
-import app.telegram.bot.commands.send.SendManyCommand;
-import app.telegram.bot.commands.send.SendOneCommand;
+import app.telegram.bot.commands.send.sendMany.SendManyCallback;
+import app.telegram.bot.commands.send.sendMany.SendManyChain;
+import app.telegram.bot.commands.send.sendMany.SendManyFinishCallback;
+import app.telegram.bot.commands.send.sendOne.SendOneCallback;
+import app.telegram.bot.commands.send.sendOne.SendOneChain;
+import app.telegram.bot.commands.send.sendOne.SendOneFinishCallback;
 import app.telegram.bot.commands.sendall.SendAllCallback;
 import app.telegram.bot.commands.sendall.SendAllDirect;
 import app.telegram.bot.commands.start.RegisterNoCallback;
@@ -124,8 +129,11 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.REGISTER_YES -> new RegisterYesCallback(this, update, botService).execute();
             case Callbacks.REGISTER_NO -> new RegisterNoCallback(this, update, botService).execute();
 
-            case Callbacks.SEND_ONE -> new SendOneCommand(this, update, botService).execute();
-            case Callbacks.SEND_MANY -> new SendManyCommand(this, update, botService).execute();
+            case Callbacks.SEND_ONE -> new SendOneCallback(this, update, botService).execute();
+            case Callbacks.SEND_ONE_FINISH -> new SendOneFinishCallback(this, update, botService).execute();
+
+            case Callbacks.SEND_MANY -> new SendManyCallback(this, update, botService).execute();
+            case Callbacks.SEND_MANY_FINISH -> new SendManyFinishCallback(this, update, botService).execute();
 
             case Callbacks.SEND_ALL -> new SendAllCallback(this, update, botService).execute();
 
@@ -156,7 +164,9 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
 
 
             case Callbacks.DATA_SHOW -> new DataShowCallback(this, update, botService).execute();
+
             case Callbacks.DATA_REMOVE -> new DataRemoveCallback(this, update, botService).execute();
+            case Callbacks.DATA_REMOVE_FINISH -> new DataRemoveCallbackFinish(this, update, botService).execute();
 
             case Callbacks.CLEAR -> new ClearCallback(this, update, botService).execute();
 
@@ -174,6 +184,9 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
         log.info("listenUserInputAndExecute was called for update-{} and inputGroup-{}", update, inputGroup);
         switch (inputGroup) {
+            case SEND_ONE -> new SendOneChain(this, update, botService).execute();
+            case SEND_MANY -> new SendManyChain(this, update, botService).execute();
+
             case CONTACT_ADD_ONE -> new ContactAddChain(this, update, botService).execute();
             case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(this, update, botService).execute();
             case CONTACT_REMOVE_MANY -> new ContactRemoveManyChain(this, update, botService).execute();

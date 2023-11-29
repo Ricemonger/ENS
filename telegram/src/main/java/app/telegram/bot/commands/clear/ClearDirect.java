@@ -15,9 +15,7 @@ public class ClearDirect extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
-            String answer = "Do you really want to clear all your Contacts and Notifications?";
-            sendAnswer(answer);
-            askYesOrNoFromInlineKeyboard(answer, Callbacks.CLEAR, Callbacks.CANCEL);
+            askYesOrNoFromInlineKeyboard("Do you really want to clear all your Contacts and Notifications?", Callbacks.CLEAR, Callbacks.CANCEL);
         };
         executeCommandIfUserExistsOrAskToRegister(function);
     }
