@@ -24,6 +24,10 @@ public class TelegramUserServiceTests {
 
     private final static String MOCK_STRING = "MOCK_STRING";
 
+    private final InputGroup INPUT_GROUP = InputGroup.LINK;
+
+    private final InputState INPUT_STATE = InputState.NOTIFICATION_NAME;
+
     @SpyBean
     private TelegramUserRepositoryService repositoryService;
 
@@ -87,9 +91,17 @@ public class TelegramUserServiceTests {
 
     @Test
     public void getChatIdByTokenShouldThrowIfInvalidToken() {
-        Executable executable = () -> userService.getChatIdByToken("token.token.token");
+        Executable executableInvalid = () -> userService.getChatIdByToken("token.token.token");
 
-        assertThrows(InvalidTelegramTokenException.class, executable);
+        assertThrows(InvalidTelegramTokenException.class, executableInvalid);
+
+        Executable executableMalformed = () -> userService.getChatIdByToken("token.token");
+
+        assertThrows(InvalidTelegramTokenException.class, executableMalformed);
+
+        Executable executableNull = () -> userService.getChatIdByToken(null);
+
+        assertThrows(InvalidTelegramTokenException.class, executableNull);
     }
 
     @Test
@@ -178,21 +190,69 @@ public class TelegramUserServiceTests {
     }
 
     @Test
-    public void getSecurityTokenShouldGetSecurityTokenFromSecurityModuleAndPutInDb() {
+    public void setNextInputGroupShouldSetInDb() {
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
 
-        String securityToken = userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
+        userService.setInputGroup(CHAT_ID, INPUT_GROUP);
 
-        verify(securityService).getSecurityToken(argThat(s -> jwtUtil.isTokenValidAndContainsChatId(s, CHAT_ID)));
-
-        assertEquals(MOCK_STRING, securityToken);
+        TelegramUser user = repositoryService.findByChatIdOrThrow(String.valueOf(CHAT_ID));
+        assertEquals(INPUT_GROUP, user.getInputGroup());
     }
 
     @Test
-    public void getSecurityTokenShouldThrowInDoesntExist() {
-        Executable executable = () -> userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
+    public void setNextInputGroupShouldThrowIfDoesntExist() {
+        Executable executable = () -> userService.setInputGroup(CHAT_ID, INPUT_GROUP);
 
         assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void setNextInputShouldSetInDb() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        userService.setInputState(CHAT_ID, INPUT_STATE);
+
+        TelegramUser user = repositoryService.findByChatIdOrThrow(String.valueOf(CHAT_ID));
+        assertEquals(INPUT_STATE, user.getInputState());
+    }
+
+    @Test
+    public void setNextInputShouldThrowIfDoesntExist() {
+        Executable executable = () -> userService.setInputState(CHAT_ID, INPUT_STATE);
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void getInputGroupShouldReturnRightGroup() {
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setInputGroup(INPUT_GROUP);
+        repositoryService.save(user);
+
+        assertEquals(INPUT_GROUP, userService.getInputGroup(CHAT_ID));
+    }
+
+    @Test
+    public void getInputGroupShouldReturnBaseIfDoesntExist() {
+        InputGroup group = userService.getInputGroup(CHAT_ID);
+
+        assertEquals(InputGroup.BASE, group);
+    }
+
+    @Test
+    public void getInputStateShouldReturnRightGroup() {
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setInputState(INPUT_STATE);
+        repositoryService.save(user);
+
+        assertEquals(INPUT_STATE, userService.getInputState(CHAT_ID));
+    }
+
+    @Test
+    public void getInputStateShouldReturnBaseIfDoesntExist() {
+        InputState state = userService.getInputState(CHAT_ID);
+
+        assertEquals(InputState.BASE, state);
     }
 
     @Test
@@ -207,6 +267,23 @@ public class TelegramUserServiceTests {
         assertFalse(userService.doesUserExist(CHAT_ID));
     }
 
+    @Test
+    public void findSecurityTokenOrGenerateAndPutShouldGetSecurityTokenFromSecurityModuleAndPutInDb() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        String securityToken = userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
+
+        verify(securityService).getSecurityToken(argThat(s -> jwtUtil.isTokenValidAndContainsChatId(s, CHAT_ID)));
+
+        assertEquals(MOCK_STRING, securityToken);
+    }
+
+    @Test
+    public void findSecurityTokenOrGenerateAndPutShouldThrowInDoesntExist() {
+        Executable executable = () -> userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
 
     private static class MockSecurityTelegramUserFeignClientService extends SecurityTelegramUserFeignClientService {
 
@@ -241,6 +318,11 @@ public class TelegramUserServiceTests {
 
         public String getAccountInfo(String telegramToken) {
             return MOCK_STRING;
+        }
+
+        @Override
+        public boolean doesUserExists(String telegramToken) {
+            return true;
         }
     }
 }

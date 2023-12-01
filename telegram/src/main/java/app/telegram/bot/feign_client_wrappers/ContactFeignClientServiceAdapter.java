@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ContactFeignClientServiceWrapper {
+public class ContactFeignClientServiceAdapter {
 
     private final ContactFeignClientService contactFeignClientService;
 

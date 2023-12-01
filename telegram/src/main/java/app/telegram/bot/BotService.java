@@ -1,15 +1,15 @@
 package app.telegram.bot;
 
-import app.telegram.bot.exceptions.ClearingException;
-import app.telegram.bot.exceptions.SendingException;
-import app.telegram.bot.feign_client_wrappers.ContactFeignClientServiceWrapper;
-import app.telegram.bot.feign_client_wrappers.NotificationFeignClientServiceWrapper;
-import app.telegram.bot.feign_client_wrappers.SendFeignClientServiceWrapper;
+import app.telegram.bot.exceptions.EmptyInputMapException;
+import app.telegram.bot.feign_client_wrappers.ContactFeignClientServiceAdapter;
+import app.telegram.bot.feign_client_wrappers.NotificationFeignClientServiceAdapter;
+import app.telegram.bot.feign_client_wrappers.SendFeignClientServiceAdapter;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;
 import app.utils.feign_clients.contact.Contact;
 import app.utils.feign_clients.contact.Method;
+import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
 import app.utils.feign_clients.notification.Notification;
 import app.utils.feign_clients.sender.dto.SendManyRequest;
 import app.utils.feign_clients.sender.dto.SendOneRequest;
@@ -31,11 +31,11 @@ public class BotService {
 
     private final TelegramUserService telegramUserService;
 
-    private final ContactFeignClientServiceWrapper contactFeignClientServiceWrapper;
+    private final ContactFeignClientServiceAdapter contactFeignClientServiceAdapter;
 
-    private final NotificationFeignClientServiceWrapper notificationFeignClientServiceWrapper;
+    private final NotificationFeignClientServiceAdapter notificationFeignClientServiceAdapter;
 
-    private final SendFeignClientServiceWrapper sendFeignClientServiceWrapper;
+    private final SendFeignClientServiceAdapter sendFeignClientServiceAdapter;
 
     public void create(Long chatId) {
         telegramUserService.create(chatId);
@@ -45,20 +45,10 @@ public class BotService {
         return telegramUserService.doesUserExist(chatId);
     }
 
-    public void unlink(Long chatId) {
-        telegramUserService.unlink(chatId);
-    }
-
-    public void link(Long chatId) {
-        String[] s = getUsernameAndPasswordFromInputMap(chatId);
-        telegramUserService.link(chatId, s[0], s[1]);
-        clearInputs(chatId);
-    }
-
     public String getUserData(Long chatId) {
         StringBuilder stringBuilder = new StringBuilder();
-        List<Notification> notificationList = notificationFeignClientServiceWrapper.findAll(chatId);
-        List<Contact> contactList = contactFeignClientServiceWrapper.findAll(chatId);
+        List<Notification> notificationList = notificationFeignClientServiceAdapter.findAll(chatId);
+        List<Contact> contactList = contactFeignClientServiceAdapter.findAll(chatId);
         String accountInfo = telegramUserService.getAccountInfo(chatId);
 
         stringBuilder.append("Notifications:\n");
@@ -77,14 +67,18 @@ public class BotService {
     }
 
     public void clear(Long chatId) {
-        try {
-            notificationFeignClientServiceWrapper.clear(chatId);
-            contactFeignClientServiceWrapper.clear(chatId);
-        } catch (RuntimeException e) {
-            log.info("Exception {} occurred during clearing operation for chatId-{}", e, chatId);
-            e.printStackTrace();
-            throw new ClearingException();
-        }
+        notificationFeignClientServiceAdapter.clear(chatId);
+        contactFeignClientServiceAdapter.clear(chatId);
+    }
+
+    public void link(Long chatId) {
+        String[] s = getUsernameAndPasswordFromInputsMap(chatId);
+        telegramUserService.link(chatId, s[0], s[1]);
+        clearUserInputs(chatId);
+    }
+
+    public void unlink(Long chatId) {
+        telegramUserService.unlink(chatId);
     }
 
     public boolean isLinked(Long chatId) {
@@ -92,61 +86,69 @@ public class BotService {
     }
 
     public void sendOne(Long chatId) {
-        sendFeignClientServiceWrapper.sendOne(chatId, getSendOneRequestFromInputsMap(chatId));
-        clearInputs(chatId);
+        sendFeignClientServiceAdapter.sendOne(chatId, getSendOneRequestFromInputsMap(chatId));
+        clearUserInputs(chatId);
     }
 
     public void sendMany(Long chatId) {
-        sendFeignClientServiceWrapper.sendMany(chatId, getSendManyRequestFromInputsMap(chatId));
-        clearInputs(chatId);
+        sendFeignClientServiceAdapter.sendMany(chatId, getSendManyRequestFromInputsMap(chatId));
+        clearUserInputs(chatId);
     }
 
     public void sendAll(Long chatId) {
-        try {
-            sendFeignClientServiceWrapper.sendAll(chatId);
-        } catch (RuntimeException e) {
-            log.info("Exception {} occurred during sending operation for chatId-{}", e, chatId);
-            e.printStackTrace();
-            throw new SendingException();
-        }
+        sendFeignClientServiceAdapter.sendAll(chatId);
     }
 
     public void addContact(Long chatId) {
-        contactFeignClientServiceWrapper.addOne(chatId, getContactFromInputsMap(chatId));
-        clearInputs(chatId);
-    }
-
-    public void removeManyContacts(Long chatId) {
-        contactFeignClientServiceWrapper.removeMany(chatId, getContactFromInputsMap(chatId));
-        clearInputs(chatId);
+        contactFeignClientServiceAdapter.addOne(chatId, getContactFromInputsMap(chatId));
+        clearUserInputs(chatId);
     }
 
     public void removeOneContact(Long chatId) {
-        contactFeignClientServiceWrapper.removeOne(chatId, getContactFromInputsMap(chatId));
-        clearInputs(chatId);
+        contactFeignClientServiceAdapter.removeOne(chatId, getContactFromInputsMap(chatId));
+        clearUserInputs(chatId);
+    }
+
+    public void removeManyContacts(Long chatId) {
+        contactFeignClientServiceAdapter.removeMany(chatId, getContactFromInputsMap(chatId));
+        clearUserInputs(chatId);
     }
 
     public void addNotification(Long chatId) {
-        notificationFeignClientServiceWrapper.addOne(chatId, getNotificationFromInputsMap(chatId));
-        clearInputs(chatId);
-    }
-
-    public void removeManyNotifications(Long chatId) {
-        notificationFeignClientServiceWrapper.removeMany(chatId, getNotificationFromInputsMap(chatId));
-        clearInputs(chatId);
+        notificationFeignClientServiceAdapter.addOne(chatId, getNotificationFromInputsMap(chatId));
+        clearUserInputs(chatId);
     }
 
     public void removeOneNotification(Long chatId) {
-        notificationFeignClientServiceWrapper.removeOne(chatId, getNotificationFromInputsMap(chatId));
-        clearInputs(chatId);
+        notificationFeignClientServiceAdapter.removeOne(chatId, getNotificationFromInputsMap(chatId));
+        clearUserInputs(chatId);
+    }
+
+    public void removeManyNotifications(Long chatId) {
+        notificationFeignClientServiceAdapter.removeMany(chatId, getNotificationFromInputsMap(chatId));
+        clearUserInputs(chatId);
+    }
+
+    public void cancel(Long chatId) {
+        setNextInputState(chatId, InputState.BASE);
+        setNextInputGroup(chatId, InputGroup.BASE);
+        clearUserInputs(chatId);
     }
 
     public void setNextInputGroup(Long chatId, InputGroup inputGroup) {
-        telegramUserService.setNextInputGroup(chatId, inputGroup);
+        telegramUserService.setInputGroup(chatId, inputGroup);
     }
 
-    public void setNextInput(Long chatId, InputState inputState) {
-        telegramUserService.setNextInput(chatId, inputState);
+    public InputGroup getNextInputGroup(Long chatId) {
+        return telegramUserService.getInputGroup(chatId);
+    }
+
+    public void setNextInputState(Long chatId, InputState inputState) {
+        telegramUserService.setInputState(chatId, inputState);
+    }
+
+    public InputState getNextInputState(Long chatId) {
+        return telegramUserService.getInputState(chatId);
     }
 
     public void saveInput(Long chatId, InputState inputState, String inputText) {
@@ -163,30 +165,25 @@ public class BotService {
         inputsMap.put(keyChatId, oldInput);
     }
 
-    public void clearInputs(Long chatId) {
+    public void clearUserInputs(Long chatId) {
         inputsMap.put(String.valueOf(chatId), new HashMap<>());
     }
 
-    public InputGroup geUserInputGroup(Long chatId) {
-        return telegramUserService.getInputGroup(chatId);
-    }
-
-    public InputState geUserInputState(Long chatId) {
-        return telegramUserService.getInputState(chatId);
-    }
-
     public Contact getContactFromInputsMap(Long chatId) {
-        Map<InputState, String> contactMap = inputsMap.get(String.valueOf(chatId));
-
-        Method method = Method.valueOf(contactMap.get(InputState.CONTACT_METHOD).trim().toUpperCase(Locale.ROOT));
-        String contactId = contactMap.get(InputState.CONTACT_ID);
-        String notificationName = contactMap.get(InputState.NOTIFICATION_NAME);
-
-        return new Contact(method, contactId, notificationName);
+        Map<InputState, String> contactMap = getUserInputMapOrThrow(chatId);
+        try {
+            Method method = Method.valueOf(contactMap.get(InputState.CONTACT_METHOD).trim().toUpperCase(Locale.ROOT));
+            String contactId = contactMap.get(InputState.CONTACT_ID);
+            String notificationName = contactMap.get(InputState.NOTIFICATION_NAME);
+            return new Contact(method, contactId, notificationName);
+        } catch (RuntimeException e) {
+            log.info("getContactFromInputsMap throws for chatId-{}, invalid contact method name", chatId);
+            throw new InvalidContactMethodException();
+        }
     }
 
     public Notification getNotificationFromInputsMap(Long chatId) {
-        Map<InputState, String> notificationMap = inputsMap.get(String.valueOf(chatId));
+        Map<InputState, String> notificationMap = getUserInputMapOrThrow(chatId);
 
         String name = notificationMap.get(InputState.NOTIFICATION_NAME);
         String text = notificationMap.get(InputState.NOTIFICATION_TEXT);
@@ -194,8 +191,8 @@ public class BotService {
         return new Notification(name, text);
     }
 
-    public String[] getUsernameAndPasswordFromInputMap(Long chatId) {
-        Map<InputState, String> userInputsMap = inputsMap.get(String.valueOf(chatId));
+    public String[] getUsernameAndPasswordFromInputsMap(Long chatId) {
+        Map<InputState, String> userInputsMap = getUserInputMapOrThrow(chatId);
 
         String username = userInputsMap.get(InputState.USERNAME);
         String password = userInputsMap.get(InputState.PASSWORD);
@@ -204,7 +201,7 @@ public class BotService {
     }
 
     public SendOneRequest getSendOneRequestFromInputsMap(Long chatId) {
-        Map<InputState, String> requestMap = inputsMap.get(String.valueOf(chatId));
+        Map<InputState, String> requestMap = getUserInputMapOrThrow(chatId);
 
         String method = requestMap.get(InputState.CONTACT_METHOD);
         String contactId = requestMap.get(InputState.CONTACT_ID);
@@ -214,12 +211,21 @@ public class BotService {
     }
 
     public SendManyRequest getSendManyRequestFromInputsMap(Long chatId) {
-        Map<InputState, String> requestMap = inputsMap.get(String.valueOf(chatId));
+        Map<InputState, String> requestMap = getUserInputMapOrThrow(chatId);
 
         String method = requestMap.get(InputState.CONTACT_METHOD);
         String contactId = requestMap.get(InputState.CONTACT_ID);
         String notificationName = requestMap.get(InputState.NOTIFICATION_NAME);
 
         return new SendManyRequest(method, contactId, notificationName);
+    }
+
+    public Map<InputState, String> getUserInputMapOrThrow(Long chatId) {
+        Map<InputState, String> inputMap = inputsMap.get(String.valueOf(chatId));
+        if (inputMap == null || inputMap.isEmpty()) {
+            log.info("getInputMapOrThrow throws for chatId-{}, empty chatId input map", chatId);
+            throw new EmptyInputMapException();
+        }
+        return inputMap;
     }
 }

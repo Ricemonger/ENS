@@ -17,7 +17,7 @@ public class LinkStage3WritePasswordFinishAndPrint extends AbstractBotCommand {
     public void executeCommand() {
         processInput(InputState.PASSWORD, InputState.BASE);
 
-        String[] s = botService.getUsernameAndPasswordFromInputMap(chatId);
+        String[] s = botService.getUsernameAndPasswordFromInputsMap(chatId);
 
         sendAnswer("Input is finished. Your ENS account is:" + s[0] + "|" + s[1]);
 

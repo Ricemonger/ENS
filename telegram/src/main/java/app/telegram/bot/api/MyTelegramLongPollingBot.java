@@ -1,4 +1,4 @@
-package app.telegram.bot.bot;
+package app.telegram.bot.api;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.Callbacks;
@@ -95,7 +95,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived received update-{}", update);
         if (update.hasMessage()) {
-            InputGroup inputGroup = botService.geUserInputGroup(update.getMessage().getChatId());
+            InputGroup inputGroup = botService.getNextInputGroup(update.getMessage().getChatId());
             log.info("update is-{}, user's inputGroup-{}", update, inputGroup);
             if (inputGroup == InputGroup.BASE) {
                 listenCommandAndExecute(update);

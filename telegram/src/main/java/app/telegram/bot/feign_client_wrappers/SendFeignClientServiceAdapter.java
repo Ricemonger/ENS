@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SendFeignClientServiceWrapper {
+public class SendFeignClientServiceAdapter {
 
     private final SendFeignClientService sendFeignClientService;
 

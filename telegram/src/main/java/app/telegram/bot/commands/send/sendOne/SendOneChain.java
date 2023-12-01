@@ -16,7 +16,7 @@ public class SendOneChain extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        InputState inputState = botService.geUserInputState(chatId);
+        InputState inputState = botService.getNextInputState(chatId);
         switch (inputState) {
             case CONTACT_METHOD -> new SendStage2WriteMethodAskContactId(bot, update, botService).execute();
             case CONTACT_ID -> new SendOneStage3WriteContactIdAskNotificationText(bot, update, botService).execute();

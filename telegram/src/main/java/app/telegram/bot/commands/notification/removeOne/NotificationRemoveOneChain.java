@@ -17,7 +17,7 @@ public class NotificationRemoveOneChain extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        InputState inputState = botService.geUserInputState(chatId);
+        InputState inputState = botService.getNextInputState(chatId);
         if (Objects.requireNonNull(inputState) == InputState.NOTIFICATION_NAME) {
             new NotificationRemoveOneFinish(bot, update, botService).execute();
         } else {

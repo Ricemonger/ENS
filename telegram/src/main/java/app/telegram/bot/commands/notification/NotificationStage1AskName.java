@@ -14,7 +14,7 @@ public class NotificationStage1AskName extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInput(chatId, InputState.NOTIFICATION_NAME);
+        botService.setNextInputState(chatId, InputState.NOTIFICATION_NAME);
         sendAnswer("Please input notification template's name:");
     }
 }

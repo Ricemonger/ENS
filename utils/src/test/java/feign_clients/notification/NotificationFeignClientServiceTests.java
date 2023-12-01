@@ -56,7 +56,7 @@ public class NotificationFeignClientServiceTests {
     public void findOneByPrimaryKey() {
         Notification result = notificationFeignClientService.findOneByPrimaryKey(TOKEN, NAME);
 
-        verify(notificationFeignClient).findAllByPrimaryKey(TOKEN, REQUEST);
+        verify(notificationFeignClient).findAllLikePrimaryKey(TOKEN, REQUEST);
 
         assertEquals(new Notification(NAME, TEXT), result);
     }
@@ -157,7 +157,7 @@ public class NotificationFeignClientServiceTests {
         }
 
         @Override
-        public List<Notification> findAllByPrimaryKey(String securityToken, NotificationNameRequest request) {
+        public List<Notification> findAllLikePrimaryKey(String securityToken, NotificationNameRequest request) {
             return NOTIFICATIONS.stream().filter(s -> s.getName().startsWith(request.name())).toList();
         }
     }

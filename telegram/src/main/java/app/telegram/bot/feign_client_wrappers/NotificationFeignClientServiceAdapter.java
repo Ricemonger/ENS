@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class NotificationFeignClientServiceWrapper {
+public class NotificationFeignClientServiceAdapter {
 
     private final NotificationFeignClientService notificationFeignClientService;
 

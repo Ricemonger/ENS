@@ -1,5 +1,7 @@
 package app.telegram.users.model.db;
 
+import app.telegram.users.model.InputGroup;
+import app.telegram.users.model.InputState;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -29,19 +31,31 @@ public class TelegramUserEntityTests {
 
     private final static Date ASD = new Date(2_200);
 
-    private final static TelegramUserEntity ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD);
+    private final static InputState IS = InputState.CONTACT_ID;
 
-    private final static TelegramUserEntity SAME_ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD);
+    private final static InputState AIS = InputState.NOTIFICATION_TEXT;
 
-    private final static TelegramUserEntity ALTERED_CHAT_ID = new TelegramUserEntity(AID, TT, TD, ST, SD);
+    private final static InputGroup IG = InputGroup.LINK;
 
-    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN = new TelegramUserEntity(ID, ATT, TD, ST, SD);
+    private final static InputGroup AIG = InputGroup.NOTIFICATION_ADD_ONE;
 
-    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN_DATE = new TelegramUserEntity(ID, TT, ATD, ST, SD);
+    private final static TelegramUserEntity ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG);
 
-    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN = new TelegramUserEntity(ID, TT, TD, AST, SD);
+    private final static TelegramUserEntity SAME_ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG);
 
-    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN_DATE = new TelegramUserEntity(ID, TT, TD, ST, ASD);
+    private final static TelegramUserEntity ALTERED_CHAT_ID = new TelegramUserEntity(AID, TT, TD, ST, SD, IS, IG);
+
+    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN = new TelegramUserEntity(ID, ATT, TD, ST, SD, IS, IG);
+
+    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN_DATE = new TelegramUserEntity(ID, TT, ATD, ST, SD, IS, IG);
+
+    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN = new TelegramUserEntity(ID, TT, TD, AST, SD, IS, IG);
+
+    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN_DATE = new TelegramUserEntity(ID, TT, TD, ST, ASD, IS, IG);
+
+    private final static TelegramUserEntity ALTERED_INPUT_STATE = new TelegramUserEntity(ID, TT, TD, ST, SD, AIS, IG);
+
+    private final static TelegramUserEntity ALTERED_INPUT_GROUP = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, AIG);
 
     @Test
     public void equalsShouldReturnTrueIfSame() {
@@ -55,5 +69,7 @@ public class TelegramUserEntityTests {
         assertNotEquals(ENTITY, ALTERED_TELEGRAM_TOKEN_DATE);
         assertNotEquals(ENTITY, ALTERED_SECURITY_TOKEN);
         assertNotEquals(ENTITY, ALTERED_SECURITY_TOKEN_DATE);
+        assertNotEquals(ENTITY, ALTERED_INPUT_STATE);
+        assertNotEquals(ENTITY, ALTERED_INPUT_GROUP);
     }
 }

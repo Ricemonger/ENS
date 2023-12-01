@@ -29,6 +29,6 @@ public interface NotificationFeignClient {
     List<Notification> findAllByAccountId(@RequestHeader("Authorization") String securityToken);
 
     @GetMapping("/getByPK")
-    List<Notification> findAllByPrimaryKey(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request);
+    List<Notification> findAllLikePrimaryKey(@RequestHeader("Authorization") String securityToken, @RequestBody NotificationNameRequest request);
 
 }

@@ -17,7 +17,7 @@ public class SendStage1AskMethod extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        botService.setNextInput(chatId, InputState.CONTACT_METHOD);
+        botService.setNextInputState(chatId, InputState.CONTACT_METHOD);
         sendAnswer("Please input one of contact's method" + Arrays.asList(Method.values()) + ":");
     }
 }

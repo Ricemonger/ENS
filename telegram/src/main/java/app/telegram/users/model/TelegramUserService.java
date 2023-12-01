@@ -79,16 +79,16 @@ public class TelegramUserService {
         return securityTelegramUserFeignClientService.isLinked(telegramToken);
     }
 
-    public void setNextInputGroup(Long chatId, InputGroup inputGroup) {
+    public void setInputGroup(Long chatId, InputGroup inputGroup) {
         TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         user.setInputGroup(inputGroup);
-        System.out.println(telegramUserRepositoryService.save(user));
+        telegramUserRepositoryService.save(user);
     }
 
-    public void setNextInput(Long chatId, InputState inputState) {
+    public void setInputState(Long chatId, InputState inputState) {
         TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         user.setInputState(inputState);
-        System.out.println(telegramUserRepositoryService.save(user));
+        telegramUserRepositoryService.save(user);
     }
 
     public InputGroup getInputGroup(Long chatId) {
@@ -101,9 +101,12 @@ public class TelegramUserService {
     }
 
     public InputState getInputState(Long chatId) {
-        InputState inputState =
-                telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
-        return inputState != null ? inputState : InputState.BASE;
+        try {
+            InputState inputState = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
+            return inputState != null ? inputState : InputState.BASE;
+        } catch (TelegramUserDoesntExistException e) {
+            return InputState.BASE;
+        }
     }
 
     public boolean doesUserExist(Long chatId) {

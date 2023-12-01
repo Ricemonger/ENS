@@ -16,7 +16,7 @@ public class NotificationAddChain extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        InputState inputState = botService.geUserInputState(chatId);
+        InputState inputState = botService.getNextInputState(chatId);
         switch (inputState) {
             case NOTIFICATION_NAME -> new NotificationStage2WriteNameAskText(bot, update, botService).execute();
             case NOTIFICATION_TEXT -> new NotificationAddFinish(bot, update, botService).execute();

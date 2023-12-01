@@ -51,9 +51,8 @@ public abstract class AbstractBotCommand {
 
     protected final void processInput(InputState currentState, InputState nextState) {
         String userInput = update.getMessage().getText();
-
         botService.saveInput(chatId, currentState, userInput);
-        botService.setNextInput(chatId, nextState);
+        botService.setNextInputState(chatId, nextState);
     }
 
     protected final void executeCommandIfUserExistsOrAskToRegister(MyFunctionalInterface functionalInterface) {
