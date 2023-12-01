@@ -3,7 +3,9 @@ package app.send.model.senders.twilio;
 import app.send.model.senders.sms.api.twilio.TwilioSmsSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
+@TestPropertySource("classpath:authentication.properties")
 public class TwilioSmsSenderTests {
 
-    private final static String SEND_TO = "380953766409";
+    @Value("${twilio.test.sendto}")
+    public String SEND_TO;
 
     @Autowired
     private TwilioSmsSender twilioSmsSender;

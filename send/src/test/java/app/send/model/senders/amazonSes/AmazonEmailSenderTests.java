@@ -3,7 +3,9 @@ package app.send.model.senders.amazonSes;
 import app.send.model.senders.email.api.amazonSES.AmazonEmailSender;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,9 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
+@TestPropertySource("classpath:authentication.properties")
 public class AmazonEmailSenderTests {
 
-    private final static String SEND_TO = "leskotr24@gmail.com";
+    @Value("${amazon.test.sendto}")
+    public String SEND_TO;
 
     @Autowired
     private AmazonEmailSender amazonEmailSender;

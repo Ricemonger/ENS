@@ -15,14 +15,14 @@ public class SendFeignClientServiceAdapter {
 
     private final TelegramUserService telegramUserService;
 
-    public void sendAll(Long chatId) {
-        String securityToken = telegramUserService.findSecurityTokenOrGenerateAndPut(chatId);
-        sendFeignClientService.sendAll(securityToken);
-    }
-
     public void sendOne(Long chatId, SendOneRequest request) {
         String securityToken = telegramUserService.findSecurityTokenOrGenerateAndPut(chatId);
         sendFeignClientService.sendOne(securityToken, request);
+    }
+
+    public void sendAll(Long chatId) {
+        String securityToken = telegramUserService.findSecurityTokenOrGenerateAndPut(chatId);
+        sendFeignClientService.sendAll(securityToken);
     }
 
     public void sendMany(Long chatId, SendManyRequest request) {
