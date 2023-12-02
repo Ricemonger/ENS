@@ -14,6 +14,6 @@ public class SendManyStage3WriteContactIdAskNotificationName extends AbstractBot
 
     @Override
     protected void executeCommand() {
-        processInput(InputState.CONTACT_ID, InputState.NOTIFICATION_NAME, "Please input notification name:");
+        processMiddleInput(InputState.CONTACT_ID, InputState.NOTIFICATION_NAME, "Please input notification name:");
     }
 }

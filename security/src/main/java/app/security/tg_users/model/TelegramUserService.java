@@ -5,9 +5,7 @@ import app.security.ens_users.model.EnsUserService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
 import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
-import app.utils.feign_clients.contact.Contact;
 import app.utils.feign_clients.contact.ContactFeignClientService;
-import app.utils.feign_clients.notification.Notification;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
 import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
 import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
@@ -15,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -59,19 +56,13 @@ public class TelegramUserService {
 
     public String getAccountInfo(String telegramToken) {
         String chatId = getChatId(telegramToken);
-        String accountId = getAccountIdByTelegramTokenOrThrow(chatId);
-        String securityToken = abstractUserJwtUtil.generateToken(accountId);
-        List<Notification> notifications = notificationFeignService.findAllById(securityToken);
-        List<Contact> contacts = contactFeignClientService.findAllById(securityToken);
-
-        String sb = "ChatId: " + chatId + "\n" +
-                "AccountId: " + accountId + "\n" +
-                "List of notifications:\n" +
-                notifications + "\n" +
-                "List of contacts:\n" +
-                contacts + "\n";
-
-        return sb;
+        String accountId = getByChatIdOrThrow(chatId).getAccountId();
+        String username = "Not Registered";
+        if (ensUserService.doesUserExist(accountId)) {
+            username = ensUserService.getByAccountIdOrThrow(accountId).getUsername();
+        }
+        return "ChatId: " + chatId + "\n" +
+                "Username: " + username + "\n";
     }
 
     public void link(String telegramToken, String username, String password) {

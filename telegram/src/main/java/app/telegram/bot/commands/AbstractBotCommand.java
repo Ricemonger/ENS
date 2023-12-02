@@ -2,7 +2,9 @@ package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.Callbacks;
+import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
+import app.utils.feign_clients.contact.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -44,15 +46,63 @@ public abstract class AbstractBotCommand {
 
     protected abstract void executeCommand();
 
-    protected final void processInput(InputState currentState, InputState nextState, String question) {
-        processInput(currentState, nextState);
-        sendAnswer(question);
+    protected final void processFirstInput(Long chatId, InputState nextState, String question) {
+        botService.setNextInputState(chatId, nextState);
+
+        if (nextState == InputState.CONTACT_METHOD) {
+            askForMethodFromInlineKeyboard(question);
+        } else {
+            askForInputOrEmptyLineFromInlineKeyboard(question);
+        }
     }
 
-    protected final void processInput(InputState currentState, InputState nextState) {
-        String userInput = update.getMessage().getText();
+    protected final void processMiddleInput(InputState currentState, InputState nextState, String question) {
+        saveCurrentInputAndSetNextState(currentState, nextState);
+
+        if (nextState == InputState.CONTACT_METHOD) {
+            askForMethodFromInlineKeyboard(question);
+        } else {
+            askForInputOrEmptyLineFromInlineKeyboard(question);
+        }
+    }
+
+    protected final void processLastInput(InputState currentState) {
+        saveCurrentInputAndSetNextState(currentState, InputState.BASE);
+        botService.setNextInputGroup(chatId, InputGroup.BASE);
+    }
+
+    private void saveCurrentInputAndSetNextState(InputState currentState, InputState nextState) {
+        String userInput;
+
+        if (update.hasMessage()) {
+            userInput = update.getMessage().getText();
+        } else if (currentState == InputState.CONTACT_METHOD) {
+            String data = update.getCallbackQuery().getData();
+            switch (data) {
+                case Callbacks.METHOD_SMS -> userInput = Method.SMS.name();
+                case Callbacks.METHOD_VIBER -> userInput = Method.VIBER.name();
+                case Callbacks.METHOD_EMAIL -> userInput = Method.EMAIL.name();
+                case Callbacks.METHOD_TELEGRAM -> userInput = Method.TELEGRAM.name();
+                default -> userInput = "";
+            }
+        } else {
+            userInput = "";
+        }
         botService.saveInput(chatId, currentState, userInput);
         botService.setNextInputState(chatId, nextState);
+    }
+
+    private void askForInputOrEmptyLineFromInlineKeyboard(String text) {
+        CallbackButton button = new CallbackButton("INPUT EMPTY LINE", Callbacks.EMPTY);
+        askFromInlineKeyboard(text, 1, button);
+    }
+
+    private void askForMethodFromInlineKeyboard(String question) {
+        CallbackButton sms = new CallbackButton("SMS", Callbacks.METHOD_SMS);
+        CallbackButton viber = new CallbackButton("VIBER", Callbacks.METHOD_VIBER);
+        CallbackButton email = new CallbackButton("EMAIL", Callbacks.METHOD_EMAIL);
+        CallbackButton telegram = new CallbackButton("TELEGRAM", Callbacks.METHOD_TELEGRAM);
+        askFromInlineKeyboard(question, 1, sms, viber, email, telegram);
     }
 
     protected final void executeCommandIfUserExistsOrAskToRegister(MyFunctionalInterface functionalInterface) {
@@ -129,7 +179,7 @@ public abstract class AbstractBotCommand {
         executeMessage(sendMessage);
     }
 
-    protected final void executeMessage(SendMessage sendMessage) {
+    private void executeMessage(SendMessage sendMessage) {
         try {
             bot.execute(sendMessage);
         } catch (TelegramApiException e) {
@@ -137,14 +187,14 @@ public abstract class AbstractBotCommand {
         }
     }
 
-    @FunctionalInterface
-    protected interface MyFunctionalInterface {
-        void executeCommand();
-    }
-
     @Override
     public String toString() {
         return String.format("%s(bot=%s,update=%s,botService=%s,chatId=%s)", this.getClass().getSimpleName(), bot, update, botService,
                 chatId);
+    }
+
+    @FunctionalInterface
+    protected interface MyFunctionalInterface {
+        void executeCommand();
     }
 }

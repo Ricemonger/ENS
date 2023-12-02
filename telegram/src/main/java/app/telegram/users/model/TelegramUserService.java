@@ -79,10 +79,13 @@ public class TelegramUserService {
         return securityTelegramUserFeignClientService.isLinked(telegramToken);
     }
 
-    public void setInputGroup(Long chatId, InputGroup inputGroup) {
-        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
-        user.setInputGroup(inputGroup);
-        telegramUserRepositoryService.save(user);
+    public InputState getInputStateOrBase(Long chatId) {
+        try {
+            InputState inputState = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
+            return inputState != null ? inputState : InputState.BASE;
+        } catch (TelegramUserDoesntExistException e) {
+            return InputState.BASE;
+        }
     }
 
     public void setInputState(Long chatId, InputState inputState) {
@@ -91,7 +94,7 @@ public class TelegramUserService {
         telegramUserRepositoryService.save(user);
     }
 
-    public InputGroup getInputGroup(Long chatId) {
+    public InputGroup getInputGroupOrBase(Long chatId) {
         try {
             InputGroup inputGroup = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputGroup();
             return inputGroup != null ? inputGroup : InputGroup.BASE;
@@ -100,13 +103,10 @@ public class TelegramUserService {
         }
     }
 
-    public InputState getInputState(Long chatId) {
-        try {
-            InputState inputState = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
-            return inputState != null ? inputState : InputState.BASE;
-        } catch (TelegramUserDoesntExistException e) {
-            return InputState.BASE;
-        }
+    public void setInputGroup(Long chatId, InputGroup inputGroup) {
+        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setInputGroup(inputGroup);
+        telegramUserRepositoryService.save(user);
     }
 
     public boolean doesUserExist(Long chatId) {

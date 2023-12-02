@@ -58,8 +58,6 @@ public class EnsUserServiceTests {
     public void registerShouldSaveUserInDbWithEncodedPasswordAndAuthenticateAndReturnRightToken() {
         String token = ensUserService.register(USER);
 
-        System.out.println(ensUserRepositoryService.findByIdOrThrow(USER.getUsername()));
-
         EnsUser inDb = ensUserRepositoryService.findByIdOrThrow(USER.getUsername());
 
         assertEquals(USER.getUsername(), inDb.getUsername());
@@ -187,6 +185,24 @@ public class EnsUserServiceTests {
         ensUserRepositoryService.save(ANOTHER_USER);
 
         Executable executable = () -> ensUserService.getByUsernameOrThrow(USER.getUsername());
+
+        assertThrows(UserDoesntExistException.class, executable);
+    }
+
+    @Test
+    void getByAccountIdOrThrowShouldFindUserInDb() {
+        EnsUser saved = ensUserRepositoryService.save(USER);
+
+        EnsUser trueResult = ensUserService.getByAccountIdOrThrow(saved.getAccountId());
+
+        assertEquals(saved, trueResult);
+    }
+
+    @Test
+    void getByAccountIdOrThrowShouldThrowIfDoesntExist() {
+        ensUserRepositoryService.save(ANOTHER_USER);
+
+        Executable executable = () -> ensUserService.getByAccountIdOrThrow(USER.getAccountId());
 
         assertThrows(UserDoesntExistException.class, executable);
     }

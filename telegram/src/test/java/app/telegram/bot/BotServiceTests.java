@@ -25,7 +25,6 @@ import org.junit.jupiter.api.function.Executable;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -384,9 +383,9 @@ public class BotServiceTests {
 
     @Test
     public void getNextInputGroup() {
-        when(telegramUserService.getInputGroup(CHAT_ID)).thenReturn(IG);
+        when(telegramUserService.getInputGroupOrBase(CHAT_ID)).thenReturn(IG);
 
-        assertEquals(IG, botService.getNextInputGroup(CHAT_ID));
+        assertEquals(IG, botService.getNextInputGroupOrBase(CHAT_ID));
     }
 
     @Test
@@ -398,9 +397,9 @@ public class BotServiceTests {
 
     @Test
     public void getNextInputState() {
-        when(telegramUserService.getInputState(CHAT_ID)).thenReturn(IS);
+        when(telegramUserService.getInputStateOrBase(CHAT_ID)).thenReturn(IS);
 
-        assertEquals(IS, botService.getNextInputState(CHAT_ID));
+        assertEquals(IS, botService.getNextInputStateOrBase(CHAT_ID));
     }
 
     @Test

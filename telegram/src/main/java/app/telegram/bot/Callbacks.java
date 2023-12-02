@@ -44,4 +44,15 @@ public class Callbacks {
     public static final String UNLINK = "UNLINK";
 
     public static final String CANCEL = "CANCEL";
+
+    public static final String EMPTY = "EMPTY";
+
+    public static final String METHOD_SMS = "METHOD_SMS";
+    public static final String METHOD_VIBER = "METHOD_VIBER";
+    public static final String METHOD_EMAIL = "METHOD_EMAIL";
+    public static final String METHOD_TELEGRAM = "METHOD_TELEGRAM";
+
+    public static boolean isMethod(String data) {
+        return data!=null && (data.equals(METHOD_SMS) || data.equals(METHOD_VIBER) || data.equals(METHOD_EMAIL) || data.equals(METHOD_TELEGRAM));
+    }
 }

@@ -14,7 +14,6 @@ public class LinkStage1AskUsername extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputState(chatId, InputState.USERNAME);
-        sendAnswer("Please input your ENS account's Username:");
+        processFirstInput(chatId, InputState.USERNAME, "Please input your ENS account's Username:");
     }
 }

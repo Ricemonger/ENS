@@ -50,12 +50,14 @@ import app.telegram.bot.commands.sendall.SendAllDirect;
 import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
+import app.telegram.bot.exceptions.InternalTelegramErrorException;
 import app.telegram.users.model.InputGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -94,21 +96,34 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived received update-{}", update);
+
+        Long chatId = null;
+        CallbackQuery query = null;
         if (update.hasMessage()) {
-            InputGroup inputGroup = botService.getNextInputGroup(update.getMessage().getChatId());
-            log.info("update is-{}, user's inputGroup-{}", update, inputGroup);
-            if (inputGroup == InputGroup.BASE) {
-                listenCommandAndExecute(update);
-            } else {
-                listenUserInputAndExecute(inputGroup, update);
-            }
-        } else if (update.hasCallbackQuery()) {
-            listenQueryAndExecute(update);
+            chatId = update.getMessage().getChatId();
+        }
+        if (update.hasCallbackQuery()) {
+            query = update.getCallbackQuery();
+            chatId = update.getCallbackQuery().getMessage().getChatId();
+        }
+
+        InputGroup inputGroup = botService.getNextInputGroupOrBase(chatId);
+        log.info("User's input group is-{} for update-{}", inputGroup, update.getUpdateId());
+
+        if (update.hasMessage() && inputGroup == InputGroup.BASE) {
+            listenDirectCommandAndExecute(update);
+        } else if (update.hasMessage() || (query != null && (query.getData().equals(Callbacks.EMPTY) || Callbacks.isMethod(query.getData())))) {
+            listenUserInputAndExecute(inputGroup, update);
+        } else if (query != null) {
+            listenCallbackQueryAndExecute(update);
+        } else {
+            log.error("No listening method chosen for update-{}", update.getUpdateId());
+            throw new InternalTelegramErrorException("No listening method chosen for update-%s" + update.getUpdateId());
         }
     }
 
-    private void listenCommandAndExecute(Update update) {
-        log.info("listenCommandAndExecute was called for update-{}", update);
+    private void listenDirectCommandAndExecute(Update update) {
+        log.info("listenCommandAndExecute was called for update-{}", update.getUpdateId());
         switch (update.getMessage().getText()) {
             case "/start" -> new StartDirect(this, update, botService).execute();
             case "/send" -> new SendDirect(this, update, botService).execute();
@@ -123,8 +138,8 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
         }
     }
 
-    private void listenQueryAndExecute(Update update) {
-        log.info("listenQueryAndExecute was called for update-{}", update);
+    private void listenCallbackQueryAndExecute(Update update) {
+        log.info("listenQueryAndExecute was called for update-{}", update.getUpdateId());
         switch (update.getCallbackQuery().getData()) {
             case Callbacks.REGISTER_YES -> new RegisterYesCallback(this, update, botService).execute();
             case Callbacks.REGISTER_NO -> new RegisterNoCallback(this, update, botService).execute();
@@ -182,7 +197,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
     }
 
     private void listenUserInputAndExecute(InputGroup inputGroup, Update update) {
-        log.info("listenUserInputAndExecute was called for update-{} and inputGroup-{}", update, inputGroup);
+        log.info("listenUserInputAndExecute was called for update-{} and inputGroup-{}", update.getUpdateId(), inputGroup);
         switch (inputGroup) {
             case SEND_ONE -> new SendOneChain(this, update, botService).execute();
             case SEND_MANY -> new SendManyChain(this, update, botService).execute();

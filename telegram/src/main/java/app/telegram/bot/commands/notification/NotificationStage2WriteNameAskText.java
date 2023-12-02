@@ -14,7 +14,6 @@ public class NotificationStage2WriteNameAskText extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        processInput(InputState.NOTIFICATION_NAME, InputState.NOTIFICATION_TEXT, "Please input notification template's " +
-                "text:");
+        processMiddleInput(InputState.NOTIFICATION_NAME, InputState.NOTIFICATION_TEXT, "Please input notification text:");
     }
 }

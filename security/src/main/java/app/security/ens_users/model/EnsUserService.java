@@ -71,6 +71,10 @@ public class EnsUserService {
         return ensUserRepositoryService.findByIdOrThrow(username);
     }
 
+    public EnsUser getByAccountIdOrThrow(String accountId) {
+        return ensUserRepositoryService.findByAccountIdOrThrow(accountId);
+    }
+
     public boolean doesUserExist(String accountId) {
         return ensUserRepositoryService.existsByAccountId(accountId);
     }

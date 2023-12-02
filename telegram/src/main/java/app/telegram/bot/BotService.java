@@ -139,16 +139,16 @@ public class BotService {
         telegramUserService.setInputGroup(chatId, inputGroup);
     }
 
-    public InputGroup getNextInputGroup(Long chatId) {
-        return telegramUserService.getInputGroup(chatId);
+    public InputGroup getNextInputGroupOrBase(Long chatId) {
+        return telegramUserService.getInputGroupOrBase(chatId);
     }
 
     public void setNextInputState(Long chatId, InputState inputState) {
         telegramUserService.setInputState(chatId, inputState);
     }
 
-    public InputState getNextInputState(Long chatId) {
-        return telegramUserService.getInputState(chatId);
+    public InputState getNextInputStateOrBase(Long chatId) {
+        return telegramUserService.getInputStateOrBase(chatId);
     }
 
     public void saveInput(Long chatId, InputState inputState, String inputText) {

@@ -14,6 +14,6 @@ public class SendOneStage3WriteContactIdAskNotificationText extends AbstractBotC
 
     @Override
     protected void executeCommand() {
-        processInput(InputState.CONTACT_ID, InputState.NOTIFICATION_TEXT, "Please input notification text:");
+        processMiddleInput(InputState.CONTACT_ID, InputState.NOTIFICATION_TEXT, "Please input notification text:");
     }
 }

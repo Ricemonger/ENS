@@ -229,12 +229,12 @@ public class TelegramUserServiceTests {
         user.setInputGroup(INPUT_GROUP);
         repositoryService.save(user);
 
-        assertEquals(INPUT_GROUP, userService.getInputGroup(CHAT_ID));
+        assertEquals(INPUT_GROUP, userService.getInputGroupOrBase(CHAT_ID));
     }
 
     @Test
     public void getInputGroupShouldReturnBaseIfDoesntExist() {
-        InputGroup group = userService.getInputGroup(CHAT_ID);
+        InputGroup group = userService.getInputGroupOrBase(CHAT_ID);
 
         assertEquals(InputGroup.BASE, group);
     }
@@ -245,12 +245,12 @@ public class TelegramUserServiceTests {
         user.setInputState(INPUT_STATE);
         repositoryService.save(user);
 
-        assertEquals(INPUT_STATE, userService.getInputState(CHAT_ID));
+        assertEquals(INPUT_STATE, userService.getInputStateOrBase(CHAT_ID));
     }
 
     @Test
     public void getInputStateShouldReturnBaseIfDoesntExist() {
-        InputState state = userService.getInputState(CHAT_ID);
+        InputState state = userService.getInputStateOrBase(CHAT_ID);
 
         assertEquals(InputState.BASE, state);
     }

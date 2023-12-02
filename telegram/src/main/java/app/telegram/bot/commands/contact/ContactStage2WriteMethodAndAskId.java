@@ -14,6 +14,6 @@ public class ContactStage2WriteMethodAndAskId extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        processInput(InputState.CONTACT_METHOD, InputState.CONTACT_ID, "Please input ContactId(Phone or Email):");
+        processMiddleInput(InputState.CONTACT_METHOD, InputState.CONTACT_ID, "Please input ContactId(Phone or Email):");
     }
 }

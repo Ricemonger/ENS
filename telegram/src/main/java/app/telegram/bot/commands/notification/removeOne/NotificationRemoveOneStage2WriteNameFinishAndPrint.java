@@ -2,7 +2,6 @@ package app.telegram.bot.commands.notification.removeOne;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,12 +14,8 @@ public class NotificationRemoveOneStage2WriteNameFinishAndPrint extends Abstract
 
     @Override
     protected void executeCommand() {
-        processInput(InputState.NOTIFICATION_NAME, InputState.BASE);
+        processLastInput(InputState.NOTIFICATION_NAME);
 
-        String name = botService.getNotificationFromInputsMap(chatId).getName();
-
-        sendAnswer("Your notification name is: " + name);
-
-        botService.setNextInputGroup(chatId, InputGroup.BASE);
+        sendAnswer("Your notification name is: " + botService.getNotificationFromInputsMap(chatId).getName());
     }
 }
