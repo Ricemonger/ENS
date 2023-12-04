@@ -13,7 +13,7 @@ public class CancelCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.cancel(chatId);
+        botService.cancelInputs(chatId);
         sendAnswer("Operation Cancelled");
     }
 }

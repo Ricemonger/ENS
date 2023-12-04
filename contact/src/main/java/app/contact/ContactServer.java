@@ -10,10 +10,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         "app.contact",
-        "app.utils.feign_clients.security",
+        "app.utils.feign_clients.security_abstract",
         "app.utils.logger"})
 @EnableFeignClients(basePackages = {
-        "app.utils.feign_clients.security"})
+        "app.utils.feign_clients.security_abstract"})
 public class ContactServer {
 
     public static void main(String[] args) {

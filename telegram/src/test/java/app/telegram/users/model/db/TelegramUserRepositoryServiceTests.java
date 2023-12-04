@@ -1,7 +1,7 @@
 package app.telegram.users.model.db;
 
-import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.TelegramUser;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

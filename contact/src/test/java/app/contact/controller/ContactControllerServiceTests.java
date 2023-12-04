@@ -8,7 +8,7 @@ import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
 import app.utils.feign_clients.contact.dto.ContactKeyRequest;
 import app.utils.feign_clients.contact.dto.ContactNNRequest;
 import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
-import app.utils.feign_clients.security.SecurityFeignClientService;
+import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;

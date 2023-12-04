@@ -1,7 +1,7 @@
 package app.telegram.users.model.db;
 
-import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.TelegramUser;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

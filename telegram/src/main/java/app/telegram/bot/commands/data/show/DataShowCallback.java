@@ -2,7 +2,6 @@ package app.telegram.bot.commands.data.show;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
-import app.telegram.bot.exceptions.DataShowException;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -14,11 +13,7 @@ public class DataShowCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        try {
-            String data = botService.getUserData(chatId);
-            sendAnswer("Your user data:\n" + data);
-        } catch (DataShowException e) {
-            sendAnswer("Error occurred during data showing");
-        }
+        String data = botService.getUserData(chatId);
+        sendAnswer("Your user data:\n" + data);
     }
 }

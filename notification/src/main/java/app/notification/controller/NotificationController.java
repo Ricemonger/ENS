@@ -7,7 +7,7 @@ import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
 import app.utils.feign_clients.notification.dto.NotificationNameRequest;
 import app.utils.feign_clients.notification.exceptions.NotificationAlreadyExistsException;
 import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
-import app.utils.feign_clients.security.exceptions.JwtRuntimeException;
+import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -69,10 +69,10 @@ public class NotificationController {
         return service.findAllLikePrimaryKey(securityToken, request);
     }
 
-    @ExceptionHandler(NotificationDoesntExistException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionMessage notificationDoesntExistException(NotificationDoesntExistException e) {
-        return new ExceptionMessage(HttpStatus.NOT_FOUND, "You dont have notification with such name");
+    @ExceptionHandler(InvalidSecurityTokenException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public ExceptionMessage jwtRuntimeException(InvalidSecurityTokenException e) {
+        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired jwt token, please get new token via /login or /register pages");
     }
 
     @ExceptionHandler(NotificationAlreadyExistsException.class)
@@ -81,17 +81,17 @@ public class NotificationController {
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "Your notification with same name already exists");
     }
 
-    @ExceptionHandler(JwtRuntimeException.class)
-    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage jwtRuntimeException(JwtRuntimeException e) {
-        return new ExceptionMessage(HttpStatus.FORBIDDEN, e);
+    @ExceptionHandler(NotificationDoesntExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionMessage notificationDoesntExistException(NotificationDoesntExistException e) {
+        return new ExceptionMessage(HttpStatus.NOT_FOUND, "You dont have notification with such name");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e) {
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }
 }
 

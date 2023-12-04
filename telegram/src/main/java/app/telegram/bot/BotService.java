@@ -1,9 +1,9 @@
 package app.telegram.bot;
 
-import app.telegram.bot.exceptions.EmptyInputMapException;
-import app.telegram.bot.feign_client_wrappers.ContactFeignClientServiceAdapter;
-import app.telegram.bot.feign_client_wrappers.NotificationFeignClientServiceAdapter;
-import app.telegram.bot.feign_client_wrappers.SendFeignClientServiceAdapter;
+import app.telegram.bot.exceptions.internal.EmptyInputMapException;
+import app.telegram.bot.feign_client_adapters.ContactFeignClientServiceAdapter;
+import app.telegram.bot.feign_client_adapters.NotificationFeignClientServiceAdapter;
+import app.telegram.bot.feign_client_adapters.SendFeignClientServiceAdapter;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;
@@ -129,10 +129,14 @@ public class BotService {
         clearUserInputs(chatId);
     }
 
-    public void cancel(Long chatId) {
+    public void cancelInputs(Long chatId) {
         setNextInputState(chatId, InputState.BASE);
         setNextInputGroup(chatId, InputGroup.BASE);
         clearUserInputs(chatId);
+    }
+
+    public void setBaseInputAndGroupForAllUsers() {
+        telegramUserService.setBaseInputAndGroupForAllUsers();
     }
 
     public void setNextInputGroup(Long chatId, InputGroup inputGroup) {

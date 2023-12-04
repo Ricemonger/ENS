@@ -1,16 +1,17 @@
 package app.telegram.users.model;
 
-import app.telegram.users.exceptions.InvalidTelegramTokenException;
-import app.telegram.users.exceptions.TelegramUserAlreadyExistsException;
-import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClientService;
+import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClientService;
+import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserAlreadyExistsException;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -77,6 +78,15 @@ public class TelegramUserService {
     public boolean isLinked(Long chatId) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
         return securityTelegramUserFeignClientService.isLinked(telegramToken);
+    }
+
+    public void setBaseInputAndGroupForAllUsers() {
+        List<TelegramUser> allUsers = telegramUserRepositoryService.findAll();
+        for (TelegramUser user : allUsers) {
+            user.setInputState(InputState.BASE);
+            user.setInputGroup(InputGroup.BASE);
+            telegramUserRepositoryService.save(user);
+        }
     }
 
     public InputState getInputStateOrBase(Long chatId) {

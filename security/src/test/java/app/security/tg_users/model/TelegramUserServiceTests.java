@@ -7,12 +7,12 @@ import app.security.ens_users.model.EnsUserService;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClient;
-import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
-import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.telegram.TelegramFeignClient;
+import app.utils.feign_clients.telegram.TelegramFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -52,7 +52,7 @@ public class TelegramUserServiceTests {
     private EnsUserService ensUserService;
 
     @Spy
-    private final TelegramModuleFeignClientService telegramModuleFeignClientService = new MockTelegramModuleFeignClientService(null);
+    private final TelegramFeignClientService telegramFeignClientService = new MockTelegramFeignClientService(null);
 
     @MockBean
     private ContactFeignClientService contactFeignClientService;
@@ -70,7 +70,7 @@ public class TelegramUserServiceTests {
         telegramUserService = new TelegramUserService(
                 telegramUserRepositoryService,
                 ensUserService,
-                telegramModuleFeignClientService,
+                telegramFeignClientService,
                 contactFeignClientService,
                 notificationFeignClientService,
                 abstractUserJwtUtil);
@@ -84,7 +84,7 @@ public class TelegramUserServiceTests {
         String token = telegramUserService.create(TOKEN);
         String accountId = telegramUserRepositoryService.findAll().get(0).getAccountId();
 
-        verify(telegramModuleFeignClientService).getChatId(TOKEN);
+        verify(telegramFeignClientService).getChatId(TOKEN);
 
         verify(telegramUserRepositoryService).save(new TelegramUser(TOKEN));
 
@@ -183,11 +183,9 @@ public class TelegramUserServiceTests {
 
     @Test
     public void isLinkedShouldReturnTrueIfAccountHasLinking() {
-        String username = USERNAME;
-        String password = PASSWORD;
-        ensUserService.register(new EnsUser(username, password));
+        ensUserService.register(new EnsUser(USERNAME, PASSWORD));
 
-        String accountId = ensUserService.getByUsernameOrThrow(username).getAccountId();
+        String accountId = ensUserService.getByUsernameOrThrow(USERNAME).getAccountId();
 
         telegramUserRepositoryService.save(new TelegramUser(accountId, TOKEN));
 
@@ -196,9 +194,7 @@ public class TelegramUserServiceTests {
 
     @Test
     public void isLinkedShouldReturnFalseIfAccountIsNotLinked() {
-        String username = USERNAME;
-        String password = PASSWORD;
-        ensUserService.register(new EnsUser(username, password));
+        ensUserService.register(new EnsUser(USERNAME, PASSWORD));
 
         telegramUserRepositoryService.save(new TelegramUser(TOKEN));
 
@@ -207,12 +203,9 @@ public class TelegramUserServiceTests {
 
     @Test
     public void unlinkWithDataToTelegramShouldChangeAccountIdsToTelegramAndNotChangeEnsUserAccountId() {
-        String username = USERNAME;
-        String password = PASSWORD;
-
         String oldAccountId = telegramUserRepositoryService.save(new TelegramUser(TOKEN)).getAccountId();
 
-        EnsUser ensUser = new EnsUser(oldAccountId, username, passwordEncoder.encode(password));
+        EnsUser ensUser = new EnsUser(oldAccountId, USERNAME, passwordEncoder.encode(PASSWORD));
         ensUserRepositoryService.save(ensUser);
 
         telegramUserService.unlinkWithDataToTelegram(TOKEN);
@@ -224,7 +217,7 @@ public class TelegramUserServiceTests {
 
         assertNotEquals(oldAccountId, telegramUserRepositoryService.findAll().get(0).getAccountId());
 
-        assertEquals(oldAccountId, ensUserRepositoryService.findByIdOrThrow(username).getAccountId());
+        assertEquals(oldAccountId, ensUserRepositoryService.findByIdOrThrow(USERNAME).getAccountId());
     }
 
     @Test
@@ -278,10 +271,10 @@ public class TelegramUserServiceTests {
     }
 
 
-    private static class MockTelegramModuleFeignClientService extends TelegramModuleFeignClientService {
+    private static class MockTelegramFeignClientService extends TelegramFeignClientService {
 
-        public MockTelegramModuleFeignClientService(TelegramModuleFeignClient telegramModuleFeignClient) {
-            super(telegramModuleFeignClient);
+        public MockTelegramFeignClientService(TelegramFeignClient telegramFeignClient) {
+            super(telegramFeignClient);
         }
 
         @Override

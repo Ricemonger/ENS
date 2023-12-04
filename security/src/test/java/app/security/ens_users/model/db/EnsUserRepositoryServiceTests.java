@@ -1,7 +1,7 @@
 package app.security.ens_users.model.db;
 
 import app.security.ens_users.EnsUser;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

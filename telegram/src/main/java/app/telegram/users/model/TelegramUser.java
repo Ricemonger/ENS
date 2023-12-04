@@ -24,6 +24,12 @@ public class TelegramUser {
         entity.setTempSecurityTokenExpirationTime(securityTokenExpiration);
     }
 
+    public TelegramUser(String chatId, InputState inputState, InputGroup inputGroup) {
+        this(chatId);
+        entity.setInputState(inputState);
+        entity.setInputGroup(inputGroup);
+    }
+
     public TelegramUser(String chatId) {
         entity.setChatId(chatId);
     }

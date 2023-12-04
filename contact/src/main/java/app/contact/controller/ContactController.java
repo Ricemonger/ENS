@@ -10,7 +10,7 @@ import app.utils.feign_clients.contact.dto.ContactNNRequest;
 import app.utils.feign_clients.contact.exceptions.ContactAlreadyExistsException;
 import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
 import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
-import app.utils.feign_clients.security.exceptions.JwtRuntimeException;
+import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -80,10 +80,16 @@ public class ContactController {
         return service.findAllLikeNotificationName(securityToken, request);
     }
 
-    @ExceptionHandler(ContactDoesntExistException.class)
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    public ExceptionMessage contactDoesntExistException(ContactDoesntExistException e) {
-        return new ExceptionMessage(HttpStatus.NOT_FOUND, "Contact with such method and contactId doesnt exist");
+    @ExceptionHandler(InvalidContactMethodException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ExceptionMessage invalidContactMethodException(InvalidContactMethodException e) {
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Wrong method name, valid method names are: " + Arrays.toString(Method.values()));
+    }
+
+    @ExceptionHandler(InvalidSecurityTokenException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public ExceptionMessage jwtRuntimeException(InvalidSecurityTokenException e) {
+        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired jwt token, please get new token via /login or /register pages");
     }
 
     @ExceptionHandler(ContactAlreadyExistsException.class)
@@ -92,22 +98,16 @@ public class ContactController {
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "Contact with such method and contactId already exists");
     }
 
-    @ExceptionHandler(InvalidContactMethodException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage invalidContactMethodException(InvalidContactMethodException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Wrong method name, valid method names are: " + Arrays.toString(Method.values()));
-    }
-
-    @ExceptionHandler(JwtRuntimeException.class)
-    @ResponseStatus(code = HttpStatus.FORBIDDEN)
-    public ExceptionMessage jwtRuntimeException(JwtRuntimeException e) {
-        return new ExceptionMessage(HttpStatus.FORBIDDEN, "Invalid or expired jwt token, please get new token via /login or /register pages");
+    @ExceptionHandler(ContactDoesntExistException.class)
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public ExceptionMessage contactDoesntExistException(ContactDoesntExistException e) {
+        return new ExceptionMessage(HttpStatus.NOT_FOUND, "Contact with such method and contactId doesnt exist");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e) {
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }
 }

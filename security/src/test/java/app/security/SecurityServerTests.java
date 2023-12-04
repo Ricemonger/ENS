@@ -19,12 +19,12 @@ import app.security.tg_users.controller.TelegramUserControllerService;
 import app.security.tg_users.model.TelegramUserService;
 import app.security.tg_users.model.db.TelegramUserRepository;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClient;
-import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
 import app.utils.feign_clients.contact.ContactFeignClient;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClient;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.feign_clients.telegram.TelegramFeignClient;
+import app.utils.feign_clients.telegram.TelegramFeignClientService;
 import app.utils.logger.AroundLogger;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,10 +93,10 @@ public class SecurityServerTests {
     private TelegramUserRepository telegramUserRepository;
 
     @Autowired
-    private TelegramModuleFeignClientService telegramModuleFeignClientService;
+    private TelegramFeignClientService telegramFeignClientService;
 
     @Autowired
-    private TelegramModuleFeignClient telegramModuleFeignClient;
+    private TelegramFeignClient telegramFeignClient;
 
     @Autowired
     private TelegramUserService telegramUserService;
@@ -135,8 +135,8 @@ public class SecurityServerTests {
         assertNotNull(telegramUserRepositoryService);
         assertNotNull(telegramUserRepository);
         assertNotNull(telegramUserService);
-        assertNotNull(telegramModuleFeignClientService);
-        assertNotNull(telegramModuleFeignClient);
+        assertNotNull(telegramFeignClientService);
+        assertNotNull(telegramFeignClient);
         assertNotNull(notificationFeignClient);
         assertNotNull(notificationFeignClientService);
         assertNotNull(contactFeignClient);

@@ -1,7 +1,7 @@
 package app.security.ens_users.model.db;
 
 import app.security.ens_users.EnsUser;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

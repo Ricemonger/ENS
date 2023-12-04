@@ -1,7 +1,7 @@
 package app.telegram.users.controller;
 
-import app.telegram.users.exceptions.InvalidTelegramTokenException;
 import app.utils.ExceptionMessage;
+import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

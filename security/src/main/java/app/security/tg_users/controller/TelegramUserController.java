@@ -2,8 +2,10 @@ package app.security.tg_users.controller;
 
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
+import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +66,12 @@ public class TelegramUserController {
         return service.isLinked(telegramToken);
     }
 
+    @ExceptionHandler(InvalidSecurityTokenException.class)
+    @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+    public ExceptionMessage invalidTelegramToken(InvalidTelegramTokenException e) {
+        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired telegram jwt token");
+    }
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
@@ -71,15 +79,15 @@ public class TelegramUserController {
     }
 
     @ExceptionHandler(UserDoesntExistException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public ExceptionMessage doesntExist(UserDoesntExistException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Such user doesn't exist");
+        return new ExceptionMessage(HttpStatus.NOT_FOUND, "Such user doesn't exist");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ExceptionMessage unknownException(Exception e) {
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }
 }

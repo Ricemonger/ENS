@@ -12,11 +12,13 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
         "app.security",
         "app.utils.feign_clients.notification",
         "app.utils.feign_clients.contact",
+        "app.utils.feign_clients.telegram",
         "app.utils.logger"})
 @EnableFeignClients(basePackages = {
         "app.security",
         "app.utils.feign_clients.notification",
-        "app.utils.feign_clients.contact"})
+        "app.utils.feign_clients.contact",
+        "app.utils.feign_clients.telegram"})
 public class SecurityServer {
 
     public static void main(String[] args) {

@@ -8,7 +8,7 @@ import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
 import app.utils.feign_clients.contact.dto.ContactKeyRequest;
 import app.utils.feign_clients.contact.dto.ContactNNRequest;
 import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
-import app.utils.feign_clients.security.SecurityFeignClientService;
+import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

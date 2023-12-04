@@ -20,9 +20,8 @@ import app.telegram.bot.commands.data.DataDirect;
 import app.telegram.bot.commands.data.remove.DataRemoveCallback;
 import app.telegram.bot.commands.data.remove.DataRemoveCallbackFinish;
 import app.telegram.bot.commands.data.show.DataShowCallback;
+import app.telegram.bot.commands.errors.InternalError;
 import app.telegram.bot.commands.help.HelpDirect;
-import app.telegram.bot.commands.invalid.InvalidCallback;
-import app.telegram.bot.commands.invalid.InvalidDirect;
 import app.telegram.bot.commands.linking.LinkOrUnlinkDirect;
 import app.telegram.bot.commands.linking.link.LinkCallback;
 import app.telegram.bot.commands.linking.link.LinkChain;
@@ -50,11 +49,12 @@ import app.telegram.bot.commands.sendall.SendAllDirect;
 import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
-import app.telegram.bot.exceptions.InternalTelegramErrorException;
+import app.telegram.bot.exceptions.internal.*;
 import app.telegram.users.model.InputGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -83,6 +83,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
                 authConfig.getBOT_NAME());
         try {
             this.execute(new SetMyCommands(config.getPublicCommands(), new BotCommandScopeDefault(), null));
+            botService.setBaseInputAndGroupForAllUsers();
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
@@ -118,7 +119,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             listenCallbackQueryAndExecute(update);
         } else {
             log.error("No listening method chosen for update-{}", update.getUpdateId());
-            throw new InternalTelegramErrorException("No listening method chosen for update-%s" + update.getUpdateId());
+            throw new ListeningMethodCouldNotBeChosenException(update);
         }
     }
 
@@ -134,7 +135,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case "/clear" -> new ClearDirect(this, update, botService).execute();
             case "/link" -> new LinkOrUnlinkDirect(this, update, botService).execute();
             case "/data" -> new DataDirect(this, update, botService).execute();
-            default -> new InvalidDirect(this, update, botService).execute();
+            default -> throw new InvalidDirectException(update);
         }
     }
 
@@ -177,7 +178,6 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case Callbacks.NOTIFICATION_REMOVE_MANY_FINISH -> new NotificationRemoveManyFinishCallback(this, update,
                     botService).execute();
 
-
             case Callbacks.DATA_SHOW -> new DataShowCallback(this, update, botService).execute();
 
             case Callbacks.DATA_REMOVE -> new DataRemoveCallback(this, update, botService).execute();
@@ -192,7 +192,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
 
             case Callbacks.CANCEL -> new CancelCallback(this, update, botService).execute();
 
-            default -> new InvalidCallback(this, update, botService).execute();
+            default -> throw new InvalidCallbackException(update);
         }
     }
 
@@ -211,7 +211,20 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case NOTIFICATION_REMOVE_MANY -> new NotificationRemoveManyChain(this, update, botService).execute();
 
             case LINK -> new LinkChain(this, update, botService).execute();
+
+            default -> throw new InvalidUserInputGroupException(update);
         }
+    }
+
+
+    @ExceptionHandler(InternalErrorException.class)
+    public void internalTelegramError(InternalErrorException e) {
+        new InternalError(this, e.getUpdate(), botService).execute();
+    }
+
+    @ExceptionHandler(Exception.class)
+    public void internalTelegramError(Exception e) {
+
     }
 }
 

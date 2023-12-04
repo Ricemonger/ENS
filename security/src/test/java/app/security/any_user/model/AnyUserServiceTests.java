@@ -3,7 +3,7 @@ package app.security.any_user.model;
 import app.security.any_users.AnyUser;
 import app.security.any_users.model.AnyUserService;
 import app.security.any_users.model.db.AnyUserRepositoryService;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

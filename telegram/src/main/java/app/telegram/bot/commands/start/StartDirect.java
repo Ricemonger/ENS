@@ -19,6 +19,6 @@ public class StartDirect extends AbstractBotCommand {
             sendAnswer(answer);
             askUserToRegister();
         } else
-            sendAnswer(answer + "\n You are already registered in Bot.");
+            sendAnswer(answer + "\nYou are already registered in Bot.");
     }
 }

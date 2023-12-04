@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "contact", url = "${application.config.contact.url}")
+@FeignClient(name = "contact"
+        , url = "${application.config.contact.url}"
+        , configuration = ContactFeignClientConfiguration.class)
 public interface ContactFeignClient {
 
     @PostMapping

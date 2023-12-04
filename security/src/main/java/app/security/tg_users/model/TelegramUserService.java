@@ -4,11 +4,11 @@ import app.security.abstract_users.security.AbstractUserJwtUtil;
 import app.security.ens_users.model.EnsUserService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.security.tg_users.model.telegram_module_client.TelegramModuleFeignClientService;
 import app.utils.feign_clients.contact.ContactFeignClientService;
 import app.utils.feign_clients.notification.NotificationFeignClientService;
-import app.utils.feign_clients.security.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
+import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
+import app.utils.feign_clients.telegram.TelegramFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class TelegramUserService {
 
     private final EnsUserService ensUserService;
 
-    private final TelegramModuleFeignClientService telegramModuleFeignClientService;
+    private final TelegramFeignClientService telegramFeignClientService;
 
     private final ContactFeignClientService contactFeignClientService;
 
@@ -33,7 +33,7 @@ public class TelegramUserService {
     private final AbstractUserJwtUtil abstractUserJwtUtil;
 
     public String create(String telegramToken) {
-        String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
+        String chatId = telegramFeignClientService.getChatId(telegramToken);
         if (!doesUserExistByChatId(chatId)) {
             TelegramUser result = telegramUserRepositoryService.save(new TelegramUser(chatId));
             return abstractUserJwtUtil.generateToken(result.getAccountId());
@@ -49,7 +49,7 @@ public class TelegramUserService {
     }
 
     public void delete(String telegramToken) {
-        String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
+        String chatId = telegramFeignClientService.getChatId(telegramToken);
         TelegramUser inDB = getByChatIdOrThrow(chatId);
         telegramUserRepositoryService.delete(inDB);
     }
@@ -104,7 +104,7 @@ public class TelegramUserService {
     }
 
     public boolean doesUserExists(String telegramToken) {
-        return doesUserExistByChatId(telegramModuleFeignClientService.getChatId(telegramToken));
+        return doesUserExistByChatId(telegramFeignClientService.getChatId(telegramToken));
     }
 
     private String recreateWithNewAccountId(String accountId, String chatId) {
@@ -138,7 +138,7 @@ public class TelegramUserService {
 
     private String getChatId(String telegramToken) {
         log.debug("getChatId called for telegramToken-{}", telegramToken);
-        String chatId = telegramModuleFeignClientService.getChatId(telegramToken);
+        String chatId = telegramFeignClientService.getChatId(telegramToken);
         log.trace("getChatId executed for telegramToken-{} with result-{}", telegramToken, chatId);
         return chatId;
     }

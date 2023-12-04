@@ -1,16 +1,19 @@
 package app.telegram.users.model;
 
-import app.telegram.users.exceptions.InvalidTelegramTokenException;
-import app.telegram.users.exceptions.TelegramUserAlreadyExistsException;
-import app.telegram.users.exceptions.TelegramUserDoesntExistException;
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClient;
-import app.telegram.users.model.security_telegram_client.SecurityTelegramUserFeignClientService;
+import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClient;
+import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClientService;
+import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserAlreadyExistsException;
+import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -187,6 +190,27 @@ public class TelegramUserServiceTests {
         Executable executable = () -> userService.isLinked(CHAT_ID);
 
         assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void setBaseInputAndGroupForAllUsersShouldSet() {
+        List<TelegramUser> added = new ArrayList<>();
+        added.add(new TelegramUser("224242", InputState.USERNAME, InputGroup.CONTACT_ADD_ONE));
+        added.add(new TelegramUser("65656", InputState.BASE, InputGroup.LINK));
+        added.add(new TelegramUser("232", InputState.PASSWORD, InputGroup.BASE));
+
+        added.forEach(user -> repositoryService.save(user));
+
+        List<TelegramUser> expected = new ArrayList<>();
+
+        added.forEach(user -> expected.add(new TelegramUser(user.getChatId(), InputState.BASE, InputGroup.BASE)));
+
+        userService.setBaseInputAndGroupForAllUsers();
+
+        List<TelegramUser> inDb = repositoryService.findAll();
+
+        assertTrue(inDb.containsAll(expected) && expected.containsAll(inDb));
+
     }
 
     @Test

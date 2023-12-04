@@ -5,7 +5,7 @@ import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
 import app.utils.feign_clients.notification.dto.NotificationNameRequest;
-import app.utils.feign_clients.security.SecurityFeignClientService;
+import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

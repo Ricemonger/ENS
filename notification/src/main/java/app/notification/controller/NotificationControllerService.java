@@ -5,7 +5,7 @@ import app.notification.model.NotificationService;
 import app.utils.feign_clients.ChangeAccountIdRequest;
 import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
 import app.utils.feign_clients.notification.dto.NotificationNameRequest;
-import app.utils.feign_clients.security.SecurityFeignClientService;
+import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
