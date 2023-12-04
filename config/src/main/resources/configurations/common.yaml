@@ -3,18 +3,16 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-server:
-  port: 8091
+logging:
+  level:
+    app: trace
+  file:
+    path: \logs\
+
 application:
-  title: notification
   version: 0.1
-  config:
-    request-mappings:
-      notification: /api/notifications
 
 spring:
-  application:
-    name: notification
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/ens
@@ -25,7 +23,3 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: update
-logging:
-  level:
-    app: trace
-

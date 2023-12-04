@@ -4,17 +4,17 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
 
 server:
-  port: 8094
+  port: 8091
 application:
-  title: telegram
+  title: notification
   version: 0.1
   config:
     request-mappings:
-      telegram-security: /api/telegram/security
+      notification: /api/notifications
 
 spring:
   application:
-    name: telegram
+    name: notification
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/ens
@@ -28,3 +28,6 @@ spring:
 logging:
   level:
     app: trace
+  file:
+    path: \logs\
+    name: notification.log

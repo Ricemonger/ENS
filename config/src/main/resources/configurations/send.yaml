@@ -6,7 +6,7 @@ eureka:
 server:
   port: 8092
 application:
-  title: sender
+  title: send
   version: 0.1
   config:
     request-mappings:
@@ -15,7 +15,10 @@ application:
 
 spring:
   application:
-    name: sender
+    name: send
 logging:
   level:
     app: trace
+  file:
+    path: \logs\
+    name: sender.log

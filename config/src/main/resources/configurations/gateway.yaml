@@ -5,7 +5,7 @@ eureka:
 
 spring:
   application:
-    name: api-gateway
+    name: gateway
   cloud:
     discovery:
       enabled: true
@@ -41,4 +41,11 @@ application:
   version: 0.1
 server:
   port: 8080
+
+logging:
+  level:
+    app: trace
+  file:
+    path: \logs\
+    name: gateway.log
 

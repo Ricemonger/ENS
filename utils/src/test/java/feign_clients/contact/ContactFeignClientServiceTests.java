@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,7 +96,7 @@ public class ContactFeignClientServiceTests {
             }
         };
 
-        verify(contactFeignClient).delete(TOKEN, argThat(argumentMatcher));
+        verify(contactFeignClient).delete(eq(TOKEN), argThat(argumentMatcher));
     }
 
     @Test

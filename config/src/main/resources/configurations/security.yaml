@@ -32,3 +32,6 @@ spring:
 logging:
   level:
     app: trace
+  file:
+    path: \logs\
+    name: security.log

@@ -10,9 +10,16 @@ eureka:
 server:
   port: 8761
 application:
-  title: ENS-Discovery
+  title: Discovery
   version: 0.1
 
 spring:
   application:
-    name: discovery-service
+    name: discovery
+
+logging:
+  level:
+    app: trace
+  file:
+    path: \logs\
+    name: discovery.log

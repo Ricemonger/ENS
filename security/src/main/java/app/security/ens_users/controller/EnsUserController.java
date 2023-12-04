@@ -31,18 +31,6 @@ public class EnsUserController {
         return ensUserControllerService.login(request);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "User with same username already exists, please re-enter");
-    }
-
-    @ExceptionHandler(UserDoesntExistException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage doesntExist(UserDoesntExistException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "User with such username doesn't exist, please re-enter");
-    }
-
     @ExceptionHandler(InvalidPasswordException.class)
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionMessage invalidPasswordException(InvalidPasswordException e) {
@@ -61,6 +49,18 @@ public class EnsUserController {
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     public ExceptionMessage badCredentialsException(BadCredentialsException e) {
         return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Wrong password entered, authorization is prohibited, please re-enter");
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
+        return new ExceptionMessage(HttpStatus.FORBIDDEN, "User with same username already exists, please re-enter");
+    }
+
+    @ExceptionHandler(UserDoesntExistException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ExceptionMessage doesntExist(UserDoesntExistException e) {
+        return new ExceptionMessage(HttpStatus.NOT_FOUND, "User with such username doesn't exist, please re-enter");
     }
 
     @ExceptionHandler(Exception.class)

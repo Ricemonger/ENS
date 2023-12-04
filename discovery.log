@@ -1,0 +1,65 @@
+2023-12-04T14:19:22.065+02:00  INFO 12828 --- [main] app.discovery.DiscoveryServer            : Starting DiscoveryServer using Java 19.0.1 with PID 12828 (D:\MavenLibraries\MavenProjects\Emergency-Notification-System\discovery\target\classes started by lesko in D:\MavenLibraries\MavenProjects\Emergency-Notification-System)
+2023-12-04T14:19:22.066+02:00 DEBUG 12828 --- [main] app.discovery.DiscoveryServer            : Running with Spring Boot v3.1.2, Spring v6.0.11
+2023-12-04T14:19:22.066+02:00  INFO 12828 --- [main] app.discovery.DiscoveryServer            : No active profile set, falling back to 1 default profile: "default"
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=discovery, profiles=[default], label=null, version=null, state=null
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=discovery, profiles=[default], label=null, version=null, state=null
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Fetching config from server at : http://localhost:8888
+2023-12-04T14:19:22.102+02:00  INFO 12828 --- [main] o.s.c.c.c.ConfigServerConfigDataLoader   : Located environment: name=discovery, profiles=[default], label=null, version=null, state=null
+2023-12-04T14:19:22.744+02:00  INFO 12828 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=166a0612-8897-3ecf-8e11-ce17e5acc50a
+2023-12-04T14:19:22.939+02:00  INFO 12828 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8761 (http)
+2023-12-04T14:19:22.945+02:00  INFO 12828 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-12-04T14:19:22.945+02:00  INFO 12828 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.11]
+2023-12-04T14:19:23.021+02:00  INFO 12828 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2023-12-04T14:19:23.021+02:00  INFO 12828 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 917 ms
+2023-12-04T14:19:23.660+02:00  INFO 12828 --- [main] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON encoding codec LegacyJacksonJson
+2023-12-04T14:19:23.661+02:00  INFO 12828 --- [main] c.n.d.provider.DiscoveryJerseyProvider   : Using JSON decoding codec LegacyJacksonJson
+2023-12-04T14:19:23.778+02:00  INFO 12828 --- [main] c.n.d.provider.DiscoveryJerseyProvider   : Using XML encoding codec XStreamXml
+2023-12-04T14:19:23.778+02:00  INFO 12828 --- [main] c.n.d.provider.DiscoveryJerseyProvider   : Using XML decoding codec XStreamXml
+2023-12-04T14:19:24.555+02:00  WARN 12828 --- [main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2023-12-04T14:19:24.569+02:00  INFO 12828 --- [main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2023-12-04T14:19:24.588+02:00  INFO 12828 --- [main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2023-12-04T14:19:24.588+02:00  INFO 12828 --- [main] com.netflix.discovery.DiscoveryClient    : Client configured to neither register nor query for data.
+2023-12-04T14:19:24.594+02:00  INFO 12828 --- [main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1701692364594 with initial instances count: 0
+2023-12-04T14:19:24.621+02:00  INFO 12828 --- [main] c.n.eureka.DefaultEurekaServerContext    : Initializing ...
+2023-12-04T14:19:24.623+02:00  WARN 12828 --- [main] c.n.eureka.cluster.PeerEurekaNodes       : The replica size seems to be empty. Check the route 53 DNS Registry
+2023-12-04T14:19:24.634+02:00  INFO 12828 --- [main] c.n.e.registry.AbstractInstanceRegistry  : Finished initializing remote region registries. All known remote regions: []
+2023-12-04T14:19:24.635+02:00  INFO 12828 --- [main] c.n.eureka.DefaultEurekaServerContext    : Initialized
+2023-12-04T14:19:24.642+02:00  INFO 12828 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint(s) beneath base path '/actuator'
+2023-12-04T14:19:24.686+02:00  INFO 12828 --- [main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application DISCOVERY with eureka with status UP
+2023-12-04T14:19:24.694+02:00  INFO 12828 --- [Thread-9] o.s.c.n.e.server.EurekaServerBootstrap   : isAws returned false
+2023-12-04T14:19:24.694+02:00  INFO 12828 --- [Thread-9] o.s.c.n.e.server.EurekaServerBootstrap   : Initialized server context
+2023-12-04T14:19:24.694+02:00  INFO 12828 --- [Thread-9] c.n.e.r.PeerAwareInstanceRegistryImpl    : Got 1 instances from neighboring DS node
+2023-12-04T14:19:24.694+02:00  INFO 12828 --- [Thread-9] c.n.e.r.PeerAwareInstanceRegistryImpl    : Renew threshold is: 1
+2023-12-04T14:19:24.694+02:00  INFO 12828 --- [Thread-9] c.n.e.r.PeerAwareInstanceRegistryImpl    : Changing status to UP
+2023-12-04T14:19:24.700+02:00  INFO 12828 --- [Thread-9] e.s.EurekaServerInitializerConfiguration : Started Eureka Server
+2023-12-04T14:19:24.701+02:00  INFO 12828 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8761 (http) with context path ''
+2023-12-04T14:19:24.701+02:00  INFO 12828 --- [main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8761
+2023-12-04T14:19:24.816+02:00  INFO 12828 --- [main] app.discovery.DiscoveryServer            : Started DiscoveryServer in 3.778 seconds (process running for 4.442)
+2023-12-04T14:19:25.226+02:00  INFO 12828 --- [RMI TCP Connection(2)-26.120.168.72] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2023-12-04T14:19:25.226+02:00  INFO 12828 --- [RMI TCP Connection(2)-26.120.168.72] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2023-12-04T14:19:25.228+02:00  INFO 12828 --- [RMI TCP Connection(2)-26.120.168.72] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2023-12-04T14:19:27.949+02:00  INFO 12828 --- [http-nio-8761-exec-1] c.n.e.registry.AbstractInstanceRegistry  : Registered instance CONTACT/DESKTOP-AU4D8HT:contact:8090 with status DOWN (replication=false)
+2023-12-04T14:19:27.992+02:00  INFO 12828 --- [http-nio-8761-exec-2] c.n.e.registry.AbstractInstanceRegistry  : Cancelled instance CONTACT/DESKTOP-AU4D8HT:contact:8090 (replication=false)
+2023-12-04T14:19:50.571+02:00  INFO 12828 --- [http-nio-8761-exec-5] c.n.e.registry.AbstractInstanceRegistry  : Registered instance CONTACT/DESKTOP-AU4D8HT:contact:8090 with status UP (replication=false)
+2023-12-04T14:19:51.780+02:00  INFO 12828 --- [http-nio-8761-exec-7] c.n.e.registry.AbstractInstanceRegistry  : Registered instance API-GATEWAY/DESKTOP-AU4D8HT:api-gateway:8080 with status UP (replication=false)
+2023-12-04T14:19:57.876+02:00  INFO 12828 --- [http-nio-8761-exec-9] c.n.e.registry.AbstractInstanceRegistry  : Registered instance NOTIFICATION/DESKTOP-AU4D8HT:notification:8091 with status UP (replication=false)
+2023-12-04T14:20:03.141+02:00  INFO 12828 --- [http-nio-8761-exec-1] c.n.e.registry.AbstractInstanceRegistry  : Registered instance SECURITY/DESKTOP-AU4D8HT:security:8093 with status UP (replication=false)
+2023-12-04T14:20:04.458+02:00  INFO 12828 --- [http-nio-8761-exec-3] c.n.e.registry.AbstractInstanceRegistry  : Registered instance SEND/DESKTOP-AU4D8HT:send:8092 with status UP (replication=false)
+2023-12-04T14:20:24.695+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2023-12-04T14:21:24.696+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 0ms
+2023-12-04T14:22:24.700+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 3ms
+2023-12-04T14:23:24.711+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 11ms
+2023-12-04T14:24:24.723+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 12ms
+2023-12-04T14:25:24.730+02:00  INFO 12828 --- [Eureka-EvictionTimer] c.n.e.registry.AbstractInstanceRegistry  : Running the evict task with compensationTime 6ms
+2023-12-04T14:26:23.470+02:00  INFO 12828 --- [http-nio-8761-exec-9] c.n.e.registry.AbstractInstanceRegistry  : Registered instance CONTACT/DESKTOP-AU4D8HT:contact:8090 with status DOWN (replication=false)
+2023-12-04T14:26:23.490+02:00  INFO 12828 --- [SpringApplicationShutdownHook] o.s.c.n.e.s.EurekaServiceRegistry        : Unregistering application DISCOVERY with eureka with status DOWN
+2023-12-04T14:26:23.517+02:00  INFO 12828 --- [SpringApplicationShutdownHook] o.s.c.n.e.server.EurekaServerBootstrap   : Shutting down Eureka Server..
+2023-12-04T14:26:23.522+02:00  INFO 12828 --- [SpringApplicationShutdownHook] c.n.eureka.DefaultEurekaServerContext    : Shutting down ...
+2023-12-04T14:26:23.530+02:00  INFO 12828 --- [SpringApplicationShutdownHook] c.n.eureka.DefaultEurekaServerContext    : Shut down
+2023-12-04T14:26:23.531+02:00  INFO 12828 --- [SpringApplicationShutdownHook] o.s.c.n.e.server.EurekaServerBootstrap   : Eureka Service is now shutdown...
+2023-12-04T14:26:23.531+02:00  INFO 12828 --- [SpringApplicationShutdownHook] c.n.eureka.DefaultEurekaServerContext    : Shutting down ...
+2023-12-04T14:26:23.536+02:00  INFO 12828 --- [SpringApplicationShutdownHook] c.n.eureka.DefaultEurekaServerContext    : Shut down
+2023-12-04T14:26:23.543+02:00  INFO 12828 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Shutting down DiscoveryClient ...
+2023-12-04T14:26:23.544+02:00  INFO 12828 --- [SpringApplicationShutdownHook] com.netflix.discovery.DiscoveryClient    : Completed shut down of DiscoveryClient
