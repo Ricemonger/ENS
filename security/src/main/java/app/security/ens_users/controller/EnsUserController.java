@@ -5,8 +5,8 @@ import app.security.ens_users.controller.dto.EnsUserRegisterRequest;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.UserAlreadyExistsException;
+import app.utils.services.security.exceptions.UserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -65,7 +65,7 @@ public class EnsUserController {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage unknownException(Exception e) {
+    public ExceptionMessage internalServerErrorOrUnknown(Exception e) {
         e.printStackTrace();
         return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "UNKNOWN EXCEPTION");
     }

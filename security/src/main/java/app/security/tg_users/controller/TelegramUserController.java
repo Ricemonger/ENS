@@ -2,10 +2,10 @@ package app.security.tg_users.controller;
 
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
-import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
-import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
+import app.utils.services.security.exceptions.InvalidSecurityTokenException;
+import app.utils.services.security.exceptions.UserAlreadyExistsException;
+import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.telegram.exceptions.InvalidTelegramTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -73,9 +73,9 @@ public class TelegramUserController {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Same user already exists");
+        return new ExceptionMessage(HttpStatus.FORBIDDEN, "Same user already exists");
     }
 
     @ExceptionHandler(UserDoesntExistException.class)
@@ -86,7 +86,7 @@ public class TelegramUserController {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage unknownException(Exception e) {
+    public ExceptionMessage internalServerErrorOrUnknown(Exception e) {
         e.printStackTrace();
         return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }

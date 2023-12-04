@@ -1,10 +1,12 @@
 package app.send.controller;
 
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.contact.Method;
-import app.utils.feign_clients.sender.dto.SendManyRequest;
-import app.utils.feign_clients.sender.dto.SendOneRequest;
-import app.utils.feign_clients.sender.exceptions.SenderApiException;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.exceptions.InvalidContactMethodException;
+import app.utils.services.sender.dto.SendManyRequest;
+import app.utils.services.sender.dto.SendOneRequest;
+import app.utils.services.sender.exceptions.InvalidContactIdException;
+import app.utils.services.sender.exceptions.SenderApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -36,24 +38,32 @@ public class SendController {
         service.sendAll(securityToken);
     }
 
-    @ExceptionHandler(SenderApiException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage senderApiException(SenderApiException e) {
-        e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Exception was thrown during sending operation");
+    @ExceptionHandler(InvalidContactMethodException.class)
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    public ExceptionMessage illegalArgumentException(InvalidContactMethodException e) {
+        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Wrong Method Name! Valid method names are:" + Arrays.toString(Method.values()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public ExceptionMessage illegalArgumentException(IllegalArgumentException e) {
-        return new ExceptionMessage(HttpStatus.BAD_REQUEST, "Wrong Method Name! Valid method names are:" + Arrays.toString(Method.values()));
+    @ExceptionHandler(SenderApiException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ExceptionMessage senderApiException(SenderApiException e) {
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Exception was thrown during sending operation");
+    }
+
+    @ExceptionHandler(InvalidContactIdException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ExceptionMessage invalidContactId(InvalidContactIdException e) {
+        e.printStackTrace();
+        return new ExceptionMessage(HttpStatus.FORBIDDEN, "Invalid conjunction of contact's ID and Method, exception " +
+                "was thrown");
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage unknownException(Exception e) {
+    public ExceptionMessage internalServerErrorOrUnknown(Exception e) {
         e.printStackTrace();
-        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "Unknown exception was thrown");
+        return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }
 }
 

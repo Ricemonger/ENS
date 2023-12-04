@@ -1,10 +1,10 @@
 package feign_clients.notification;
 
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.notification.Notification;
-import app.utils.feign_clients.notification.NotificationFeignClient;
-import app.utils.feign_clients.notification.NotificationFeignClientService;
-import app.utils.feign_clients.notification.dto.NotificationNameRequest;
+import app.utils.services.notification.Notification;
+import app.utils.services.notification.dto.NotificationNameRequest;
+import app.utils.services.notification.feign.NotificationFeignClient;
+import app.utils.services.notification.feign.NotificationFeignClientService;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

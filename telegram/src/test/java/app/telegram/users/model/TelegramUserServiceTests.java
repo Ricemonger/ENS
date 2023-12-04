@@ -1,11 +1,11 @@
 package app.telegram.users.model;
 
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClient;
-import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClientService;
-import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
-import app.utils.feign_clients.telegram.exceptions.TelegramUserAlreadyExistsException;
-import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
+import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClient;
+import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClientService;
+import app.utils.services.telegram.exceptions.InvalidTelegramTokenException;
+import app.utils.services.telegram.exceptions.TelegramUserAlreadyExistsException;
+import app.utils.services.telegram.exceptions.TelegramUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

@@ -1,8 +1,8 @@
 package app.telegram.bot.feign_client_adapters;
 
 import app.telegram.users.model.TelegramUserService;
-import app.utils.feign_clients.contact.Contact;
-import app.utils.feign_clients.contact.ContactFeignClientService;
+import app.utils.services.contact.Contact;
+import app.utils.services.contact.feign.ContactFeignClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

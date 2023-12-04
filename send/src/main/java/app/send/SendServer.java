@@ -10,13 +10,13 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         "app.send",
-        "app.utils.feign_clients.notification",
-        "app.utils.feign_clients.contact",
+        "app.utils.services.notification",
+        "app.utils.services.contact",
         "app.utils.logger"})
 @EnableFeignClients(basePackages = {
         "app.send",
-        "app.utils.feign_clients.notification",
-        "app.utils.feign_clients.contact"})
+        "app.utils.services.notification",
+        "app.utils.services.contact"})
 public class SendServer {
 
     public static void main(String[] args) {

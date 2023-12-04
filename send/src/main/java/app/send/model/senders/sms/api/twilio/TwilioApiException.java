@@ -1,6 +1,6 @@
 package app.send.model.senders.sms.api.twilio;
 
-import app.utils.feign_clients.sender.exceptions.SenderApiException;
+import app.utils.services.sender.exceptions.SenderApiException;
 
 public class TwilioApiException extends SenderApiException {
 

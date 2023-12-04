@@ -2,15 +2,15 @@ package app.contact.controller;
 
 import app.contact.model.Contact;
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.contact.Method;
-import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
-import app.utils.feign_clients.contact.dto.ContactKeyRequest;
-import app.utils.feign_clients.contact.dto.ContactNNRequest;
-import app.utils.feign_clients.contact.exceptions.ContactAlreadyExistsException;
-import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
-import app.utils.feign_clients.contact.exceptions.InvalidContactMethodException;
-import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.dto.ContactCreUpdRequest;
+import app.utils.services.contact.dto.ContactKeyRequest;
+import app.utils.services.contact.dto.ContactNNRequest;
+import app.utils.services.contact.exceptions.ContactAlreadyExistsException;
+import app.utils.services.contact.exceptions.ContactDoesntExistException;
+import app.utils.services.contact.exceptions.InvalidContactMethodException;
+import app.utils.services.security.exceptions.InvalidSecurityTokenException;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -88,8 +88,8 @@ public class ContactController {
 
     @ExceptionHandler(InvalidSecurityTokenException.class)
     @ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-    public ExceptionMessage jwtRuntimeException(InvalidSecurityTokenException e) {
-        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired jwt token, please get new token via /login or /register pages");
+    public ExceptionMessage invalidSecurityToken(InvalidSecurityTokenException e) {
+        return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired jwt token");
     }
 
     @ExceptionHandler(ContactAlreadyExistsException.class)
@@ -106,7 +106,7 @@ public class ContactController {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage unknownException(Exception e) {
+    public ExceptionMessage internalServerErrorOrUnknown(Exception e) {
         e.printStackTrace();
         return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }

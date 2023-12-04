@@ -4,7 +4,7 @@ import app.telegram.bot.BotService;
 import app.telegram.bot.Callbacks;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
-import app.utils.feign_clients.contact.Method;
+import app.utils.services.contact.Method;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;

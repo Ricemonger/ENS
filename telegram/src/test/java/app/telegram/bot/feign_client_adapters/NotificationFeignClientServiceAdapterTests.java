@@ -1,8 +1,8 @@
 package app.telegram.bot.feign_client_adapters;
 
 import app.telegram.users.model.TelegramUserService;
-import app.utils.feign_clients.notification.Notification;
-import app.utils.feign_clients.notification.NotificationFeignClientService;
+import app.utils.services.notification.Notification;
+import app.utils.services.notification.feign.NotificationFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

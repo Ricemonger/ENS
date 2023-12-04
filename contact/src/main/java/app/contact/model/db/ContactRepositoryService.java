@@ -1,8 +1,8 @@
 package app.contact.model.db;
 
 import app.contact.model.Contact;
-import app.utils.feign_clients.contact.Method;
-import app.utils.feign_clients.contact.exceptions.ContactDoesntExistException;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.exceptions.ContactDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package feign_clients.security;
 
-import app.utils.feign_clients.security_abstract.SecurityFeignClient;
-import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
+import app.utils.services.security.abstact.feign.SecurityFeignClient;
+import app.utils.services.security.abstact.feign.SecurityFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

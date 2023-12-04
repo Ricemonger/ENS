@@ -1,6 +1,6 @@
 package app.contact.model.db;
 
-import app.utils.feign_clients.contact.Method;
+import app.utils.services.contact.Method;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

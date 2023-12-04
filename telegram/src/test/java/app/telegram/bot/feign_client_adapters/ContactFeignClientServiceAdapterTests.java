@@ -1,9 +1,9 @@
 package app.telegram.bot.feign_client_adapters;
 
 import app.telegram.users.model.TelegramUserService;
-import app.utils.feign_clients.contact.Contact;
-import app.utils.feign_clients.contact.ContactFeignClientService;
-import app.utils.feign_clients.contact.Method;
+import app.utils.services.contact.Contact;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.feign.ContactFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

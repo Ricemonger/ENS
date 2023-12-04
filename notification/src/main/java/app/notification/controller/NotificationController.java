@@ -2,12 +2,12 @@ package app.notification.controller;
 
 import app.notification.model.Notification;
 import app.utils.ExceptionMessage;
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
-import app.utils.feign_clients.notification.dto.NotificationNameRequest;
-import app.utils.feign_clients.notification.exceptions.NotificationAlreadyExistsException;
-import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
-import app.utils.feign_clients.security_abstract.exceptions.InvalidSecurityTokenException;
+import app.utils.services.notification.dto.NotificationCreUpdRequest;
+import app.utils.services.notification.dto.NotificationNameRequest;
+import app.utils.services.notification.exceptions.NotificationAlreadyExistsException;
+import app.utils.services.notification.exceptions.NotificationDoesntExistException;
+import app.utils.services.security.exceptions.InvalidSecurityTokenException;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -89,7 +89,7 @@ public class NotificationController {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
-    public ExceptionMessage unknownException(Exception e) {
+    public ExceptionMessage internalServerErrorOrUnknown(Exception e) {
         e.printStackTrace();
         return new ExceptionMessage(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL SERVER ERROR");
     }

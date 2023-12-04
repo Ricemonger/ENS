@@ -1,9 +1,9 @@
 package app.telegram.bot.feign_client_adapters;
 
 import app.telegram.users.model.TelegramUserService;
-import app.utils.feign_clients.sender.SendFeignClientService;
-import app.utils.feign_clients.sender.dto.SendManyRequest;
-import app.utils.feign_clients.sender.dto.SendOneRequest;
+import app.utils.services.sender.dto.SendManyRequest;
+import app.utils.services.sender.dto.SendOneRequest;
+import app.utils.services.sender.feign.SendFeignClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,8 +1,8 @@
 package app.contact.model;
 
 import app.contact.model.db.ContactRepositoryService;
-import app.utils.feign_clients.contact.Method;
-import app.utils.feign_clients.contact.exceptions.ContactAlreadyExistsException;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.exceptions.ContactAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

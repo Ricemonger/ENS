@@ -1,11 +1,11 @@
 package feign_clients.contact;
 
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.contact.Contact;
-import app.utils.feign_clients.contact.ContactFeignClient;
-import app.utils.feign_clients.contact.ContactFeignClientService;
-import app.utils.feign_clients.contact.Method;
-import app.utils.feign_clients.contact.dto.ContactKeyRequest;
+import app.utils.services.contact.Contact;
+import app.utils.services.contact.Method;
+import app.utils.services.contact.dto.ContactKeyRequest;
+import app.utils.services.contact.feign.ContactFeignClient;
+import app.utils.services.contact.feign.ContactFeignClientService;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

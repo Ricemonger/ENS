@@ -1,8 +1,8 @@
 package app.telegram.users.model.security_telegram_client;
 
-import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClient;
-import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClientService;
-import app.utils.feign_clients.security_telegram.dto.UsernamePasswordRequest;
+import app.utils.services.security.telegram.dto.UsernamePasswordRequest;
+import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClient;
+import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

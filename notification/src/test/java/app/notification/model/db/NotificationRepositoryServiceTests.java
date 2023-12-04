@@ -1,7 +1,7 @@
 package app.notification.model.db;
 
 import app.notification.model.Notification;
-import app.utils.feign_clients.notification.exceptions.NotificationDoesntExistException;
+import app.utils.services.notification.exceptions.NotificationDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;

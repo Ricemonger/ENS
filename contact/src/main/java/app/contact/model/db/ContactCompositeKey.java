@@ -1,6 +1,6 @@
 package app.contact.model.db;
 
-import app.utils.feign_clients.contact.Method;
+import app.utils.services.contact.Method;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

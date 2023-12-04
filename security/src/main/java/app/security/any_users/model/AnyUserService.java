@@ -2,7 +2,7 @@ package app.security.any_users.model;
 
 import app.security.any_users.AnyUser;
 import app.security.any_users.model.db.AnyUserRepositoryService;
-import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.UserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

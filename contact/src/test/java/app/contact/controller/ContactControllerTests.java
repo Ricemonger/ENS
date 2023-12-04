@@ -1,9 +1,9 @@
 package app.contact.controller;
 
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.contact.dto.ContactCreUpdRequest;
-import app.utils.feign_clients.contact.dto.ContactKeyRequest;
-import app.utils.feign_clients.contact.dto.ContactNNRequest;
+import app.utils.services.contact.dto.ContactCreUpdRequest;
+import app.utils.services.contact.dto.ContactKeyRequest;
+import app.utils.services.contact.dto.ContactNNRequest;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

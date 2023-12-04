@@ -10,10 +10,20 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         "app.telegram",
-        "app.utils"})
+        "app.utils.logger",
+        "app.utils.services.contact",
+        "app.utils.services.notification",
+        "app.utils.services.security.abstact",
+        "app.utils.services.security.telegram",
+        "app.utils.services.sender"})
 @EnableFeignClients(basePackages = {
         "app.telegram",
-        "app.utils.feign_clients"})
+        "app.utils.logger",
+        "app.utils.services.contact",
+        "app.utils.services.notification",
+        "app.utils.services.security.abstact",
+        "app.utils.services.security.telegram",
+        "app.utils.services.sender"})
 public class TelegramServer {
 
     public static void main(String[] args) {

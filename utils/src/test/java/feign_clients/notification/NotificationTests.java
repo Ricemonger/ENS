@@ -1,6 +1,6 @@
 package feign_clients.notification;
 
-import app.utils.feign_clients.notification.Notification;
+import app.utils.services.notification.Notification;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

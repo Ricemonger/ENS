@@ -10,10 +10,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         "app.notification",
-        "app.utils.feign_clients.security_abstract",
+        "app.utils.services.security.abstact",
         "app.utils.logger"})
 @EnableFeignClients(basePackages = {
-        "app.utils.feign_clients.security_abstract"})
+        "app.utils.services.security.abstact.feign"})
 public class NotificationServer {
 
     public static void main(String[] args) {

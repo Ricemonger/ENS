@@ -1,7 +1,7 @@
 package app.contact.model.db;
 
 import app.contact.model.Contact;
-import app.utils.feign_clients.contact.Method;
+import app.utils.services.contact.Method;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

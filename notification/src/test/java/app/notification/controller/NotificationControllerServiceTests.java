@@ -2,10 +2,10 @@ package app.notification.controller;
 
 import app.notification.model.Notification;
 import app.notification.model.NotificationService;
-import app.utils.feign_clients.ChangeAccountIdRequest;
-import app.utils.feign_clients.notification.dto.NotificationCreUpdRequest;
-import app.utils.feign_clients.notification.dto.NotificationNameRequest;
-import app.utils.feign_clients.security_abstract.SecurityFeignClientService;
+import app.utils.services.notification.dto.NotificationCreUpdRequest;
+import app.utils.services.notification.dto.NotificationNameRequest;
+import app.utils.services.security.abstact.feign.SecurityFeignClientService;
+import app.utils.services.telegram.dto.ChangeAccountIdRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

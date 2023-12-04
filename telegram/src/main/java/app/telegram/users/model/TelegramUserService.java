@@ -1,10 +1,10 @@
 package app.telegram.users.model;
 
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.utils.feign_clients.security_telegram.SecurityTelegramUserFeignClientService;
-import app.utils.feign_clients.telegram.exceptions.InvalidTelegramTokenException;
-import app.utils.feign_clients.telegram.exceptions.TelegramUserAlreadyExistsException;
-import app.utils.feign_clients.telegram.exceptions.TelegramUserDoesntExistException;
+import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClientService;
+import app.utils.services.telegram.exceptions.InvalidTelegramTokenException;
+import app.utils.services.telegram.exceptions.TelegramUserAlreadyExistsException;
+import app.utils.services.telegram.exceptions.TelegramUserDoesntExistException;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

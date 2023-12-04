@@ -7,12 +7,12 @@ import app.security.ens_users.model.EnsUserService;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
 import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
-import app.utils.feign_clients.contact.ContactFeignClientService;
-import app.utils.feign_clients.notification.NotificationFeignClientService;
-import app.utils.feign_clients.security_abstract.exceptions.UserAlreadyExistsException;
-import app.utils.feign_clients.security_abstract.exceptions.UserDoesntExistException;
-import app.utils.feign_clients.telegram.TelegramFeignClient;
-import app.utils.feign_clients.telegram.TelegramFeignClientService;
+import app.utils.services.contact.feign.ContactFeignClientService;
+import app.utils.services.notification.feign.NotificationFeignClientService;
+import app.utils.services.security.exceptions.UserAlreadyExistsException;
+import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.telegram.feign.TelegramFeignClient;
+import app.utils.services.telegram.feign.TelegramFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -139,11 +139,7 @@ public class TelegramUserServiceTests {
 
         telegramUserService.getAccountInfo(TOKEN);
 
-        verify(abstractUserJwtUtil).generateToken(accountId);
-
-        verify(contactFeignClientService).findAllById(anyString());
-
-        verify(notificationFeignClientService).findAllById(anyString());
+        verify(ensUserService).doesUserExist(accountId);
     }
 
     @Test
