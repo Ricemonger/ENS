@@ -68,6 +68,7 @@ public class TelegramUserService {
     public void link(Long chatId, String username, String password) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
         securityTelegramUserFeignClientService.link(telegramToken, username, password);
+        setNullSecurityToken(chatId);
     }
 
     public void unlink(Long chatId) {
@@ -136,6 +137,13 @@ public class TelegramUserService {
             putSecurityToken(chatId, securityToken);
         }
         return securityToken;
+    }
+
+    private void setNullSecurityToken(Long chatId) {
+        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setTempSecurityToken(null);
+        user.setTempSecurityTokenExpirationTime(new Date());
+        telegramUserRepositoryService.save(user);
     }
 
     private String findSecurityTokenOrNull(Long chatId) {
