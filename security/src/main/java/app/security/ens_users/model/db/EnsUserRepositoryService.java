@@ -1,7 +1,7 @@
 package app.security.ens_users.model.db;
 
 import app.security.ens_users.EnsUser;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class EnsUserRepositoryService {
             return toEnsUser(ensUserRepository.findById(username).orElseThrow());
         } catch (NoSuchElementException e) {
             log.info("findByIdOrThrow executed for username-{}, user doesn't exist", username);
-            throw new UserDoesntExistException();
+            throw new SecurityUserDoesntExistException();
         }
     }
 
@@ -47,7 +47,7 @@ public class EnsUserRepositoryService {
             return toEnsUser(ensUserRepository.findByAnyUserEntityAccountId(accountId).orElseThrow());
         } catch (NoSuchElementException e) {
             log.info("findByAccountIdOrThrow executed for accountId-{}, user doesn't exist", accountId);
-            throw new UserDoesntExistException();
+            throw new SecurityUserDoesntExistException();
         }
     }
 

@@ -3,7 +3,7 @@ package app.security.any_user.model;
 import app.security.any_users.AnyUser;
 import app.security.any_users.model.AnyUserService;
 import app.security.any_users.model.db.AnyUserRepositoryService;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -67,7 +67,7 @@ public class AnyUserServiceTests {
 
         Executable executable = () -> service.delete("132445466");
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test

@@ -5,8 +5,8 @@ import app.security.ens_users.EnsUser;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -89,7 +89,7 @@ public class EnsUserServiceTests {
 
         Executable executable = () -> ensUserService.register(UPDATED_PASSWORD);
 
-        assertThrows(UserAlreadyExistsException.class, executable);
+        assertThrows(SecurityUserAlreadyExistsException.class, executable);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class EnsUserServiceTests {
 
         Executable executable = () -> ensUserService.login(USER);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class EnsUserServiceTests {
 
         Executable executable = () -> ensUserService.getByUsernameOrThrow(USER.getUsername());
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class EnsUserServiceTests {
 
         Executable executable = () -> ensUserService.getByAccountIdOrThrow(USER.getAccountId());
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test

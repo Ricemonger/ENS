@@ -5,8 +5,8 @@ import app.security.ens_users.controller.dto.EnsUserRegisterRequest;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.utils.ExceptionMessage;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,15 +51,15 @@ public class EnsUserController {
         return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Wrong password entered, authorization is prohibited, please re-enter");
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ExceptionHandler(SecurityUserAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
+    public ExceptionMessage alreadyExists(SecurityUserAlreadyExistsException e) {
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "User with same username already exists, please re-enter");
     }
 
-    @ExceptionHandler(UserDoesntExistException.class)
+    @ExceptionHandler(SecurityUserDoesntExistException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ExceptionMessage doesntExist(UserDoesntExistException e) {
+    public ExceptionMessage doesntExist(SecurityUserDoesntExistException e) {
         return new ExceptionMessage(HttpStatus.NOT_FOUND, "User with such username doesn't exist, please re-enter");
     }
 

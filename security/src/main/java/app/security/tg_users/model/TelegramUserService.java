@@ -6,8 +6,8 @@ import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
 import app.utils.services.contact.feign.ContactFeignClientService;
 import app.utils.services.notification.feign.NotificationFeignClientService;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import app.utils.services.telegram.feign.TelegramFeignClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class TelegramUserService {
             return abstractUserJwtUtil.generateToken(result.getAccountId());
         } else {
             log.info("create executed for telegramToken-{}, user already exists", telegramToken);
-            throw new UserAlreadyExistsException();
+            throw new SecurityUserAlreadyExistsException();
         }
     }
 
@@ -77,7 +77,7 @@ public class TelegramUserService {
         } else {
             log.info("link was called for telegramToken-{}, username-{}, password-{}, user doesn't exist",
                     telegramToken, username, password);
-            throw new UserDoesntExistException();
+            throw new SecurityUserDoesntExistException();
         }
     }
 
@@ -143,7 +143,7 @@ public class TelegramUserService {
             return result;
         } catch (NoSuchElementException e) {
             log.info("getByChatIdOrThrow executed for chatID-{}, user doesn't exist", chatId);
-            throw new UserDoesntExistException();
+            throw new SecurityUserDoesntExistException();
         }
     }
 

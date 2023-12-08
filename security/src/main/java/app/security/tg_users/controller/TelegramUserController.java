@@ -3,8 +3,8 @@ package app.security.tg_users.controller;
 import app.security.tg_users.controller.dto.UsernamePasswordRequest;
 import app.utils.ExceptionMessage;
 import app.utils.services.security.exceptions.InvalidSecurityTokenException;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import app.utils.services.telegram.exceptions.InvalidTelegramTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -72,15 +72,15 @@ public class TelegramUserController {
         return new ExceptionMessage(HttpStatus.UNAUTHORIZED, "Invalid or expired telegram jwt token");
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ExceptionHandler(SecurityUserAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
-    public ExceptionMessage alreadyExists(UserAlreadyExistsException e) {
+    public ExceptionMessage alreadyExists(SecurityUserAlreadyExistsException e) {
         return new ExceptionMessage(HttpStatus.FORBIDDEN, "Same user already exists");
     }
 
-    @ExceptionHandler(UserDoesntExistException.class)
+    @ExceptionHandler(SecurityUserDoesntExistException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ExceptionMessage doesntExist(UserDoesntExistException e) {
+    public ExceptionMessage doesntExist(SecurityUserDoesntExistException e) {
         return new ExceptionMessage(HttpStatus.NOT_FOUND, "Such user doesn't exist");
     }
 

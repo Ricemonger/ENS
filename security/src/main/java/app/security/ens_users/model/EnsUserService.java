@@ -5,7 +5,7 @@ import app.security.ens_users.EnsUser;
 import app.security.ens_users.exceptions.InvalidPasswordException;
 import app.security.ens_users.exceptions.InvalidUsernameException;
 import app.security.ens_users.model.db.EnsUserRepositoryService;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,7 +38,7 @@ public class EnsUserService {
             return login(ensUser);
         } else {
             log.info("register called for ensUser-{}, user already exists", ensUser);
-            throw new UserAlreadyExistsException();
+            throw new SecurityUserAlreadyExistsException();
         }
     }
 

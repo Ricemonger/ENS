@@ -12,10 +12,10 @@ public class SecurityTelegramFeignClientErrorDecoder implements ErrorDecoder {
                 return new InvalidSecurityTokenException();
             }
             case 403 -> {
-                return new UserAlreadyExistsException();
+                return new SecurityUserAlreadyExistsException();
             }
             case 404 -> {
-                return new UserDoesntExistException();
+                return new SecurityUserDoesntExistException();
             }
             case 500 -> {
                 return new SecurityInternalServerError();

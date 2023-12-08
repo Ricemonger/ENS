@@ -2,7 +2,7 @@ package app.security.any_users.model;
 
 import app.security.any_users.AnyUser;
 import app.security.any_users.model.db.AnyUserRepositoryService;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class AnyUserService {
             return deleted;
         } catch (NoSuchElementException e) {
             log.info("delete method was called for accountID-{}, user doesn't exist", accountId);
-            throw new UserDoesntExistException();
+            throw new SecurityUserDoesntExistException();
         }
     }
 

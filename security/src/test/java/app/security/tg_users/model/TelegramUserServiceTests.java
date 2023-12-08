@@ -9,8 +9,8 @@ import app.security.tg_users.TelegramUser;
 import app.security.tg_users.model.db.TelegramUserRepositoryService;
 import app.utils.services.contact.feign.ContactFeignClientService;
 import app.utils.services.notification.feign.NotificationFeignClientService;
-import app.utils.services.security.exceptions.UserAlreadyExistsException;
-import app.utils.services.security.exceptions.UserDoesntExistException;
+import app.utils.services.security.exceptions.SecurityUserAlreadyExistsException;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import app.utils.services.telegram.feign.TelegramFeignClient;
 import app.utils.services.telegram.feign.TelegramFeignClientService;
 import org.junit.jupiter.api.BeforeEach;
@@ -98,7 +98,7 @@ public class TelegramUserServiceTests {
 
         Executable executable = () -> telegramUserService.create(TOKEN);
 
-        assertThrows(UserAlreadyExistsException.class, executable);
+        assertThrows(SecurityUserAlreadyExistsException.class, executable);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class TelegramUserServiceTests {
     public void deleteShouldThrowIfUserDoesntExist() {
         Executable executable = () -> telegramUserService.delete(TOKEN);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class TelegramUserServiceTests {
     public void getSecurityTokenShouldThrowIfUserDoesntExist() {
         Executable executable = () -> telegramUserService.getSecurityToken(TOKEN);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class TelegramUserServiceTests {
     public void getAccountInfoShouldThrowIfDoesntExist() {
         Executable executable = () -> telegramUserService.getAccountInfo(TOKEN);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class TelegramUserServiceTests {
 
         Executable executable = () -> telegramUserService.link(TOKEN, USERNAME, PASSWORD);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
@@ -232,7 +232,7 @@ public class TelegramUserServiceTests {
 
         Executable executable = () -> telegramUserService.unlinkWithDataToTelegram(TOKEN);
 
-        assertThrows(UserDoesntExistException.class, executable);
+        assertThrows(SecurityUserDoesntExistException.class, executable);
     }
 
     @Test
