@@ -56,6 +56,7 @@ public class EnsUserServiceTests {
 
     @Test
     public void registerShouldSaveUserInDbWithEncodedPasswordAndAuthenticateAndReturnRightToken() {
+        System.out.println(ensUserRepositoryService.findAll());
         String token = ensUserService.register(USER);
 
         EnsUser inDb = ensUserRepositoryService.findByIdOrThrow(USER.getUsername());

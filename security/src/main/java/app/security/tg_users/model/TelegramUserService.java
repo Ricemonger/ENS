@@ -50,8 +50,7 @@ public class TelegramUserService {
 
     public void delete(String telegramToken) {
         String chatId = telegramFeignClientService.getChatId(telegramToken);
-        TelegramUser inDB = getByChatIdOrThrow(chatId);
-        telegramUserRepositoryService.delete(inDB);
+        telegramUserRepositoryService.delete(chatId);
     }
 
     public String getAccountInfo(String telegramToken) {
@@ -102,7 +101,7 @@ public class TelegramUserService {
 
     private String recreateWithNewAccountId(String newAccountId, String chatId) {
         log.debug("recreateWithNewAccountId called for newAccountId-{} and chatId-{}", newAccountId, chatId);
-        telegramUserRepositoryService.delete(new TelegramUser(chatId));
+        telegramUserRepositoryService.delete(chatId);
         String savedAccountId = telegramUserRepositoryService.save(new TelegramUser(newAccountId, chatId)).getAccountId();
         log.trace("recreateWithNewAccountId executed for newAccountId-{} and chatId-{} with new savedAccountId-{}", savedAccountId, chatId, newAccountId);
         return savedAccountId;

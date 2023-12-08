@@ -1,6 +1,6 @@
 application:
   title: security
-  version: 0.1
+  version: 1.0
   config:
     telegram:
       url: http://localhost:8080/api/telegram/security/

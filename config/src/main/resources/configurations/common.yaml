@@ -10,7 +10,7 @@ logging:
     path: \logs\
 
 application:
-  version: 0.1
+  version: 1.0
 
 spring:
   datasource:

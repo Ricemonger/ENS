@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,7 +23,7 @@ public class EnsUserRepositoryService {
     }
 
     public void deleteAll() {
-        ensUserRepository.deleteAll();
+        ensUserRepository.deleteAllInBatch();
     }
 
     public boolean existsByAccountId(String accountId) {
@@ -49,6 +50,10 @@ public class EnsUserRepositoryService {
             log.info("findByAccountIdOrThrow executed for accountId-{}, user doesn't exist", accountId);
             throw new SecurityUserDoesntExistException();
         }
+    }
+
+    public List<EnsUser> findAll() {
+        return ensUserRepository.findAll().stream().map(this::toEnsUser).toList();
     }
 
     private EnsUser toEnsUser(EnsUserEntity entity) {

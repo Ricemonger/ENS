@@ -30,7 +30,7 @@ public class EnsUserRepositoryServiceTests {
 
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        repository.deleteAllInBatch();
     }
 
     @Test
@@ -109,7 +109,7 @@ public class EnsUserRepositoryServiceTests {
     }
 
     @Test
-    public void deleteAllShouldRemoveAllEntriesFromDb() {
+    public void deleteAllShouldUserDeleteAllInBatch() {
         repository.save(ENTITY);
         repository.save(ALTERED_USERNAME);
 

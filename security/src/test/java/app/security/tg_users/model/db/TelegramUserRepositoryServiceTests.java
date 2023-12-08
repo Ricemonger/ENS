@@ -30,7 +30,7 @@ public class TelegramUserRepositoryServiceTests {
 
     @BeforeEach
     public void setUp() {
-        repository.deleteAll();
+        repository.deleteAllInBatch();
     }
 
     @Test
@@ -44,16 +44,17 @@ public class TelegramUserRepositoryServiceTests {
 
     @Test
     public void deleteShouldCallDeleteOnRepository() {
-        repository.save(new TelegramUserEntity(CHAT_ID));
+        TelegramUserEntity added = repository.save(new TelegramUserEntity(CHAT_ID));
 
-        String accountId = repository.findAll().get(0).getAccountId();
-
-        service.delete(new TelegramUser(accountId, CHAT_ID));
+        service.delete(CHAT_ID);
 
         assertEquals(0, repository.findAll().size());
 
-        verify(repository).deleteById(CHAT_ID);
-        verify(repository).deleteByAnyUserEntityAccountId(accountId);
+        verify(repository).getReferenceById(CHAT_ID);
+
+        assertNull(added.getAnyUserEntity().getTelegramUserEntity());
+
+        verify(repository).delete(added);
     }
 
     @Test
@@ -151,7 +152,7 @@ public class TelegramUserRepositoryServiceTests {
     }
 
     @Test
-    public void deleteAll() {
+    public void deleteAllShouldCallDeleteAllInBatch() {
         repository.save(new TelegramUserEntity(CHAT_ID));
         repository.save(new TelegramUserEntity(ALTERED_CHAT_ID));
 
@@ -160,6 +161,6 @@ public class TelegramUserRepositoryServiceTests {
 
         assertEquals(0, repository.findAll().size());
 
-        verify(repository).deleteAll();
+        verify(repository).deleteAllInBatch();
     }
 }

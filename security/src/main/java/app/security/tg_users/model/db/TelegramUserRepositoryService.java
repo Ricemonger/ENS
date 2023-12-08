@@ -1,15 +1,19 @@
 package app.security.tg_users.model.db;
 
 import app.security.tg_users.TelegramUser;
+import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 @Slf4j
 public class TelegramUserRepositoryService {
 
@@ -19,13 +23,18 @@ public class TelegramUserRepositoryService {
         return toTelegramUser(telegramUserRepository.save(toTelegramUserEntity(user)));
     }
 
-    public void delete(TelegramUser user) {
-        telegramUserRepository.deleteById(user.getChatId());
-        telegramUserRepository.deleteByAnyUserEntityAccountId(user.getAccountId());
+    public void delete(String chatId) {
+        try {
+            TelegramUserEntity toDelete = telegramUserRepository.getReferenceById(chatId);
+            toDelete.getAnyUserEntity().setTelegramUserEntity(null);
+            telegramUserRepository.delete(toDelete);
+        } catch (EntityNotFoundException e) {
+            throw new SecurityUserDoesntExistException(e);
+        }
     }
 
     public void deleteAll() {
-        telegramUserRepository.deleteAll();
+        telegramUserRepository.deleteAllInBatch();
     }
 
     public boolean existsByChatId(String chatId) {
