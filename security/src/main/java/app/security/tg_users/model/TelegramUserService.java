@@ -67,11 +67,11 @@ public class TelegramUserService {
 
     public void link(String telegramToken, String username, String password) {
         if (ensUserService.canLogin(username, password)) {
-            String oldAccountId = getAccountIdByTelegramTokenOrThrow(telegramToken);
+            String chatId = getChatId(telegramToken);
+            String oldAccountId = getByChatIdOrThrow(chatId).getAccountId();
             String newAccountId = ensUserService.getByUsernameOrThrow(username).getAccountId();
 
-            TelegramUser updatedAccountIdUser = new TelegramUser(newAccountId, getChatId(telegramToken));
-            recreateWithNewAccountId(updatedAccountIdUser.getAccountId(), updatedAccountIdUser.getChatId());
+            recreateWithNewAccountId(newAccountId, chatId);
 
             changeNotificationsAndContactsAccountIds(oldAccountId, newAccountId);
         } else {
@@ -96,24 +96,16 @@ public class TelegramUserService {
         changeNotificationsAndContactsAccountIds(oldAccountId, newAccountId);
     }
 
-    public void unlinkWithDataToEns(String telegramToken) {
-        String chatId = getChatId(telegramToken);
-        TelegramUser inDb = getByChatIdOrThrow(chatId);
-
-        recreateWithNewAccountId(null, inDb.getChatId());
-    }
-
-    public boolean doesUserExists(String telegramToken) {
+    public boolean doesUserExist(String telegramToken) {
         return doesUserExistByChatId(telegramFeignClientService.getChatId(telegramToken));
     }
 
-    private String recreateWithNewAccountId(String accountId, String chatId) {
-        log.debug("recreateWithNewAccountId called for accountId-{} and chatId-{}", accountId, chatId);
+    private String recreateWithNewAccountId(String newAccountId, String chatId) {
+        log.debug("recreateWithNewAccountId called for newAccountId-{} and chatId-{}", newAccountId, chatId);
         telegramUserRepositoryService.delete(new TelegramUser(chatId));
-        String newAccountId = telegramUserRepositoryService.save(new TelegramUser(accountId, chatId)).getAccountId();
-        log.trace("recreateWithNewAccountId executed for accountId-{} and chatId-{} with new accountId-{}", accountId,
-                chatId, newAccountId);
-        return newAccountId;
+        String savedAccountId = telegramUserRepositoryService.save(new TelegramUser(newAccountId, chatId)).getAccountId();
+        log.trace("recreateWithNewAccountId executed for newAccountId-{} and chatId-{} with new savedAccountId-{}", savedAccountId, chatId, newAccountId);
+        return savedAccountId;
     }
 
     private void changeNotificationsAndContactsAccountIds(String oldAccountId, String newAccountId) {

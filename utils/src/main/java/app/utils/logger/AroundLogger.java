@@ -19,7 +19,7 @@ public class AroundLogger {
         Object[] methodArgs = joinPoint.getArgs();
 
         if (methodArgs.length > 0) {
-            log.debug("{} | Called: {} with parameters: {}", className, methodName, methodArgs);
+            log.debug("{} | Called: {}:{}", className, methodName, methodArgs);
         } else {
             log.debug("{} | Called: {}", className, methodName);
         }
@@ -28,7 +28,7 @@ public class AroundLogger {
 
         if (result != null) {
             if (methodArgs.length > 0) {
-                log.trace("{} | Executed: {} with parameters: {} and result: {}", className, methodName, methodArgs,
+                log.trace("{} | Executed: {}:{} with result: {}", className, methodName, methodArgs,
                         result);
             } else {
                 log.trace("{} | Executed: {} with result: {}", className, methodName, result);
@@ -36,7 +36,7 @@ public class AroundLogger {
 
         } else {
             if (methodArgs.length > 0) {
-                log.trace("{} | Executed: {} with parameters: {}", className, methodName, methodArgs);
+                log.trace("{} | Executed: {}:{}", className, methodName, methodArgs);
             } else {
                 log.trace("{} | Executed: {}", className, methodName);
             }

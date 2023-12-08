@@ -23,7 +23,7 @@ public class TelegramUserControllerService {
     }
 
     public boolean doesUserExists(String telegramToken) {
-        return telegramUserService.doesUserExists(telegramToken);
+        return telegramUserService.doesUserExist(telegramToken);
     }
 
     public String getSecurityToken(String telegramToken) {
@@ -40,10 +40,6 @@ public class TelegramUserControllerService {
 
     public void unlinkWithDataToTelegram(String telegramToken) {
         telegramUserService.unlinkWithDataToTelegram(telegramToken);
-    }
-
-    public void unlinkWithDataToEns(String telegramToken) {
-        telegramUserService.unlinkWithDataToEns(telegramToken);
     }
 
     public boolean isLinked(String telegramToken) {

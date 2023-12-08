@@ -25,7 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class TelegramUserServiceTests {
@@ -235,35 +236,17 @@ public class TelegramUserServiceTests {
     }
 
     @Test
-    public void unlinkWithDataToEnsShouldChangeOnlyTelegramAccountId() {
-        String oldAccountId = telegramUserRepositoryService.save(new TelegramUser(TOKEN)).getAccountId();
-
-        telegramUserService.unlinkWithDataToEns(TOKEN);
-
-        assertNotEquals(oldAccountId, telegramUserRepositoryService.findAll().get(0).getAccountId());
-
-        verifyNoInteractions(contactFeignClientService, notificationFeignClientService, abstractUserJwtUtil);
-    }
-
-    @Test
-    public void unlinkWithDataToEnsShouldThrowIfTelegramDoesntExist() {
-        Executable executable = () -> telegramUserService.unlinkWithDataToEns(TOKEN);
-
-        assertThrows(UserDoesntExistException.class, executable);
-    }
-
-    @Test
     public void doesUserExistsShouldReturnTrueIfExists() {
         telegramUserRepositoryService.save(new TelegramUser(TOKEN));
 
-        assertTrue(telegramUserService.doesUserExists(TOKEN));
+        assertTrue(telegramUserService.doesUserExist(TOKEN));
     }
 
     @Test
     public void doesUserExistsShouldReturnFalseIfDoesntExist() {
         telegramUserRepositoryService.save(new TelegramUser("NOT TOKEN"));
 
-        assertFalse(telegramUserService.doesUserExists(TOKEN));
+        assertFalse(telegramUserService.doesUserExist(TOKEN));
     }
 
 

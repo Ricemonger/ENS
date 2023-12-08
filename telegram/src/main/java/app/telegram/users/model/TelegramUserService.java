@@ -74,6 +74,7 @@ public class TelegramUserService {
     public void unlink(Long chatId) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
         securityTelegramUserFeignClientService.unlink(telegramToken);
+        setNullSecurityToken(chatId);
     }
 
     public boolean isLinked(Long chatId) {

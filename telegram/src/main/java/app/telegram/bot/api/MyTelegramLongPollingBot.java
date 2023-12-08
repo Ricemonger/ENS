@@ -49,7 +49,11 @@ import app.telegram.bot.commands.sendall.SendAllDirect;
 import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
-import app.telegram.bot.exceptions.internal.*;
+import app.telegram.bot.exceptions.internal.InternalErrorException;
+import app.telegram.bot.exceptions.internal.InvalidCallbackException;
+import app.telegram.bot.exceptions.internal.InvalidUserInputGroupException;
+import app.telegram.bot.exceptions.internal.ListeningMethodCouldNotBeChosenException;
+import app.telegram.bot.exceptions.user.InvalidDirectCommandException;
 import app.telegram.users.model.InputGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,7 +139,7 @@ public class MyTelegramLongPollingBot extends TelegramLongPollingBot {
             case "/clear" -> new ClearDirect(this, update, botService).execute();
             case "/link" -> new LinkOrUnlinkDirect(this, update, botService).execute();
             case "/data" -> new DataDirect(this, update, botService).execute();
-            default -> throw new InvalidDirectException(update);
+            default -> throw new InvalidDirectCommandException(update);
         }
     }
 

@@ -41,7 +41,7 @@ public class TelegramUserControllerServiceTests {
     public void doesUserExists() {
         telegramUserControllerService.doesUserExists(TOKEN);
 
-        verify(telegramUserService).doesUserExists(TOKEN);
+        verify(telegramUserService).doesUserExist(TOKEN);
     }
 
     @Test
@@ -70,13 +70,6 @@ public class TelegramUserControllerServiceTests {
         telegramUserControllerService.unlinkWithDataToTelegram(TOKEN);
 
         verify(telegramUserService).unlinkWithDataToTelegram(TOKEN);
-    }
-
-    @Test
-    public void unlinkWithDataToEns() {
-        telegramUserControllerService.unlinkWithDataToEns(TOKEN);
-
-        verify(telegramUserService).unlinkWithDataToEns(TOKEN);
     }
 
     @Test
