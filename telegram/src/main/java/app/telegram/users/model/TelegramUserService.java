@@ -27,14 +27,20 @@ public class TelegramUserService {
 
     private final TelegramUserJwtUtil telegramUserJwtUtil;
 
-    private final SecurityTelegramUserFeignClientService securityTelegramUserFeignClientService;
+    private final SecurityTelegramUserFeignClientService secFeignClient;
 
     public TelegramUser create(Long chatId) {
         if (!doesUserExist(chatId)) {
             userRepositoryService.save(new TelegramUser(String.valueOf(chatId)));
 
             String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-            String securityToken = securityTelegramUserFeignClientService.create(telegramToken);
+            String securityToken;
+
+            if (!secFeignClient.doesUserExists(telegramToken)) {
+                securityToken = secFeignClient.create(telegramToken);
+            } else {
+                securityToken = secFeignClient.getSecurityToken(telegramToken);
+            }
 
             putSecurityToken(chatId, securityToken);
 
@@ -56,30 +62,30 @@ public class TelegramUserService {
 
     public String getAccountInfo(Long chatId) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-        return securityTelegramUserFeignClientService.getAccountInfo(telegramToken);
+        return secFeignClient.getAccountInfo(telegramToken);
     }
 
     public void removeAccount(Long chatId) {
         String telegramToken = telegramUserJwtUtil.generateToken(chatId);
-        securityTelegramUserFeignClientService.delete(telegramToken);
+        secFeignClient.delete(telegramToken);
         userRepositoryService.delete(new TelegramUser(String.valueOf(chatId)));
     }
 
     public void link(Long chatId, String username, String password) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-        securityTelegramUserFeignClientService.link(telegramToken, username, password);
+        secFeignClient.link(telegramToken, username, password);
         setNullSecurityToken(chatId);
     }
 
     public void unlink(Long chatId) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-        securityTelegramUserFeignClientService.unlink(telegramToken);
+        secFeignClient.unlink(telegramToken);
         setNullSecurityToken(chatId);
     }
 
     public boolean isLinked(Long chatId) {
         String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-        return securityTelegramUserFeignClientService.isLinked(telegramToken);
+        return secFeignClient.isLinked(telegramToken);
     }
 
     public void setBaseInputAndGroupForAllUsers() {
@@ -123,8 +129,16 @@ public class TelegramUserService {
 
     public boolean doesUserExist(Long chatId) {
         try {
+            return doesUserExistInInnerDb(chatId) && secFeignClient.doesUserExists(findTelegramTokenOrGenerateAndPut(chatId));
+        } catch (TelegramUserDoesntExistException e) {
+            return false;
+        }
+    }
+
+    public boolean doesUserExistInInnerDb(Long chatId) {
+        try {
             findByIdOrThrow(chatId);
-            return securityTelegramUserFeignClientService.doesUserExists(findTelegramTokenOrGenerateAndPut(chatId));
+            return true;
         } catch (TelegramUserDoesntExistException e) {
             return false;
         }
@@ -134,7 +148,7 @@ public class TelegramUserService {
         String securityToken = findSecurityTokenOrNull(chatId);
         if (securityToken == null) {
             String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
-            securityToken = securityTelegramUserFeignClientService.getSecurityToken(telegramToken);
+            securityToken = secFeignClient.getSecurityToken(telegramToken);
             putSecurityToken(chatId, securityToken);
         }
         return securityToken;

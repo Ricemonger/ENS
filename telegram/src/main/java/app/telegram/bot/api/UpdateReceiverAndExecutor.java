@@ -71,6 +71,7 @@ import app.utils.services.security.exceptions.SecurityUserDoesntExistException;
 import app.utils.services.sender.exceptions.SenderApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
@@ -148,8 +149,14 @@ public class UpdateReceiverAndExecutor {
     private void listenDirectCommandAndExecute(Update update) {
         log.info("listenCommandAndExecute was called for update-{}", update.getUpdateId());
 
-        String text = update.getMessage().getText();
-        String customPhrase = botService.getUserCustomPhrase(update.getMessage().getChatId());
+        Message message = update.getMessage();
+        String text = message.getText();
+        Long chatId = message.getChatId();
+        String customPhrase = "/sendall";
+
+        if (botService.doesUserExist(chatId)) {
+            customPhrase = botService.getUserCustomPhrase(update.getMessage().getChatId());
+        }
 
         if (text.equals(customPhrase) || text.equals("sendall") || text.equals("send all")) {
             new SendAllDirect(bot, update, botService).execute();
