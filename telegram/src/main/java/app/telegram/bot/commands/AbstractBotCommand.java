@@ -46,6 +46,22 @@ public abstract class AbstractBotCommand {
 
     protected abstract void executeCommand();
 
+    protected final void setUserActionConfirmFlag(boolean flag) {
+        botService.setActionConfirmFlag(chatId, flag);
+    }
+
+    protected final boolean isUserActionConfirmFlag() {
+        return botService.getUserActionConfirmFlag(chatId);
+    }
+
+    protected final void setCustomPhrase(Long chatId, String customPhrase) {
+        botService.setUserCustomPhrase(chatId, customPhrase);
+    }
+
+    protected final String getCustomPhrase(Long chatId) {
+        return botService.getUserCustomPhrase(chatId);
+    }
+
     protected final void processFirstInput(Long chatId, InputState nextState, String question) {
         botService.setNextInputState(chatId, nextState);
 

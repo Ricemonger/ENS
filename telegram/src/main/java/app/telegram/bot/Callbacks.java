@@ -43,6 +43,13 @@ public class Callbacks {
 
     public static final String UNLINK = "UNLINK";
 
+    public static final String SETTINGS_ACTION_CONFIRMATION = "SETTINGS_ACTION_CONFIRMATION";
+    public static final String SETTINGS_ACTION_CONFIRMATION_ENABLE = "SETTINGS_ACTION_CONFIRMATION_ENABLE";
+    public static final String SETTINGS_ACTION_CONFIRMATION_DISABLE = "SETTINGS_ACTION_CONFIRMATION_DISABLE";
+
+    public static final String SETTINGS_CUSTOM_PHRASE = "SETTINGS_CUSTOM_PHRASE";
+    public static final String SETTINGS_CUSTOM_PHRASE_FINISH = "SETTINGS_CUSTOM_PHRASE_FINISH";
+
     public static final String CANCEL = "CANCEL";
 
     public static final String EMPTY = "EMPTY";
@@ -53,6 +60,6 @@ public class Callbacks {
     public static final String METHOD_TELEGRAM = "METHOD_TELEGRAM";
 
     public static boolean isMethod(String data) {
-        return data!=null && (data.equals(METHOD_SMS) || data.equals(METHOD_VIBER) || data.equals(METHOD_EMAIL) || data.equals(METHOD_TELEGRAM));
+        return data != null && (data.equals(METHOD_SMS) || data.equals(METHOD_VIBER) || data.equals(METHOD_EMAIL) || data.equals(METHOD_TELEGRAM));
     }
 }

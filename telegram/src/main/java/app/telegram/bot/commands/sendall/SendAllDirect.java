@@ -15,8 +15,12 @@ public class SendAllDirect extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
-            String answer = "Do you really wand to send notification to all your emergency contacts?";
-            askYesOrNoFromInlineKeyboard(answer, Callbacks.SEND_ALL, Callbacks.CANCEL);
+            if (isUserActionConfirmFlag()) {
+                String answer = "Do you really wand to send notification to all your emergency contacts?";
+                askYesOrNoFromInlineKeyboard(answer, Callbacks.SEND_ALL, Callbacks.CANCEL);
+            } else {
+                new SendAllCallback(bot, update, botService).execute();
+            }
         };
         executeCommandIfUserExistsOrAskToRegister(function);
     }

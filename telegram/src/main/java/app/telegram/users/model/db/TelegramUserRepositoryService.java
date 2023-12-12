@@ -42,14 +42,7 @@ public class TelegramUserRepositoryService {
     }
 
     private TelegramUserEntity toEntity(TelegramUser telegramUser) {
-        return new TelegramUserEntity(
-                telegramUser.getChatId(),
-                telegramUser.getTempTelegramToken(),
-                telegramUser.getTempTelegramTokenExpirationTime(),
-                telegramUser.getTempSecurityToken(),
-                telegramUser.getTempSecurityTokenExpirationTime(),
-                telegramUser.getInputState(),
-                telegramUser.getInputGroup());
+        return new TelegramUserEntity(telegramUser);
     }
 
     private TelegramUser toUser(TelegramUserEntity entity) {

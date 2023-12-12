@@ -129,6 +129,11 @@ public class BotService {
         clearUserInputs(chatId);
     }
 
+    public void setCustomPhraseFromInputMap(Long chatId) {
+        setUserCustomPhrase(chatId, getCustomPhraseFromInputMap(chatId));
+        clearUserInputs(chatId);
+    }
+
     public void cancelInputs(Long chatId) {
         setNextInputState(chatId, InputState.BASE);
         setNextInputGroup(chatId, InputGroup.BASE);
@@ -153,6 +158,22 @@ public class BotService {
 
     public InputState getNextInputStateOrBase(Long chatId) {
         return telegramUserService.getInputStateOrBase(chatId);
+    }
+
+    public void setActionConfirmFlag(Long chatId, boolean flag) {
+        telegramUserService.setActionConfirmFlag(chatId, flag);
+    }
+
+    public boolean getUserActionConfirmFlag(Long chatId) {
+        return telegramUserService.getActionConfirmFlag(chatId);
+    }
+
+    public void setUserCustomPhrase(Long chatId, String customPhrase) {
+        telegramUserService.setCustomPhrase(chatId, customPhrase);
+    }
+
+    public String getUserCustomPhrase(Long chatId) {
+        return telegramUserService.getCustomPhrase(chatId);
     }
 
     public void saveInput(Long chatId, InputState inputState, String inputText) {
@@ -224,6 +245,14 @@ public class BotService {
         return new SendManyRequest(method, contactId, notificationName);
     }
 
+    public String getCustomPhraseFromInputMap(Long chatId) {
+        Map<InputState, String> requestMap = getUserInputMapOrThrow(chatId);
+
+        String customPhrase = requestMap.get(InputState.CUSTOM_PHRASE);
+
+        return customPhrase;
+    }
+
     public Map<InputState, String> getUserInputMapOrThrow(Long chatId) {
         Map<InputState, String> inputMap = inputsMap.get(String.valueOf(chatId));
         if (inputMap == null || inputMap.isEmpty()) {
@@ -232,4 +261,6 @@ public class BotService {
         }
         return inputMap;
     }
+
+
 }

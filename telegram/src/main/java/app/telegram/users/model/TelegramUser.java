@@ -90,4 +90,20 @@ public class TelegramUser {
         entity.setInputGroup(inputGroup);
     }
 
+    public boolean isActionConfirmationFlag() {
+        return entity.getSettingActionConfirmationFlag();
+    }
+
+    public void setActionConfirmationFlag(boolean flag) {
+        entity.setSettingActionConfirmationFlag(flag);
+    }
+
+    public String getCustomPhrase() {
+        return entity.getSettingCustomPhrase();
+    }
+
+    public void setCustomPhrase(String customPhrase) {
+        entity.setSettingCustomPhrase(customPhrase);
+    }
+
 }

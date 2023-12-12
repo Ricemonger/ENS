@@ -47,6 +47,13 @@ import app.telegram.bot.commands.send.sendOne.SendOneChain;
 import app.telegram.bot.commands.send.sendOne.SendOneFinishCallback;
 import app.telegram.bot.commands.sendall.SendAllCallback;
 import app.telegram.bot.commands.sendall.SendAllDirect;
+import app.telegram.bot.commands.settings.SettingsDirect;
+import app.telegram.bot.commands.settings.actionConfirmation.ActionConfirmationCallback;
+import app.telegram.bot.commands.settings.actionConfirmation.ActionConfirmationDisableCallback;
+import app.telegram.bot.commands.settings.actionConfirmation.ActionConfirmationEnableCallback;
+import app.telegram.bot.commands.settings.customPhrase.CustomPhraseCallback;
+import app.telegram.bot.commands.settings.customPhrase.CustomPhraseChain;
+import app.telegram.bot.commands.settings.customPhrase.CustomPhraseFinishCallback;
 import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
@@ -140,17 +147,26 @@ public class UpdateReceiverAndExecutor {
 
     private void listenDirectCommandAndExecute(Update update) {
         log.info("listenCommandAndExecute was called for update-{}", update.getUpdateId());
-        switch (update.getMessage().getText()) {
-            case "/start" -> new StartDirect(bot, update, botService).execute();
-            case "/send" -> new SendDirect(bot, update, botService).execute();
-            case "/sendall" -> new SendAllDirect(bot, update, botService).execute();
-            case "/help" -> new HelpDirect(bot, update, botService).execute();
-            case "/contact" -> new ContactDirect(bot, update, botService).execute();
-            case "/notification" -> new NotificationDirect(bot, update, botService).execute();
-            case "/clear" -> new ClearDirect(bot, update, botService).execute();
-            case "/link" -> new LinkOrUnlinkDirect(bot, update, botService).execute();
-            case "/data" -> new DataDirect(bot, update, botService).execute();
-            default -> throw new InvalidDirectCommandException();
+
+        String text = update.getMessage().getText();
+        String customPhrase = botService.getUserCustomPhrase(update.getMessage().getChatId());
+
+        if (text.equals(customPhrase) || text.equals("sendall") || text.equals("send all")) {
+            new SendAllDirect(bot, update, botService).execute();
+        } else {
+            switch (text) {
+                case "/start" -> new StartDirect(bot, update, botService).execute();
+                case "/send" -> new SendDirect(bot, update, botService).execute();
+                case "/sendall" -> new SendAllDirect(bot, update, botService).execute();
+                case "/help" -> new HelpDirect(bot, update, botService).execute();
+                case "/contact" -> new ContactDirect(bot, update, botService).execute();
+                case "/notification" -> new NotificationDirect(bot, update, botService).execute();
+                case "/clear" -> new ClearDirect(bot, update, botService).execute();
+                case "/link" -> new LinkOrUnlinkDirect(bot, update, botService).execute();
+                case "/data" -> new DataDirect(bot, update, botService).execute();
+                case "/settings" -> new SettingsDirect(bot, update, botService).execute();
+                default -> throw new InvalidDirectCommandException();
+            }
         }
     }
 
@@ -205,6 +221,17 @@ public class UpdateReceiverAndExecutor {
 
             case Callbacks.UNLINK -> new UnlinkCallback(bot, update, botService).execute();
 
+            case Callbacks.SETTINGS_ACTION_CONFIRMATION ->
+                    new ActionConfirmationCallback(bot, update, botService).execute();
+            case Callbacks.SETTINGS_ACTION_CONFIRMATION_ENABLE -> new ActionConfirmationEnableCallback(bot, update,
+                    botService).execute();
+            case Callbacks.SETTINGS_ACTION_CONFIRMATION_DISABLE -> new ActionConfirmationDisableCallback(bot, update,
+                    botService).execute();
+
+            case Callbacks.SETTINGS_CUSTOM_PHRASE -> new CustomPhraseCallback(bot, update, botService).execute();
+            case Callbacks.SETTINGS_CUSTOM_PHRASE_FINISH ->
+                    new CustomPhraseFinishCallback(bot, update, botService).execute();
+
             case Callbacks.CANCEL -> new CancelCallback(bot, update, botService).execute();
 
             default -> throw new InvalidCallbackException();
@@ -224,6 +251,8 @@ public class UpdateReceiverAndExecutor {
             case NOTIFICATION_ADD_ONE -> new NotificationAddChain(bot, update, botService).execute();
             case NOTIFICATION_REMOVE_ONE -> new NotificationRemoveOneChain(bot, update, botService).execute();
             case NOTIFICATION_REMOVE_MANY -> new NotificationRemoveManyChain(bot, update, botService).execute();
+
+            case CUSTOM_PHRASE -> new CustomPhraseChain(bot, update, botService).execute();
 
             case LINK -> new LinkChain(bot, update, botService).execute();
 

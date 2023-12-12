@@ -48,10 +48,16 @@ public class BotCommandsConfig {
                Remove ALL my data, including my account's entry in bot's database
             """;
 
+    public static final String SETTINGS_HELP_MESSAGE = """
+            Settings:
+                Turn ON/OFF action confirmation for sendAll operation
+                Create custom phrase for sendAll operation
+            """;
+
     public static final String HELP_MESSAGE = "/start - Start communication with bot and register in bot's database\n" +
             "/send - Send notification to one or many chosen emergency contacts\n" +
             "/sendall - Requires action confirmation! Send notification to ALL your emergency contacts\n" +
-            "Also available by typing \"send\", \"send all\", \"sendall\" or your custom phrase to bot\n" +
+            "Also available by typing \"send all\", \"sendall\" or your custom phrase to bot\n" +
             "Custom phrase and action confirmation requirement can be configured in settings\n" +
             "/contact - Get access to contacts related methods:\n" +
             CONTACT_HELP_MESSAGE +
@@ -61,7 +67,8 @@ public class BotCommandsConfig {
             DATA_HELP_MESSAGE +
             "/clear - Remove all your contacts and notifications\n" +
             "/link - Link your telegram to existing ENS account. Unlink if linked already\n" +
-            "/settings - Get and change your account related settings\n";
+            "/settings - Get and change your account related settings\n" +
+            SETTINGS_HELP_MESSAGE;
 
     private final List<BotCommand> publicCommands = new ArrayList<>();
 

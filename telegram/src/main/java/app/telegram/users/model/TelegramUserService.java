@@ -23,7 +23,7 @@ public class TelegramUserService {
 
     private static final long SECURITY_TOKEN_EXPIRATION_TIME = 55 * 60 * 1000;
 
-    private final TelegramUserRepositoryService telegramUserRepositoryService;
+    private final TelegramUserRepositoryService userRepositoryService;
 
     private final TelegramUserJwtUtil telegramUserJwtUtil;
 
@@ -31,14 +31,14 @@ public class TelegramUserService {
 
     public TelegramUser create(Long chatId) {
         if (!doesUserExist(chatId)) {
-            telegramUserRepositoryService.save(new TelegramUser(String.valueOf(chatId)));
+            userRepositoryService.save(new TelegramUser(String.valueOf(chatId)));
 
             String telegramToken = findTelegramTokenOrGenerateAndPut(chatId);
             String securityToken = securityTelegramUserFeignClientService.create(telegramToken);
 
             putSecurityToken(chatId, securityToken);
 
-            return telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+            return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         } else {
             log.info("create was called for chatId-{}, but user already exists", chatId);
             throw new TelegramUserAlreadyExistsException();
@@ -62,7 +62,7 @@ public class TelegramUserService {
     public void removeAccount(Long chatId) {
         String telegramToken = telegramUserJwtUtil.generateToken(chatId);
         securityTelegramUserFeignClientService.delete(telegramToken);
-        telegramUserRepositoryService.delete(new TelegramUser(String.valueOf(chatId)));
+        userRepositoryService.delete(new TelegramUser(String.valueOf(chatId)));
     }
 
     public void link(Long chatId, String username, String password) {
@@ -83,17 +83,17 @@ public class TelegramUserService {
     }
 
     public void setBaseInputAndGroupForAllUsers() {
-        List<TelegramUser> allUsers = telegramUserRepositoryService.findAll();
+        List<TelegramUser> allUsers = userRepositoryService.findAll();
         for (TelegramUser user : allUsers) {
             user.setInputState(InputState.BASE);
             user.setInputGroup(InputGroup.BASE);
-            telegramUserRepositoryService.save(user);
+            userRepositoryService.save(user);
         }
     }
 
     public InputState getInputStateOrBase(Long chatId) {
         try {
-            InputState inputState = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
+            InputState inputState = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputState();
             return inputState != null ? inputState : InputState.BASE;
         } catch (TelegramUserDoesntExistException e) {
             return InputState.BASE;
@@ -101,14 +101,14 @@ public class TelegramUserService {
     }
 
     public void setInputState(Long chatId, InputState inputState) {
-        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         user.setInputState(inputState);
-        telegramUserRepositoryService.save(user);
+        userRepositoryService.save(user);
     }
 
     public InputGroup getInputGroupOrBase(Long chatId) {
         try {
-            InputGroup inputGroup = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputGroup();
+            InputGroup inputGroup = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getInputGroup();
             return inputGroup != null ? inputGroup : InputGroup.BASE;
         } catch (TelegramUserDoesntExistException e) {
             return InputGroup.BASE;
@@ -116,9 +116,9 @@ public class TelegramUserService {
     }
 
     public void setInputGroup(Long chatId, InputGroup inputGroup) {
-        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         user.setInputGroup(inputGroup);
-        telegramUserRepositoryService.save(user);
+        userRepositoryService.save(user);
     }
 
     public boolean doesUserExist(Long chatId) {
@@ -141,10 +141,10 @@ public class TelegramUserService {
     }
 
     private void setNullSecurityToken(Long chatId) {
-        TelegramUser user = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
         user.setTempSecurityToken(null);
         user.setTempSecurityTokenExpirationTime(new Date());
-        telegramUserRepositoryService.save(user);
+        userRepositoryService.save(user);
     }
 
     private String findSecurityTokenOrNull(Long chatId) {
@@ -166,7 +166,7 @@ public class TelegramUserService {
         TelegramUser user = findByIdOrThrow(chatId);
         user.setTempSecurityToken(securityToken);
         user.setTempSecurityTokenExpirationTime(new Date(new Date().getTime() + SECURITY_TOKEN_EXPIRATION_TIME));
-        TelegramUser result = telegramUserRepositoryService.save(user);
+        TelegramUser result = userRepositoryService.save(user);
         log.trace("putSecurityToken executed with chatId-{}, securityToken-{} and result-{}", chatId, securityToken,
                 result);
         return result;
@@ -209,7 +209,7 @@ public class TelegramUserService {
         TelegramUser user = findByIdOrThrow(chatId);
         user.setTempTelegramToken(token);
         user.setTempTelegramTokenExpirationTime(new Date(new Date().getTime() + TELEGRAM_TOKEN_EXPIRATION_TIME));
-        TelegramUser result = telegramUserRepositoryService.save(user);
+        TelegramUser result = userRepositoryService.save(user);
         log.trace("putTelegramToken executed for chatId-{} and result-{}", chatId, result);
         return result;
     }
@@ -217,12 +217,32 @@ public class TelegramUserService {
     private TelegramUser findByIdOrThrow(Long chatId) {
         log.debug("findByIdOrThrow called with chatId-{}", chatId);
         try {
-            TelegramUser result = telegramUserRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+            TelegramUser result = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
             log.trace("findByIdOrThrow executed with chatId-{} and result-{}", chatId, result);
             return result;
         } catch (NoSuchElementException e) {
             log.info("findByIdOrThrow called with chatId-{}, user doesnt exists", chatId);
             throw new TelegramUserDoesntExistException();
         }
+    }
+
+    public void setActionConfirmFlag(Long chatId, boolean flag) {
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setActionConfirmationFlag(flag);
+        userRepositoryService.save(user);
+    }
+
+    public boolean getActionConfirmFlag(Long chatId) {
+        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).isActionConfirmationFlag();
+    }
+
+    public void setCustomPhrase(Long chatId, String customPhrase) {
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setCustomPhrase(customPhrase);
+        userRepositoryService.save(user);
+    }
+
+    public String getCustomPhrase(Long chatId) {
+        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getCustomPhrase();
     }
 }

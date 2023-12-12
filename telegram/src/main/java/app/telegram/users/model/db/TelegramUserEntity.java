@@ -2,8 +2,8 @@ package app.telegram.users.model.db;
 
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
+import app.telegram.users.model.TelegramUser;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,6 @@ import java.util.Date;
 @Data
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class TelegramUserEntity {
 
     @Id
@@ -32,10 +31,36 @@ public class TelegramUserEntity {
     private Date tempSecurityTokenExpirationTime;
 
     @Enumerated(value = EnumType.STRING)
+    @Column()
     private InputState inputState = InputState.BASE;
 
     @Enumerated(value = EnumType.STRING)
     private InputGroup inputGroup = InputGroup.BASE;
+
+    @Column(columnDefinition = "boolean default true")
+    private Boolean settingActionConfirmationFlag = true;
+
+    @Column(columnDefinition = "varchar(255) default 'sendall'")
+    private String settingCustomPhrase = "sendall";
+
+    public TelegramUserEntity(String chatId,
+                              String tgToken, Date tgTokenExp,
+                              String secToken, Date secTokenExp,
+                              InputState inputState, InputGroup inputGroup,
+                              boolean settingActionConfirmationFlag, String settingCustomPhrase) {
+        this(chatId, tgToken, tgTokenExp, secToken, secTokenExp, inputState, inputGroup);
+        this.settingActionConfirmationFlag = settingActionConfirmationFlag;
+        this.settingCustomPhrase = settingCustomPhrase;
+    }
+
+    public TelegramUserEntity(String chatId,
+                              String tgToken, Date tgTokenExp,
+                              String secToken, Date secTokenExp,
+                              InputState inputState, InputGroup inputGroup) {
+        this(chatId, tgToken, tgTokenExp, secToken, secTokenExp);
+        this.inputState = inputState;
+        this.inputGroup = inputGroup;
+    }
 
     public TelegramUserEntity(String chatId, String tgToken, Date tgTokenExp, String secToken, Date secTokenExp) {
         this(chatId);
@@ -47,6 +72,18 @@ public class TelegramUserEntity {
 
     public TelegramUserEntity(String chatId) {
         this.chatId = chatId;
+    }
+
+    public TelegramUserEntity(TelegramUser telegramUser) {
+        this.chatId = telegramUser.getChatId();
+        this.tempTelegramToken = telegramUser.getTempTelegramToken();
+        this.tempTelegramTokenExpirationTime = telegramUser.getTempTelegramTokenExpirationTime();
+        this.tempSecurityToken = telegramUser.getTempSecurityToken();
+        this.tempSecurityTokenExpirationTime = telegramUser.getTempSecurityTokenExpirationTime();
+        this.inputState = telegramUser.getInputState();
+        this.inputGroup = telegramUser.getInputGroup();
+        this.settingActionConfirmationFlag = telegramUser.isActionConfirmationFlag();
+        this.settingCustomPhrase = telegramUser.getCustomPhrase();
     }
 
     public boolean equals(Object o) {
@@ -90,11 +127,23 @@ public class TelegramUserEntity {
                         this.tempSecurityTokenExpirationTime.getTime() == entity.tempSecurityTokenExpirationTime.getTime();
             }
 
-            boolean inputStateEq = this.inputState == entity.inputState;
+            boolean inpStEq = this.inputState == entity.inputState;
 
-            boolean inputGroupEq = this.inputGroup == entity.inputGroup;
+            boolean inpGrEq = this.inputGroup == entity.inputGroup;
 
-            return chatIdEq && tgTokEq && tgTokExpEq && scTokEq && scTokExpEq && inputStateEq && inputGroupEq;
+            boolean acConEq = this.settingActionConfirmationFlag == entity.settingActionConfirmationFlag;
+
+            boolean custPhrEq;
+
+            if (this.settingCustomPhrase == null && entity.settingCustomPhrase == null) {
+                custPhrEq = true;
+            } else if (this.settingCustomPhrase == null || entity.settingCustomPhrase == null) {
+                custPhrEq = false;
+            } else {
+                custPhrEq = this.settingCustomPhrase.equals(entity.settingCustomPhrase);
+            }
+
+            return chatIdEq && tgTokEq && tgTokExpEq && scTokEq && scTokExpEq && inpStEq && inpGrEq && acConEq && custPhrEq;
 
         } else {
             return false;
