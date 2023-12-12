@@ -17,7 +17,7 @@ public class CustomPhraseChain extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        InputState inputState = botService.getNextInputStateOrBase(chatId);
+        InputState inputState = botService.getUserNextInputStateOrBase(chatId);
         if (Objects.requireNonNull(inputState) == InputState.CUSTOM_PHRASE) {
             new CustomPhraseFinish(bot, update, botService).execute();
         } else {

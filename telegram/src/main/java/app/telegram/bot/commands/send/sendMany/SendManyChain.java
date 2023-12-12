@@ -17,7 +17,7 @@ public class SendManyChain extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        InputState inputState = botService.getNextInputStateOrBase(chatId);
+        InputState inputState = botService.getUserNextInputStateOrBase(chatId);
         switch (inputState) {
             case CONTACT_METHOD -> new SendStage2WriteMethodAskContactId(bot, update, botService).execute();
             case CONTACT_ID -> new SendManyStage3WriteContactIdAskNotificationName(bot, update, botService).execute();

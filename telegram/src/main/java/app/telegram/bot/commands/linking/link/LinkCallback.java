@@ -14,7 +14,7 @@ public class LinkCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.LINK);
+        botService.setUserNextInputGroup(chatId, InputGroup.LINK);
 
         new LinkStage1AskUsername(bot, update, botService).execute();
     }

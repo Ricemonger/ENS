@@ -15,7 +15,7 @@ public class NotificationRemoveManyCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.NOTIFICATION_REMOVE_MANY);
+        botService.setUserNextInputGroup(chatId, InputGroup.NOTIFICATION_REMOVE_MANY);
 
         new NotificationStage1AskName(bot, update, botService).execute();
     }

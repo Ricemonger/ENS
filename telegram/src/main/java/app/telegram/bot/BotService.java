@@ -135,8 +135,8 @@ public class BotService {
     }
 
     public void cancelInputs(Long chatId) {
-        setNextInputState(chatId, InputState.BASE);
-        setNextInputGroup(chatId, InputGroup.BASE);
+        setUserNextInputState(chatId, InputState.BASE);
+        setUserNextInputGroup(chatId, InputGroup.BASE);
         clearUserInputs(chatId);
     }
 
@@ -144,23 +144,23 @@ public class BotService {
         telegramUserService.setBaseInputAndGroupForAllUsers();
     }
 
-    public void setNextInputGroup(Long chatId, InputGroup inputGroup) {
+    public void setUserNextInputGroup(Long chatId, InputGroup inputGroup) {
         telegramUserService.setInputGroup(chatId, inputGroup);
     }
 
-    public InputGroup getNextInputGroupOrBase(Long chatId) {
+    public InputGroup getUserNextInputGroupOrBase(Long chatId) {
         return telegramUserService.getInputGroupOrBase(chatId);
     }
 
-    public void setNextInputState(Long chatId, InputState inputState) {
+    public void setUserNextInputState(Long chatId, InputState inputState) {
         telegramUserService.setInputState(chatId, inputState);
     }
 
-    public InputState getNextInputStateOrBase(Long chatId) {
+    public InputState getUserNextInputStateOrBase(Long chatId) {
         return telegramUserService.getInputStateOrBase(chatId);
     }
 
-    public void setActionConfirmFlag(Long chatId, boolean flag) {
+    public void setUserActionConfirmFlag(Long chatId, boolean flag) {
         telegramUserService.setActionConfirmFlag(chatId, flag);
     }
 

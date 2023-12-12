@@ -15,6 +15,25 @@ public class TelegramUser {
 
     private TelegramUserEntity entity = new TelegramUserEntity();
 
+    public TelegramUser(String chatId,
+                        String tgToken, Date tgTokenExp,
+                        String secToken, Date secTokenExp,
+                        InputState inputState, InputGroup inputGroup,
+                        boolean settingActionConfirmationFlag, String customPhrase) {
+        this(chatId, tgToken, tgTokenExp, secToken, secTokenExp, inputState, inputGroup);
+        entity.setSettingActionConfirmationFlag(settingActionConfirmationFlag);
+        entity.setSettingCustomPhrase(customPhrase);
+    }
+
+    public TelegramUser(String chatId,
+                        String tgToken, Date tgTokenExp,
+                        String secToken, Date secTokenExp,
+                        InputState inputState, InputGroup inputGroup) {
+        this(chatId, tgToken, tgTokenExp, secToken, secTokenExp);
+        entity.setInputState(inputState);
+        entity.setInputGroup(inputGroup);
+    }
+
     public TelegramUser(String chatId, String telegramToken, Date telegramTokenExpiration, String securityToken,
                         Date securityTokenExpiration) {
         this(chatId);

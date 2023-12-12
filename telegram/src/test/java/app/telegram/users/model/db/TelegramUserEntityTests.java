@@ -39,23 +39,35 @@ public class TelegramUserEntityTests {
 
     private final static InputGroup AIG = InputGroup.NOTIFICATION_ADD_ONE;
 
-    private final static TelegramUserEntity ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG);
+    private final static Boolean AC = true;
 
-    private final static TelegramUserEntity SAME_ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG);
+    private final static Boolean AAC = false;
 
-    private final static TelegramUserEntity ALTERED_CHAT_ID = new TelegramUserEntity(AID, TT, TD, ST, SD, IS, IG);
+    private final static String CP = "CUSTOM_PHRASE";
 
-    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN = new TelegramUserEntity(ID, ATT, TD, ST, SD, IS, IG);
+    private final static String ACP = "ALTERED_CUSTOM_PHRASE";
 
-    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN_DATE = new TelegramUserEntity(ID, TT, ATD, ST, SD, IS, IG);
+    private final static TelegramUserEntity ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG, AC, CP);
 
-    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN = new TelegramUserEntity(ID, TT, TD, AST, SD, IS, IG);
+    private final static TelegramUserEntity SAME_ENTITY = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, IG, AC, CP);
 
-    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN_DATE = new TelegramUserEntity(ID, TT, TD, ST, ASD, IS, IG);
+    private final static TelegramUserEntity ALTERED_CHAT_ID = new TelegramUserEntity(AID, TT, TD, ST, SD, IS, IG, AC, CP);
 
-    private final static TelegramUserEntity ALTERED_INPUT_STATE = new TelegramUserEntity(ID, TT, TD, ST, SD, AIS, IG);
+    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN = new TelegramUserEntity(ID, ATT, TD, ST, SD, IS, IG, AC, CP);
 
-    private final static TelegramUserEntity ALTERED_INPUT_GROUP = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, AIG);
+    private final static TelegramUserEntity ALTERED_TELEGRAM_TOKEN_DATE = new TelegramUserEntity(ID, TT, ATD, ST, SD, IS, IG, AC, CP);
+
+    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN = new TelegramUserEntity(ID, TT, TD, AST, SD, IS, IG, AC, CP);
+
+    private final static TelegramUserEntity ALTERED_SECURITY_TOKEN_DATE = new TelegramUserEntity(ID, TT, TD, ST, ASD, IS, IG, AC, CP);
+
+    private final static TelegramUserEntity ALTERED_INPUT_STATE = new TelegramUserEntity(ID, TT, TD, ST, SD, AIS, IG, AC, CP);
+
+    private final static TelegramUserEntity ALTERED_INPUT_GROUP = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, AIG, AC, CP);
+
+    private final static TelegramUserEntity ALTERED_ACTION_CONFIRMATION = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, AIG, AAC, CP);
+
+    private final static TelegramUserEntity ALTERED_CUSTOM_PHRASE = new TelegramUserEntity(ID, TT, TD, ST, SD, IS, AIG, AC, ACP);
 
     @Test
     public void equalsShouldReturnTrueIfSame() {
@@ -71,5 +83,7 @@ public class TelegramUserEntityTests {
         assertNotEquals(ENTITY, ALTERED_SECURITY_TOKEN_DATE);
         assertNotEquals(ENTITY, ALTERED_INPUT_STATE);
         assertNotEquals(ENTITY, ALTERED_INPUT_GROUP);
+        assertNotEquals(ENTITY, ALTERED_ACTION_CONFIRMATION);
+        assertNotEquals(ENTITY, ALTERED_CUSTOM_PHRASE);
     }
 }

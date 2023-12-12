@@ -1,7 +1,6 @@
 package app.telegram.users.model;
 
 import app.telegram.users.model.db.TelegramUserRepositoryService;
-import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClient;
 import app.utils.services.security.telegram.feign.SecurityTelegramUserFeignClientService;
 import app.utils.services.telegram.exceptions.InvalidTelegramTokenException;
 import app.utils.services.telegram.exceptions.TelegramUserAlreadyExistsException;
@@ -9,7 +8,9 @@ import app.utils.services.telegram.exceptions.TelegramUserDoesntExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import java.util.ArrayList;
@@ -17,8 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class TelegramUserServiceTests {
@@ -37,29 +37,22 @@ public class TelegramUserServiceTests {
     @SpyBean
     private TelegramUserJwtUtil jwtUtil;
 
-    private MockSecurityTelegramUserFeignClientService f;
+    @MockBean
+    private SecurityTelegramUserFeignClientService securityService;
 
-    private MockSecurityTelegramUserFeignClientService securityService;
-
+    @Autowired
     private TelegramUserService userService;
 
     @BeforeEach
     public void setUp() {
         repositoryService.deleteAll();
-
-        f = new MockSecurityTelegramUserFeignClientService(null);
-
-        securityService = spy(f);
-
-        userService = new TelegramUserService(repositoryService, jwtUtil,
-                securityService);
     }
 
     @Test
-    public void createShouldSaveInRepositoryAndInSecurityModule() {
-        TelegramUser returned = userService.create(CHAT_ID);
+    public void createShouldSaveInRepositoryAndInSecurityModuleAndCallSecurityModuleCreateIfDoesntExist() {
+        when(securityService.doesUserExists(anyString())).thenReturn(false);
 
-        System.out.println(returned);
+        TelegramUser returned = userService.create(CHAT_ID);
 
         verify(repositoryService).save(new TelegramUser(String.valueOf(CHAT_ID)));
 
@@ -73,7 +66,26 @@ public class TelegramUserServiceTests {
     }
 
     @Test
+    public void createShouldSaveInRepositoryAndInSecurityModuleAndCallSecurityModuleGetSecurityTokenIfAlreadyExists() {
+        when(securityService.doesUserExists(anyString())).thenReturn(true);
+
+        TelegramUser returned = userService.create(CHAT_ID);
+
+        verify(repositoryService).save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        verify(jwtUtil).generateToken(CHAT_ID);
+
+        verify(securityService).getSecurityToken(anyString());
+
+        TelegramUser inDb = repositoryService.findAll().get(0);
+
+        assertEquals(inDb, returned);
+    }
+
+    @Test
     public void createShouldThrowIfUserAlreadyExists() {
+        when(securityService.doesUserExists(anyString())).thenReturn(true);
+
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
 
         Executable executable = () -> userService.create(CHAT_ID);
@@ -109,6 +121,8 @@ public class TelegramUserServiceTests {
 
     @Test
     public void getAccountInfoShouldGetInfoFromSecurityModule() {
+        when(securityService.getAccountInfo(anyString())).thenReturn(MOCK_STRING);
+
         String token = jwtUtil.generateToken(CHAT_ID);
 
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID), token, null, null, null));
@@ -172,14 +186,14 @@ public class TelegramUserServiceTests {
     @Test
     public void isLinkedShouldReturnSecurityIsLinkedResult() {
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
-        securityService.isLinkedBool = false;
+        when(securityService.isLinked(anyString())).thenReturn(false);
         boolean result1 = userService.isLinked(CHAT_ID);
 
         assertFalse(result1);
 
         verify(securityService).isLinked(argThat(s -> jwtUtil.isTokenValidAndContainsChatId(s, CHAT_ID)));
 
-        securityService.isLinkedBool = true;
+        when(securityService.isLinked(anyString())).thenReturn(true);
         boolean result2 = userService.isLinked(CHAT_ID);
 
         assertTrue(result2);
@@ -280,20 +294,141 @@ public class TelegramUserServiceTests {
     }
 
     @Test
+    public void setActionConfirmFlagShouldSetFlagInUserRepositoryIfUserExists() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        reset(repositoryService);
+
+        userService.setActionConfirmFlag(CHAT_ID, true);
+
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setActionConfirmationFlag(true);
+
+        verify(repositoryService).save(user);
+    }
+
+    @Test
+    public void setActionConfirmFlagShouldThrowIfUserDoesntExist() {
+        Executable executable = () -> {
+            userService.setActionConfirmFlag(CHAT_ID, true);
+        };
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void getActionConfirmFlagShouldReturnTrueIfSetTrueAndUserExist() {
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setActionConfirmationFlag(true);
+
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        assertTrue(userService.getActionConfirmFlag(CHAT_ID));
+    }
+
+    @Test
+    public void getActionConfirmFlagShouldReturnFalseIfSetFalseAndUserExist() {
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setActionConfirmationFlag(false);
+
+        repositoryService.save(user);
+
+        assertFalse(userService.getActionConfirmFlag(CHAT_ID));
+    }
+
+    @Test
+    public void getActionConfirmShouldThrowIfUserDoesntExist() {
+        Executable executable = () -> userService.getActionConfirmFlag(CHAT_ID);
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void setCustomPhraseShouldSetPhraseInUserRepositoryIfUserExists() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        reset(repositoryService);
+
+        userService.setCustomPhrase(CHAT_ID, "CUSTOM_PHRASE");
+
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setCustomPhrase("CUSTOM_PHRASE");
+
+        verify(repositoryService).save(user);
+    }
+
+    @Test
+    public void setCustomPhraseShouldThrowIfUserDoesntExist() {
+        Executable executable = () -> {
+            userService.setCustomPhrase(CHAT_ID, "CUSTOM_PHRASE");
+        };
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
+    public void geCustomPhraseShouldReturnPhraseFromDbIfUserExist() {
+        TelegramUser user = new TelegramUser(String.valueOf(CHAT_ID));
+        user.setCustomPhrase("CUSTOM_PHRASE");
+
+        repositoryService.save(user);
+
+        assertEquals("CUSTOM_PHRASE", userService.getCustomPhrase(CHAT_ID));
+    }
+
+    @Test
+    public void getCustomPhraseShouldThrowIfUserDoesntExist() {
+        Executable executable = () -> userService.getCustomPhrase(CHAT_ID);
+
+        assertThrows(TelegramUserDoesntExistException.class, executable);
+    }
+
+    @Test
     public void doesUserExistsShouldReturnTrueIfExists() {
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        when(securityService.doesUserExists(anyString())).thenReturn(true);
 
         assertTrue(userService.doesUserExist(CHAT_ID));
     }
 
     @Test
-    public void doesUserExistsShouldReturnFalseIfDoesntExist() {
+    public void doesUserExistsShouldReturnFalseIfDoesntExistInInnerDb() {
+        when(securityService.doesUserExists(anyString())).thenReturn(true);
+
         assertFalse(userService.doesUserExist(CHAT_ID));
+    }
+
+    @Test
+    public void doesUserExistsShouldReturnFalseIfDoesntExistInSecurityDb() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        when(securityService.doesUserExists(anyString())).thenReturn(false);
+
+        assertFalse(userService.doesUserExist(CHAT_ID));
+    }
+
+    @Test
+    public void doesUserExistsInInnerDbShouldReturnTrueIfExists() {
+        repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        when(securityService.doesUserExists(anyString())).thenReturn(false);
+
+        assertTrue(userService.doesUserExistInInnerDb(CHAT_ID));
+    }
+
+    @Test
+    public void doesUserExistsInInnerDbShouldReturnFalseIfDoesntExist() {
+        when(securityService.doesUserExists(anyString())).thenReturn(true);
+
+        assertFalse(userService.doesUserExistInInnerDb(CHAT_ID));
     }
 
     @Test
     public void findSecurityTokenOrGenerateAndPutShouldGetSecurityTokenFromSecurityModuleAndPutInDb() {
         repositoryService.save(new TelegramUser(String.valueOf(CHAT_ID)));
+
+        when(securityService.getSecurityToken(anyString())).thenReturn(MOCK_STRING);
 
         String securityToken = userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
 
@@ -307,46 +442,5 @@ public class TelegramUserServiceTests {
         Executable executable = () -> userService.findSecurityTokenOrGenerateAndPut(CHAT_ID);
 
         assertThrows(TelegramUserDoesntExistException.class, executable);
-    }
-
-    private static class MockSecurityTelegramUserFeignClientService extends SecurityTelegramUserFeignClientService {
-
-        public boolean isLinkedBool = false;
-
-        public MockSecurityTelegramUserFeignClientService(SecurityTelegramUserFeignClient securityTelegramUserFeignClient) {
-            super(null);
-        }
-
-        public String create(String telegramToken) {
-            return MOCK_STRING;
-        }
-
-        public void delete(String telegramToken) {
-        }
-
-        public void link(String telegramToken, String username, String password) {
-            isLinkedBool = true;
-        }
-
-        public void unlink(String telegramToken) {
-            isLinkedBool = false;
-        }
-
-        public boolean isLinked(String telegramToken) {
-            return isLinkedBool;
-        }
-
-        public String getSecurityToken(String telegramToken) {
-            return MOCK_STRING;
-        }
-
-        public String getAccountInfo(String telegramToken) {
-            return MOCK_STRING;
-        }
-
-        @Override
-        public boolean doesUserExists(String telegramToken) {
-            return true;
-        }
     }
 }

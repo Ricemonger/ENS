@@ -15,7 +15,7 @@ public class NotificationAddCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.NOTIFICATION_ADD_ONE);
+        botService.setUserNextInputGroup(chatId, InputGroup.NOTIFICATION_ADD_ONE);
 
         new NotificationStage1AskName(bot, update, botService).execute();
     }

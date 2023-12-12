@@ -15,7 +15,7 @@ public class SendOneCallback extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.SEND_ONE);
+        botService.setUserNextInputGroup(chatId, InputGroup.SEND_ONE);
 
         new SendStage1AskMethod(bot, update, botService).execute();
     }

@@ -101,7 +101,7 @@ public class UpdateReceiverAndExecutor {
                 chatId = update.getCallbackQuery().getMessage().getChatId();
             }
 
-            InputGroup inputGroup = botService.getNextInputGroupOrBase(chatId);
+            InputGroup inputGroup = botService.getUserNextInputGroupOrBase(chatId);
             log.info("User's input group is-{} for update-{}", inputGroup, update.getUpdateId());
 
             if (update.hasMessage() && inputGroup == InputGroup.BASE) {

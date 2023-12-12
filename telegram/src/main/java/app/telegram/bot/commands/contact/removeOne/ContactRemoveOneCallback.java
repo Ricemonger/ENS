@@ -15,7 +15,7 @@ public class ContactRemoveOneCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.CONTACT_REMOVE_ONE);
+        botService.setUserNextInputGroup(chatId, InputGroup.CONTACT_REMOVE_ONE);
 
         new ContactStage1AskMethod(bot, update, botService).execute();
     }

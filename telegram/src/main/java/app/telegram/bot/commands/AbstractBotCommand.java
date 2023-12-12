@@ -47,7 +47,7 @@ public abstract class AbstractBotCommand {
     protected abstract void executeCommand();
 
     protected final void setUserActionConfirmFlag(boolean flag) {
-        botService.setActionConfirmFlag(chatId, flag);
+        botService.setUserActionConfirmFlag(chatId, flag);
     }
 
     protected final boolean isUserActionConfirmFlag() {
@@ -63,7 +63,7 @@ public abstract class AbstractBotCommand {
     }
 
     protected final void processFirstInput(Long chatId, InputState nextState, String question) {
-        botService.setNextInputState(chatId, nextState);
+        botService.setUserNextInputState(chatId, nextState);
 
         if (nextState == InputState.CONTACT_METHOD) {
             askForMethodFromInlineKeyboard(question);
@@ -84,7 +84,7 @@ public abstract class AbstractBotCommand {
 
     protected final void processLastInput(InputState currentState) {
         saveCurrentInputAndSetNextState(currentState, InputState.BASE);
-        botService.setNextInputGroup(chatId, InputGroup.BASE);
+        botService.setUserNextInputGroup(chatId, InputGroup.BASE);
     }
 
     private void saveCurrentInputAndSetNextState(InputState currentState, InputState nextState) {
@@ -105,7 +105,7 @@ public abstract class AbstractBotCommand {
             userInput = "";
         }
         botService.saveInput(chatId, currentState, userInput);
-        botService.setNextInputState(chatId, nextState);
+        botService.setUserNextInputState(chatId, nextState);
     }
 
     private void askForInputOrEmptyLineFromInlineKeyboard(String text) {

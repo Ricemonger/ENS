@@ -15,7 +15,7 @@ public class SendManyCallback extends AbstractBotCommand {
 
     @Override
     public void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.SEND_MANY);
+        botService.setUserNextInputGroup(chatId, InputGroup.SEND_MANY);
 
         new SendStage1AskMethod(bot, update, botService).execute();
     }

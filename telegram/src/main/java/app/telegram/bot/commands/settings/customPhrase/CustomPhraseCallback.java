@@ -14,7 +14,7 @@ public class CustomPhraseCallback extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        botService.setNextInputGroup(chatId, InputGroup.CUSTOM_PHRASE);
+        botService.setUserNextInputGroup(chatId, InputGroup.CUSTOM_PHRASE);
         new CustomPhraseStage1AskPhrase(bot, update, botService).execute();
     }
 }

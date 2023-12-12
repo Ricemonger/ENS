@@ -366,11 +366,31 @@ public class BotServiceTests {
     }
 
     @Test
-    public void cancel() {
+    public void setCustomPhraseFromInputMapShouldSetPhrase() {
+        String customPhrase = "CUSTOM_PHRASE";
+
+        botService.saveInput(CHAT_ID, InputState.CUSTOM_PHRASE, customPhrase);
+
+        botService.setCustomPhraseFromInputMap(CHAT_ID);
+
+        verify(botService).setUserCustomPhrase(CHAT_ID, customPhrase);
+
+        verify(botService).clearUserInputs(CHAT_ID);
+    }
+
+    @Test
+    public void setCustomPhraseFromInputMapShouldThrowIfEmptyMap() {
+        Executable executable = () -> botService.setCustomPhraseFromInputMap(CHAT_ID);
+
+        assertThrows(EmptyInputMapException.class, executable);
+    }
+
+    @Test
+    public void cancelInputs() {
         botService.cancelInputs(CHAT_ID);
 
-        verify(botService).setNextInputState(CHAT_ID, InputState.BASE);
-        verify(botService).setNextInputGroup(CHAT_ID, InputGroup.BASE);
+        verify(botService).setUserNextInputState(CHAT_ID, InputState.BASE);
+        verify(botService).setUserNextInputGroup(CHAT_ID, InputGroup.BASE);
         verify(botService).clearUserInputs(CHAT_ID);
     }
 
@@ -383,7 +403,7 @@ public class BotServiceTests {
 
     @Test
     public void setNextInputGroup() {
-        botService.setNextInputGroup(CHAT_ID, IG);
+        botService.setUserNextInputGroup(CHAT_ID, IG);
 
         verify(telegramUserService).setInputGroup(CHAT_ID, IG);
     }
@@ -392,12 +412,12 @@ public class BotServiceTests {
     public void getNextInputGroup() {
         when(telegramUserService.getInputGroupOrBase(CHAT_ID)).thenReturn(IG);
 
-        assertEquals(IG, botService.getNextInputGroupOrBase(CHAT_ID));
+        assertEquals(IG, botService.getUserNextInputGroupOrBase(CHAT_ID));
     }
 
     @Test
     public void setNextInputState() {
-        botService.setNextInputState(CHAT_ID, IS);
+        botService.setUserNextInputState(CHAT_ID, IS);
 
         verify(telegramUserService).setInputState(CHAT_ID, IS);
     }
@@ -406,7 +426,43 @@ public class BotServiceTests {
     public void getNextInputState() {
         when(telegramUserService.getInputStateOrBase(CHAT_ID)).thenReturn(IS);
 
-        assertEquals(IS, botService.getNextInputStateOrBase(CHAT_ID));
+        assertEquals(IS, botService.getUserNextInputStateOrBase(CHAT_ID));
+    }
+
+    @Test
+    public void setUserActionConfirmFlag() {
+        botService.setUserActionConfirmFlag(CHAT_ID, true);
+
+        verify(telegramUserService).setActionConfirmFlag(CHAT_ID, true);
+
+        botService.setUserActionConfirmFlag(CHAT_ID, false);
+
+        verify(telegramUserService).setActionConfirmFlag(CHAT_ID, false);
+    }
+
+    @Test
+    public void getUserActionConfirmFlag() {
+        when(telegramUserService.getActionConfirmFlag(CHAT_ID)).thenReturn(true);
+
+        assertTrue(botService.getUserActionConfirmFlag(CHAT_ID));
+
+        when(telegramUserService.getActionConfirmFlag(CHAT_ID)).thenReturn(false);
+
+        assertFalse(botService.getUserActionConfirmFlag(CHAT_ID));
+    }
+
+    @Test
+    public void setUserCustomPhrase() {
+        botService.setUserCustomPhrase(CHAT_ID, "MOCK_STRING");
+
+        verify(telegramUserService).setCustomPhrase(CHAT_ID, "MOCK_STRING");
+    }
+
+    @Test
+    public void getUserCustomPhrase() {
+        when(telegramUserService.getCustomPhrase(CHAT_ID)).thenReturn("MOCK_STRING");
+
+        assertEquals("MOCK_STRING", botService.getUserCustomPhrase(CHAT_ID));
     }
 
     @Test
@@ -542,6 +598,24 @@ public class BotServiceTests {
     @Test
     public void getSendManyRequestFromInputMapShouldThrowIfEmptyMap() {
         Executable executable = () -> botService.getSendManyRequestFromInputsMap(CHAT_ID);
+
+        assertThrows(EmptyInputMapException.class, executable);
+    }
+
+    @Test
+    public void getCustomPhraseFromInputMapShouldReturnFromMap() {
+        String customPhrase = "CUSTOM_PHRASE";
+
+        botService.saveInput(CHAT_ID, InputState.CUSTOM_PHRASE, customPhrase);
+
+        String input = botService.getCustomPhraseFromInputMap(CHAT_ID);
+
+        assertEquals(customPhrase, input);
+    }
+
+    @Test
+    public void getCustomPhraseFromInputMapShouldThrowIfEmptyMap() {
+        Executable executable = () -> botService.getCustomPhraseFromInputMap(CHAT_ID);
 
         assertThrows(EmptyInputMapException.class, executable);
     }

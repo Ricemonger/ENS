@@ -127,6 +127,26 @@ public class TelegramUserService {
         userRepositoryService.save(user);
     }
 
+    public void setActionConfirmFlag(Long chatId, boolean flag) {
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setActionConfirmationFlag(flag);
+        userRepositoryService.save(user);
+    }
+
+    public boolean getActionConfirmFlag(Long chatId) {
+        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).isActionConfirmationFlag();
+    }
+
+    public void setCustomPhrase(Long chatId, String customPhrase) {
+        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
+        user.setCustomPhrase(customPhrase);
+        userRepositoryService.save(user);
+    }
+
+    public String getCustomPhrase(Long chatId) {
+        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getCustomPhrase();
+    }
+
     public boolean doesUserExist(Long chatId) {
         try {
             return doesUserExistInInnerDb(chatId) && secFeignClient.doesUserExists(findTelegramTokenOrGenerateAndPut(chatId));
@@ -238,25 +258,5 @@ public class TelegramUserService {
             log.info("findByIdOrThrow called with chatId-{}, user doesnt exists", chatId);
             throw new TelegramUserDoesntExistException();
         }
-    }
-
-    public void setActionConfirmFlag(Long chatId, boolean flag) {
-        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
-        user.setActionConfirmationFlag(flag);
-        userRepositoryService.save(user);
-    }
-
-    public boolean getActionConfirmFlag(Long chatId) {
-        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).isActionConfirmationFlag();
-    }
-
-    public void setCustomPhrase(Long chatId, String customPhrase) {
-        TelegramUser user = userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId));
-        user.setCustomPhrase(customPhrase);
-        userRepositoryService.save(user);
-    }
-
-    public String getCustomPhrase(Long chatId) {
-        return userRepositoryService.findByChatIdOrThrow(String.valueOf(chatId)).getCustomPhrase();
     }
 }
