@@ -24,7 +24,7 @@ public class SettingsDirect extends AbstractBotCommand {
             boolean flag = botService.getUserActionConfirmFlag(chatId);
             String phrase = botService.getUserCustomPhrase(chatId);
 
-            String questionAddition = String.format("Action confirmation flag:%s\nCustom phrase:%s", flag, phrase);
+            String questionAddition = String.format("Action confirmation flag: %s\nCustom phrase: %s", flag, phrase);
 
             askFromInlineKeyboard(BotCommandsConfig.SETTINGS_HELP_MESSAGE + questionAddition, 1, ac, cp);
         };

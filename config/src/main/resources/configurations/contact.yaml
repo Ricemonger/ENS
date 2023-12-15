@@ -34,3 +34,8 @@ logging:
     path: \logs\
     name: contact.log
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+

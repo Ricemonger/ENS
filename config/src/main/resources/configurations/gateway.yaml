@@ -49,3 +49,7 @@ logging:
     path: \logs\
     name: gateway.log
 
+management:
+  tracing:
+    sampling:
+      probability: 1.0

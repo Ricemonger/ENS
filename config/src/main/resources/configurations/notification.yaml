@@ -31,3 +31,8 @@ logging:
   file:
     path: \logs\
     name: notification.log
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
