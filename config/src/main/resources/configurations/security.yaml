@@ -1,42 +1,12 @@
-application:
-  title: security
-  version: 1.0
-  config:
-    telegram:
-      url: http://localhost:8080/api/telegram/security/
-    request-mappings:
-      abstract: /api/security
-      ens: /api/users
-      tg: /api/security-tg-users
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-
 server:
   port: 8093
 
-spring:
-  application:
-    name: security
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ens
-    username: postgres
-    password: 1234
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
 logging:
-  level:
-    app: trace
   file:
-    path: \logs\
     name: security.log
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+spring:
+  config:
+    import:
+      - common.yaml
+      - common-db.yaml

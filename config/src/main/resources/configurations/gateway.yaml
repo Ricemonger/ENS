@@ -1,11 +1,11 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8080
+
+logging:
+  file:
+    name: gateway.log
 
 spring:
-  application:
-    name: gateway
   cloud:
     discovery:
       enabled: true
@@ -35,21 +35,6 @@ spring:
           uri: http://localhost:8094
           predicates:
             - Path=/api/telegram/**
-
-application:
-  title: gateway
-  version: 1.0
-server:
-  port: 8080
-
-logging:
-  level:
-    app: trace
-  file:
-    path: \logs\
-    name: gateway.log
-
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+  config:
+    import:
+      - common.yaml

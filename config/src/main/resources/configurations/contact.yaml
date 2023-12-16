@@ -1,41 +1,13 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
 server:
-  port: 8090
-
-application:
-  title: contact
-  version: 1.0
-  config:
-    request-mappings:
-      contact: /api/contacts
-
-spring:
-  application:
-    name: contact
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/ens
-    username: postgres
-    password: 1234
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
+  port: ${application.config.ports.contact}
 
 logging:
-  level:
-    app: trace
   file:
-    path: \logs\
     name: contact.log
 
-management:
-  tracing:
-    sampling:
-      probability: 1.0
+spring:
+  config:
+    import:
+      - common.yaml
+      - common-db.yaml
 
