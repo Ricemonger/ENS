@@ -158,21 +158,23 @@ public class UpdateReceiverAndExecutor {
             customPhrase = botService.getUserCustomPhrase(update.getMessage().getChatId());
         }
 
-        if (text.equals(customPhrase) || text.equals("sendall") || text.equals("send all")) {
-            new SendAllDirect(bot, update, botService).execute();
-        } else {
-            switch (text) {
-                case "/start" -> new StartDirect(bot, update, botService).execute();
-                case "/send" -> new SendDirect(bot, update, botService).execute();
-                case "/sendall" -> new SendAllDirect(bot, update, botService).execute();
-                case "/help" -> new HelpDirect(bot, update, botService).execute();
-                case "/contact" -> new ContactDirect(bot, update, botService).execute();
-                case "/notification" -> new NotificationDirect(bot, update, botService).execute();
-                case "/clear" -> new ClearDirect(bot, update, botService).execute();
-                case "/link" -> new LinkOrUnlinkDirect(bot, update, botService).execute();
-                case "/data" -> new DataDirect(bot, update, botService).execute();
-                case "/settings" -> new SettingsDirect(bot, update, botService).execute();
-                default -> throw new InvalidDirectCommandException();
+        switch (text) {
+            case "/start" -> new StartDirect(bot, update, botService).execute();
+            case "/send" -> new SendDirect(bot, update, botService).execute();
+            case "/sendall" -> new SendAllDirect(bot, update, botService).execute();
+            case "/help" -> new HelpDirect(bot, update, botService).execute();
+            case "/contact" -> new ContactDirect(bot, update, botService).execute();
+            case "/notification" -> new NotificationDirect(bot, update, botService).execute();
+            case "/clear" -> new ClearDirect(bot, update, botService).execute();
+            case "/link" -> new LinkOrUnlinkDirect(bot, update, botService).execute();
+            case "/data" -> new DataDirect(bot, update, botService).execute();
+            case "/settings" -> new SettingsDirect(bot, update, botService).execute();
+            default -> {
+                if (text.equals(customPhrase) || text.equals("sendall") || text.equals("send all")) {
+                    new SendAllDirect(bot, update, botService).execute();
+                } else {
+                    throw new InvalidDirectCommandException();
+                }
             }
         }
     }
