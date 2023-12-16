@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${application.config.ports.gateway}
 
 logging:
   file:
@@ -16,25 +16,25 @@ spring:
           lower-case-service-id: true
       routes:
         - id: contact
-          uri: http://localhost:8090
+          uri: http://${application.config.host}:${application.config.ports.contact}
           predicates:
-            - Path=/api/contacts/**
+            - Path=${application.config.request-mappings.contact}/**
         - id: notification
-          uri: http://localhost:8091
+          uri: http://${application.config.host}:${application.config.ports.notification}
           predicates:
-            - Path=/api/notifications/**
-        - id: sender
-          uri: http://localhost:8092
+            - Path=${application.config.request-mappings.notification}/**
+        - id: send
+          uri: http://${application.config.host}:${application.config.ports.send}
           predicates:
-            - Path=/api/send/**
+            - Path=${application.config.request-mappings.sender}/**
         - id: security
-          uri: http://localhost:8093
+          uri: http://${application.config.host}:${application.config.ports.security}
           predicates:
-            - Path=/api/users/**, /api/security/**, /api/security-tg-users/**
+            - Path=${application.config.request-mappings.ens}/**, ${application.config.request-mappings.abstract}/**, ${application.config.request-mappings.tg}/**
         - id: telegram
-          uri: http://localhost:8094
+          uri: http://${application.config.host}:${application.config.ports.telegram}
           predicates:
-            - Path=/api/telegram/**
+            - Path=${application.config.request-mappings.telegram-security}/**
   config:
     import:
       - common.yaml

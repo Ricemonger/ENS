@@ -1,5 +1,5 @@
 server:
-  port: 8094
+  port: ${application.config.ports.telegram}
 
 logging:
   file:

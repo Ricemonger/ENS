@@ -25,16 +25,13 @@ application:
       sender: /api/send
       telegram-security: /api/telegram/security
     telegram:
-      url: http://${application.config.host}:${application.config.ports:telegram}${application.config.request-mappings.telegram-security}
+      url: http://${application.config.host}:${application.config.ports.telegram}${application.config.request-mappings.telegram-security}
 
 eureka:
-  server:
-    hostname: ${application.config.host}
-    port: ${application.config.ports.discovery}
-    uri: /eureka/
+  uri: /eureka/
   client:
     service-url:
-      defaultZone: http://${eureka.server.hostname}:${eureka.server.port}${eureka.server.uri}
+      defaultZone: http://${application.config.host}:${application.config.ports.discovery}${eureka.uri}
 
 management:
   tracing:
