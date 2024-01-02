@@ -35,7 +35,7 @@ public class SendService {
     public void sendOne(String token, String method, String contactId, String notificationText) {
         String notifText = getNotifTextFromDbIfEmptyOrDefaultIfEmptyInDb(token, method, contactId, notificationText);
 
-        switch (getMethod(method)) {
+        switch (convertToMethod(method)) {
             case SMS -> send(smsSender, contactId, notifText);
             case EMAIL -> send(emailSender, contactId, notifText);
             case VIBER -> send(viberSender, contactId, notifText);
@@ -43,7 +43,7 @@ public class SendService {
     }
 
     public void sendMany(String securityToken, String method, String contactId, String notificationName) {
-        Method meth = getMethod(method);
+        Method meth = convertToMethod(method);
 
         List<Contact> contacts =
                 contactFeignClientService
@@ -89,14 +89,14 @@ public class SendService {
         return notifText;
     }
 
-    private Method getMethod(String method) {
+    private Method convertToMethod(String method) {
         Method meth;
         try {
             meth = Method.valueOf(method.trim().toUpperCase(Locale.ROOT));
             return meth;
         } catch (NullPointerException | IllegalArgumentException e) {
             log.info("getMethod throws with method-{}, wrong method name entered", method);
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(e);
         }
     }
 
