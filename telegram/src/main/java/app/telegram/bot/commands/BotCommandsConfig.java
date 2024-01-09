@@ -21,6 +21,15 @@ public class BotCommandsConfig {
                                 notification template name(partial)
             """;
 
+    public static final String TASK_HELP_MESSAGE = """
+            Tasks methods:
+                Add task for one contact
+                Add task for many contacts by contact pattern
+                Add task for ALL contacts on account
+                Delete one task by name
+                Delete all tasks
+            """;
+
     public static final String CONTACT_HELP_MESSAGE = """
             Contact methods:
                Add one contact
@@ -59,6 +68,8 @@ public class BotCommandsConfig {
             "/sendall - Requires action confirmation! Send notification to ALL your emergency contacts\n" +
             "Also available by typing \"send all\", \"sendall\" or your custom phrase to bot\n" +
             "Custom phrase and action confirmation requirement can be configured in settings\n" +
+            "/task - Interaction with tasks(delayed notifications with timer for sending)" +
+            TASK_HELP_MESSAGE +
             "/contact - Get access to contacts related methods:\n" +
             CONTACT_HELP_MESSAGE +
             "/notification - Get access to notifications related methods:\n" +
@@ -77,6 +88,7 @@ public class BotCommandsConfig {
         publicCommands.add(new BotCommand("/send", "Send notification to chosen emergency contact(s)"));
         publicCommands.add(new BotCommand("/sendall", "Send notifications to ALL emergency contacts"));
         publicCommands.add(new BotCommand("/help", "Expanded description of all commands"));
+        publicCommands.add(new BotCommand("/task", "Interaction with tasks(delayed notifications)"));
         publicCommands.add(new BotCommand("/contact", "Interactions with emergency contacts"));
         publicCommands.add(new BotCommand("/notification", "Interactions with notifications' templates"));
         publicCommands.add(new BotCommand("/data", "Interaction with data in bot's database"));

@@ -57,6 +57,7 @@ import app.telegram.bot.commands.settings.customPhrase.CustomPhraseFinishCallbac
 import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
+import app.telegram.bot.commands.task.TaskDirect;
 import app.telegram.bot.exceptions.internal.InternalErrorException;
 import app.telegram.bot.exceptions.internal.InvalidCallbackException;
 import app.telegram.bot.exceptions.internal.InvalidUserInputGroupException;
@@ -163,6 +164,7 @@ public class UpdateReceiverAndExecutor {
             case "/send" -> new SendDirect(bot, update, botService).execute();
             case "/sendall" -> new SendAllDirect(bot, update, botService).execute();
             case "/help" -> new HelpDirect(bot, update, botService).execute();
+            case "/task" -> new TaskDirect(bot, update, botService).execute();
             case "/contact" -> new ContactDirect(bot, update, botService).execute();
             case "/notification" -> new NotificationDirect(bot, update, botService).execute();
             case "/clear" -> new ClearDirect(bot, update, botService).execute();
@@ -252,6 +254,10 @@ public class UpdateReceiverAndExecutor {
         switch (inputGroup) {
             case SEND_ONE -> new SendOneChain(bot, update, botService).execute();
             case SEND_MANY -> new SendManyChain(bot, update, botService).execute();
+
+            case TASK_ADD_ONE -> new TaskAddOneChain(bot, update, botService).execute();
+            case TASK_ADD_MANY -> new TaskAddManyChain(bot, update, botService).execute();
+            case TASK_REMOVE_ONE -> TaskRemoveOneChain(bot, update, botService).execute();
 
             case CONTACT_ADD_ONE -> new ContactAddChain(bot, update, botService).execute();
             case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(bot, update, botService).execute();

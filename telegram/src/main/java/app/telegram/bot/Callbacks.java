@@ -13,6 +13,9 @@ public class Callbacks {
 
     public static final String SEND_ALL = "SEND_ALL";
 
+    public static final String TASK_CREATE = "TASK_CREATE";
+    public static final String TASK_REMOVE = "TASK_REMOVE";
+
     public static final String CONTACT_ADD = "CONTACT_ADD";
     public static final String CONTACT_ADD_FINISH = "CONTACT_ADD_FINISH";
 
