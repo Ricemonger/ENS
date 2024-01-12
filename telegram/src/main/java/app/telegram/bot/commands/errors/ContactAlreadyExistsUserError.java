@@ -13,6 +13,6 @@ public class ContactAlreadyExistsUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Couldn't add new contact, same contact already exists");
+        sendText("Couldn't add new contact, same contact already exists");
     }
 }

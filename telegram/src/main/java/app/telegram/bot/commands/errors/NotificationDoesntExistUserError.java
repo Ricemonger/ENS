@@ -13,6 +13,6 @@ public class NotificationDoesntExistUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Sorry, such notification doesn't exist");
+        sendText("Sorry, such notification doesn't exist");
     }
 }

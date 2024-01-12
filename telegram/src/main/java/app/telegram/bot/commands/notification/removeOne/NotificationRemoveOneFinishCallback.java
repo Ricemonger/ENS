@@ -14,6 +14,6 @@ public class NotificationRemoveOneFinishCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         botService.removeOneNotification(chatId);
-        sendAnswer("Your Notification was Removed!");
+        sendText("Your Notification was Removed!");
     }
 }

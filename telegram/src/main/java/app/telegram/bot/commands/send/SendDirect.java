@@ -18,7 +18,7 @@ public class SendDirect extends AbstractBotCommand {
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
             String answer = BotCommandsConfig.SEND_HELP_MESSAGE;
-            sendAnswer(answer);
+            sendText(answer);
             String question = "What would you like to do?";
             CallbackButton[] buttons = new CallbackButton[3];
             buttons[0] = new CallbackButton("Send to one", Callbacks.SEND_ONE);

@@ -16,6 +16,6 @@ public class ContactRemoveOneStage3WriteContactIdFinishAndPrint extends Abstract
     protected void executeCommand() {
         processLastInput(InputState.CONTACT_ID);
 
-        sendAnswer("Your contact is:" + botService.getContactFromInputsMap(chatId));
+        sendText("Your contact is:" + botService.getContactFromInputsMap(chatId));
     }
 }

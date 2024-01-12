@@ -14,6 +14,6 @@ public class NotificationAddFinishCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         botService.addNotification(chatId);
-        sendAnswer("Your Notification was Saved!");
+        sendText("Your Notification was Saved!");
     }
 }

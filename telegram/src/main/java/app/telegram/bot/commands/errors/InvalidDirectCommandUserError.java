@@ -13,6 +13,6 @@ public class InvalidDirectCommandUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Sorry, command is not recognized, please try /help");
+        sendText("Sorry, command is not recognized, please try /help");
     }
 }

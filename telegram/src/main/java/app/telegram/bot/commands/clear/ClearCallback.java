@@ -14,6 +14,6 @@ public class ClearCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         botService.clear(chatId);
-        sendAnswer("All  Contacts and Notifications were cleared");
+        sendText("All  Contacts and Notifications were cleared");
     }
 }

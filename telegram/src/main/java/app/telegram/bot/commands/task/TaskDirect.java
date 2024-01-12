@@ -17,7 +17,7 @@ public class TaskDirect extends AbstractBotCommand {
     protected void executeCommand() {
         String question = "What would you like to do?";
         CallbackButton createTask = new CallbackButton("Create Task", Callbacks.TASK_CREATE);
-        CallbackButton removeTask = new CallbackButton("Remove Task", Callbacks.TASK_REMOVE);
+        CallbackButton removeTask = new CallbackButton("Remove Task", Callbacks.TASK_DELETE);
         CallbackButton cancel = new CallbackButton("Cancel", Callbacks.CANCEL);
         askFromInlineKeyboard(question, 1, createTask, removeTask, cancel);
     }

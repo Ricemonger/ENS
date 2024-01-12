@@ -14,6 +14,6 @@ public class SendManyFinishCallback extends AbstractBotCommand {
     @Override
     protected void executeCommand() {
         botService.sendMany(chatId);
-        sendAnswer("Messages were sent to matching contacts.");
+        sendText("Messages were sent to matching contacts.");
     }
 }

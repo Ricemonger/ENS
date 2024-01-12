@@ -13,7 +13,7 @@ public class InternalError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Internal Error Occurred");
+        sendText("Internal Error Occurred");
         botService.cancelInputs(chatId);
     }
 }

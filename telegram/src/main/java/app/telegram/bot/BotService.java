@@ -1,9 +1,13 @@
 package app.telegram.bot;
 
 import app.telegram.bot.exceptions.internal.EmptyInputMapException;
+import app.telegram.bot.exceptions.user.InvalidTaskTypeException;
+import app.telegram.bot.exceptions.user.InvalidTimeAndDateFormatInput;
 import app.telegram.bot.feign_client_adapters.ContactFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.NotificationFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.SendFeignClientServiceAdapter;
+import app.telegram.task.model.Task;
+import app.telegram.task.model.TaskType;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;
@@ -17,15 +21,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class BotService {
+
+    public static final String TIME_AND_DATE_FORMAT = "HH:mm:ss dd-MM-yyyy";
 
     private final Map<String, Map<InputState, String>> inputsMap = new HashMap<>();
 
@@ -253,6 +258,42 @@ public class BotService {
         return customPhrase;
     }
 
+    public Task getTaskFromInputMap(Long chatId) {
+        Map<InputState, String> requestMap = getUserInputMapOrThrow(chatId);
+        String name = requestMap.get(InputState.TASK_NAME);
+        String type = requestMap.get(InputState.TASK_TYPE);
+        String time = requestMap.get(InputState.TASK_TIME);
+        String method = requestMap.get(InputState.CONTACT_METHOD);
+        String contactId = requestMap.get(InputState.CONTACT_ID);
+        String notification = requestMap.get(InputState.NOTIFICATION_TEXT);
+
+        Date timeDated;
+        TaskType typed;
+        Method methoded;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_AND_DATE_FORMAT);
+        try {
+            timeDated = dateFormat.parse(time);
+        } catch (ParseException e) {
+            log.info("getTaskFromInputMap throws InvalidTimeAndDateFormat for chatOd-{}, invalid input-{}", chatId, time);
+            throw new InvalidTimeAndDateFormatInput(e);
+        }
+
+        try {
+            typed = TaskType.valueOf(type);
+        } catch (RuntimeException e) {
+            throw new InvalidTaskTypeException(e);
+        }
+
+        try {
+            methoded = Method.valueOf(method);
+        } catch (RuntimeException e) {
+            throw new InvalidContactMethodException(e);
+        }
+
+        return new Task(String.valueOf(chatId), name, timeDated, typed, methoded, contactId, notification);
+    }
+
     public Map<InputState, String> getUserInputMapOrThrow(Long chatId) {
         Map<InputState, String> inputMap = inputsMap.get(String.valueOf(chatId));
         if (inputMap == null || inputMap.isEmpty()) {
@@ -261,6 +302,4 @@ public class BotService {
         }
         return inputMap;
     }
-
-
 }

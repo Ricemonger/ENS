@@ -16,6 +16,6 @@ public class ContactStage4WriteNotificationFinishAndPrint extends AbstractBotCom
     public void executeCommand() {
         processLastInput(InputState.NOTIFICATION_NAME);
 
-        sendAnswer("Your contact is:" + botService.getContactFromInputsMap(chatId));
+        sendText("Your contact is:" + botService.getContactFromInputsMap(chatId));
     }
 }

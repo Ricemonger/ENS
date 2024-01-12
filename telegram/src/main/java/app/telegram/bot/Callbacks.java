@@ -14,7 +14,10 @@ public class Callbacks {
     public static final String SEND_ALL = "SEND_ALL";
 
     public static final String TASK_CREATE = "TASK_CREATE";
-    public static final String TASK_REMOVE = "TASK_REMOVE";
+    public static final String TASK_CREATE_FINISH = "TASK_CREATE_FINISH";
+
+    public static final String TASK_DELETE = "TASK_DELETE";
+    public static final String TASK_DELETE_FINISH = "TASK_DELETE_FINISH";
 
     public static final String CONTACT_ADD = "CONTACT_ADD";
     public static final String CONTACT_ADD_FINISH = "CONTACT_ADD_FINISH";
@@ -62,7 +65,15 @@ public class Callbacks {
     public static final String METHOD_EMAIL = "METHOD_EMAIL";
     public static final String METHOD_TELEGRAM = "METHOD_TELEGRAM";
 
+    public static final String TASK_TYPE_ONE = "TASK_TYPE_ONE";
+    public static final String TASK_TYPE_MANY = "TASK_TYPE_MANY";
+    public static final String TASK_TYPE_ALL = "TASK_TYPE_ALL";
+
     public static boolean isMethod(String data) {
         return data != null && (data.equals(METHOD_SMS) || data.equals(METHOD_VIBER) || data.equals(METHOD_EMAIL) || data.equals(METHOD_TELEGRAM));
+    }
+
+    public static boolean isTaskType(String data) {
+        return data != null && (data.equals(TASK_TYPE_ONE) || data.equals(TASK_TYPE_MANY) || data.equals(TASK_TYPE_ALL));
     }
 }

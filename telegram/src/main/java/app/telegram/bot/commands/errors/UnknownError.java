@@ -13,7 +13,7 @@ public class UnknownError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Unknown Error Occurred");
+        sendText("Unknown Error Occurred");
         botService.cancelInputs(chatId);
     }
 }

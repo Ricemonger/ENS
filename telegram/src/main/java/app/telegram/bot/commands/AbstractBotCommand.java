@@ -2,6 +2,7 @@ package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.Callbacks;
+import app.telegram.task.model.TaskType;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.utils.services.contact.Method;
@@ -77,6 +78,8 @@ public abstract class AbstractBotCommand {
 
         if (nextState == InputState.CONTACT_METHOD) {
             askForMethodFromInlineKeyboard(question);
+        } else if (nextState == InputState.TASK_TYPE) {
+            askForTaskTypeFromInlineKeyboard(question);
         } else {
             askForInputOrEmptyLineFromInlineKeyboard(question);
         }
@@ -92,6 +95,14 @@ public abstract class AbstractBotCommand {
 
         if (update.hasMessage()) {
             userInput = update.getMessage().getText();
+        } else if (currentState == InputState.TASK_TYPE) {
+            String data = update.getCallbackQuery().getData();
+            switch (data) {
+                case Callbacks.TASK_TYPE_ONE -> userInput = TaskType.ONE.name();
+                case Callbacks.TASK_TYPE_MANY -> userInput = TaskType.MANY.name();
+                case Callbacks.TASK_TYPE_ALL -> userInput = TaskType.ALL.name();
+                default -> userInput = "";
+            }
         } else if (currentState == InputState.CONTACT_METHOD) {
             String data = update.getCallbackQuery().getData();
             switch (data) {
@@ -119,6 +130,13 @@ public abstract class AbstractBotCommand {
         CallbackButton email = new CallbackButton("EMAIL", Callbacks.METHOD_EMAIL);
         CallbackButton telegram = new CallbackButton("TELEGRAM", Callbacks.METHOD_TELEGRAM);
         askFromInlineKeyboard(question, 1, sms, viber, email, telegram);
+    }
+
+    private void askForTaskTypeFromInlineKeyboard(String question) {
+        CallbackButton one = new CallbackButton("ONE", Callbacks.TASK_TYPE_ONE);
+        CallbackButton many = new CallbackButton("MANY", Callbacks.TASK_TYPE_MANY);
+        CallbackButton all = new CallbackButton("ALL", Callbacks.TASK_TYPE_ALL);
+        askFromInlineKeyboard(question, 1, one, many, all);
     }
 
     protected final void executeCommandIfUserExistsOrAskToRegister(MyFunctionalInterface functionalInterface) {
@@ -183,14 +201,14 @@ public abstract class AbstractBotCommand {
         } else {
             answer = "You are already registered";
         }
-        sendAnswer(answer);
+        sendText(answer);
     }
 
     protected final boolean isUserInDb(Long chatId) {
         return botService.doesUserExist(chatId);
     }
 
-    protected final void sendAnswer(String answer) {
+    protected final void sendText(String answer) {
         SendMessage sendMessage = new SendMessage(String.valueOf(chatId), answer);
         executeMessage(sendMessage);
     }

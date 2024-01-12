@@ -13,6 +13,6 @@ public class SenderUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Sorry, error occurred during sending operation. Invalid conjunction of Contact's Method and ID");
+        sendText("Sorry, error occurred during sending operation. Invalid conjunction of Contact's Method and ID");
     }
 }

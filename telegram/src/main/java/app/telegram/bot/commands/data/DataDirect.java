@@ -17,7 +17,7 @@ public class DataDirect extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
-            sendAnswer(BotCommandsConfig.DATA_HELP_MESSAGE);
+            sendText(BotCommandsConfig.DATA_HELP_MESSAGE);
             String question = "What would you like to do?";
             CallbackButton[] buttons = new CallbackButton[2];
             buttons[0] = new CallbackButton("Show data", Callbacks.DATA_SHOW);

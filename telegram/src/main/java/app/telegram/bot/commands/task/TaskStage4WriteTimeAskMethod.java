@@ -6,14 +6,15 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class TaskStage1AskName extends AbstractBotCommand {
+public class TaskStage4WriteTimeAskMethod extends AbstractBotCommand {
 
-    public TaskStage1AskName(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public TaskStage4WriteTimeAskMethod(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     protected void executeCommand() {
-        processFirstInput(chatId, InputState.TASK_NAME, "Please task's name:");
+        processMiddleInput(InputState.TASK_TIME, InputState.CONTACT_METHOD, "Please input task's contact's method[SMS," +
+                "VIBER,EMAIL,TELEGRAM]:");
     }
 }

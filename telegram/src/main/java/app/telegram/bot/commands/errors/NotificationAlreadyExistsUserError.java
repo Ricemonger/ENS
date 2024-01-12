@@ -13,6 +13,6 @@ public class NotificationAlreadyExistsUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Couldn't add new notification, same notification already exists");
+        sendText("Couldn't add new notification, same notification already exists");
     }
 }

@@ -14,6 +14,6 @@ public class NotificationRemoveManyFinishCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         botService.removeManyNotifications(chatId);
-        sendAnswer("Your Notifications were removed!");
+        sendText("Your Notifications were removed!");
     }
 }

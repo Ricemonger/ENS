@@ -14,6 +14,6 @@ public class CustomPhraseFinishCallback extends AbstractBotCommand {
     @Override
     protected void executeCommand() {
         botService.setCustomPhraseFromInputMap(chatId);
-        sendAnswer("Your custom phrase was successfully set!");
+        sendText("Your custom phrase was successfully set!");
     }
 }

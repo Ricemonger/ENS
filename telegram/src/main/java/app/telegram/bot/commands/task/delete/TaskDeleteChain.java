@@ -1,18 +1,18 @@
-package app.telegram.bot.commands.errors;
+package app.telegram.bot.commands.task.delete;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class ContactDoesntExistUserError extends AbstractBotCommand {
+public class TaskDeleteChain extends AbstractBotCommand {
 
-    public ContactDoesntExistUserError(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public TaskDeleteChain(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     protected void executeCommand() {
-        sendText("Sorry, such contact doesn't exist");
+
     }
 }

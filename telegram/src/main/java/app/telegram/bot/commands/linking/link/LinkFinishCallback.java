@@ -15,6 +15,6 @@ public class LinkFinishCallback extends AbstractBotCommand {
     public void executeCommand() {
         botService.link(chatId);
 
-        sendAnswer("Linking finished successfully!");
+        sendText("Linking finished successfully!");
     }
 }

@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.send.sendOne;
+package app.telegram.bot.commands.task;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,9 +6,9 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class SendOneStage4WriteNotificationTextFinishRequestAndPrint extends AbstractBotCommand {
+public class TaskStage7WriteNotificationTextAndPrint extends AbstractBotCommand {
 
-    public SendOneStage4WriteNotificationTextFinishRequestAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public TaskStage7WriteNotificationTextAndPrint(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
@@ -16,6 +16,8 @@ public class SendOneStage4WriteNotificationTextFinishRequestAndPrint extends Abs
     protected void executeCommand() {
         processLastInput(InputState.NOTIFICATION_TEXT);
 
-        sendText("Your request is:" + botService.getSendOneRequestFromInputsMap(chatId));
+        String text = botService.getTaskFromInputMap(chatId).toString();
+
+        sendText(text);
     }
 }

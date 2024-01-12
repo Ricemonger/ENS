@@ -17,7 +17,7 @@ public class NotificationDirect extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
-            sendAnswer(BotCommandsConfig.NOTIFICATION_HELP_MESSAGE);
+            sendText(BotCommandsConfig.NOTIFICATION_HELP_MESSAGE);
             String question = "What would you like to do?";
             CallbackButton[] buttons = new CallbackButton[3];
             buttons[0] = new CallbackButton("Add one", Callbacks.NOTIFICATION_ADD);

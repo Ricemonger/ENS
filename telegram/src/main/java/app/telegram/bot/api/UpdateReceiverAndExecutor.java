@@ -58,6 +58,12 @@ import app.telegram.bot.commands.start.RegisterNoCallback;
 import app.telegram.bot.commands.start.RegisterYesCallback;
 import app.telegram.bot.commands.start.StartDirect;
 import app.telegram.bot.commands.task.TaskDirect;
+import app.telegram.bot.commands.task.create.TaskCreateCallback;
+import app.telegram.bot.commands.task.create.TaskCreateChain;
+import app.telegram.bot.commands.task.create.TaskCreateFinishCallback;
+import app.telegram.bot.commands.task.delete.TaskDeleteCallback;
+import app.telegram.bot.commands.task.delete.TaskDeleteChain;
+import app.telegram.bot.commands.task.delete.TaskDeleteFinishCallback;
 import app.telegram.bot.exceptions.internal.InternalErrorException;
 import app.telegram.bot.exceptions.internal.InvalidCallbackException;
 import app.telegram.bot.exceptions.internal.InvalidUserInputGroupException;
@@ -107,7 +113,7 @@ public class UpdateReceiverAndExecutor {
 
             if (update.hasMessage() && inputGroup == InputGroup.BASE) {
                 listenDirectCommandAndExecute(update);
-            } else if (update.hasMessage() || (query != null && (query.getData().equals(Callbacks.EMPTY) || Callbacks.isMethod(query.getData())))) {
+            } else if (update.hasMessage() || (query != null && (query.getData().equals(Callbacks.EMPTY) || Callbacks.isMethod(query.getData()) || Callbacks.isTaskType(query.getData())))) {
                 listenUserInputAndExecute(inputGroup, update);
             } else if (query != null) {
                 listenCallbackQueryAndExecute(update);
@@ -195,6 +201,12 @@ public class UpdateReceiverAndExecutor {
 
             case Callbacks.SEND_ALL -> new SendAllCallback(bot, update, botService).execute();
 
+            case Callbacks.TASK_CREATE -> new TaskCreateCallback(bot, update, botService).execute();
+            case Callbacks.TASK_CREATE_FINISH -> new TaskCreateFinishCallback(bot, update, botService).execute();
+
+            case Callbacks.TASK_DELETE -> new TaskDeleteCallback(bot, update, botService).execute();
+            case Callbacks.TASK_DELETE_FINISH -> new TaskDeleteFinishCallback(bot, update, botService).execute();
+
             case Callbacks.CONTACT_ADD -> new ContactAddCallback(bot, update, botService).execute();
             case Callbacks.CONTACT_ADD_FINISH -> new ContactAddFinishCallback(bot, update, botService).execute();
 
@@ -255,9 +267,8 @@ public class UpdateReceiverAndExecutor {
             case SEND_ONE -> new SendOneChain(bot, update, botService).execute();
             case SEND_MANY -> new SendManyChain(bot, update, botService).execute();
 
-            case TASK_ADD_ONE -> new TaskAddOneChain(bot, update, botService).execute();
-            case TASK_ADD_MANY -> new TaskAddManyChain(bot, update, botService).execute();
-            case TASK_REMOVE_ONE -> TaskRemoveOneChain(bot, update, botService).execute();
+            case TASK_CREATE -> new TaskCreateChain(bot, update, botService).execute();
+            case TASK_DELETE -> new TaskDeleteChain(bot, update, botService).execute();
 
             case CONTACT_ADD_ONE -> new ContactAddChain(bot, update, botService).execute();
             case CONTACT_REMOVE_ONE -> new ContactRemoveOneChain(bot, update, botService).execute();

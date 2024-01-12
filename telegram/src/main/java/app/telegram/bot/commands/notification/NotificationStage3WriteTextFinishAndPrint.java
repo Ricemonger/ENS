@@ -16,6 +16,6 @@ public class NotificationStage3WriteTextFinishAndPrint extends AbstractBotComman
     public void executeCommand() {
         processLastInput(InputState.NOTIFICATION_TEXT);
 
-        sendAnswer("Your notification is:" + botService.getNotificationFromInputsMap(chatId));
+        sendText("Your notification is:" + botService.getNotificationFromInputsMap(chatId));
     }
 }

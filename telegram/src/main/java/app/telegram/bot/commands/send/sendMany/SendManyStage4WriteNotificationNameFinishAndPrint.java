@@ -16,6 +16,6 @@ public class SendManyStage4WriteNotificationNameFinishAndPrint extends AbstractB
     protected void executeCommand() {
         processLastInput(InputState.NOTIFICATION_NAME);
 
-        sendAnswer("Your request is:" + botService.getSendManyRequestFromInputsMap(chatId));
+        sendText("Your request is:" + botService.getSendManyRequestFromInputsMap(chatId));
     }
 }

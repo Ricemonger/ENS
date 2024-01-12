@@ -14,6 +14,6 @@ public class CancelCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         botService.cancelInputs(chatId);
-        sendAnswer("Operation Cancelled");
+        sendText("Operation Cancelled");
     }
 }

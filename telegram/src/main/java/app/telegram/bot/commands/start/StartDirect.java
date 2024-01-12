@@ -16,9 +16,9 @@ public class StartDirect extends AbstractBotCommand {
     public void executeCommand() {
         String answer = "Welcome to Emergency Notification Service Bot!";
         if (!isUserInDb(chatId)) {
-            sendAnswer(answer);
+            sendText(answer);
             askUserToRegister();
         } else
-            sendAnswer(answer + "\nYou are already registered in Bot.");
+            sendText(answer + "\nYou are already registered in Bot.");
     }
 }

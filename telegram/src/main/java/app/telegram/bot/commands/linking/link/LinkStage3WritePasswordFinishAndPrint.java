@@ -18,6 +18,6 @@ public class LinkStage3WritePasswordFinishAndPrint extends AbstractBotCommand {
 
         String[] s = botService.getUsernameAndPasswordFromInputsMap(chatId);
 
-        sendAnswer("Input is finished. Your ENS account is:" + s[0] + "|" + s[1]);
+        sendText("Input is finished. Your ENS account is:" + s[0] + "|" + s[1]);
     }
 }

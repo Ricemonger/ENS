@@ -17,7 +17,7 @@ public class ContactDirect extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         MyFunctionalInterface function = () -> {
-            sendAnswer(BotCommandsConfig.CONTACT_HELP_MESSAGE);
+            sendText(BotCommandsConfig.CONTACT_HELP_MESSAGE);
             String question = "What would you like to do?";
             CallbackButton[] buttons = new CallbackButton[3];
             buttons[0] = new CallbackButton("Add one", Callbacks.CONTACT_ADD);

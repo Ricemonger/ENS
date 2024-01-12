@@ -14,6 +14,6 @@ public class DataShowCallback extends AbstractBotCommand {
     @Override
     public void executeCommand() {
         String data = botService.getUserData(chatId);
-        sendAnswer("Your user data:\n" + data);
+        sendText("Your user data:\n" + data);
     }
 }

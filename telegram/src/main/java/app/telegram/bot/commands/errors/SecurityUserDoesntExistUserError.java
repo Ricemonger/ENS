@@ -13,6 +13,6 @@ public class SecurityUserDoesntExistUserError extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        sendAnswer("Sorry, user with such username and password doesnt exist");
+        sendText("Sorry, user with such username and password doesnt exist");
     }
 }

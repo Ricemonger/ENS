@@ -16,6 +16,6 @@ public class NotificationRemoveOneStage2WriteNameFinishAndPrint extends Abstract
     protected void executeCommand() {
         processLastInput(InputState.NOTIFICATION_NAME);
 
-        sendAnswer("Your notification name is: " + botService.getNotificationFromInputsMap(chatId).getName());
+        sendText("Your notification name is: " + botService.getNotificationFromInputsMap(chatId).getName());
     }
 }

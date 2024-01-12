@@ -14,6 +14,6 @@ public class SendOneFinishCallback extends AbstractBotCommand {
     @Override
     protected void executeCommand() {
         botService.sendOne(chatId);
-        sendAnswer("Message was sent to defined contact.");
+        sendText("Message was sent to defined contact.");
     }
 }

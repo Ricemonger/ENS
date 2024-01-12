@@ -14,6 +14,6 @@ public class ActionConfirmationDisableCallback extends AbstractBotCommand {
     @Override
     protected void executeCommand() {
         setUserActionConfirmFlag(false);
-        sendAnswer("Action confirmation was disabled.");
+        sendText("Action confirmation was disabled.");
     }
 }
