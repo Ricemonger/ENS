@@ -2,7 +2,7 @@ package app.telegram.bot.commands;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.Callbacks;
-import app.telegram.task.model.TaskType;
+import app.telegram.bot.task.model.TaskType;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.utils.services.contact.Method;

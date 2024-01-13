@@ -1,4 +1,4 @@
-package app.telegram.task.model.db;
+package app.telegram.bot.task.model.db;
 
 
 import lombok.AllArgsConstructor;

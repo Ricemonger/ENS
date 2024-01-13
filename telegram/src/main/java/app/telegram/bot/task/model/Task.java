@@ -1,6 +1,6 @@
-package app.telegram.task.model;
+package app.telegram.bot.task.model;
 
-import app.telegram.task.model.db.TaskEntity;
+import app.telegram.bot.task.model.db.TaskEntity;
 import app.utils.services.contact.Method;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,10 +29,14 @@ public class Task {
     }
 
     public Task(String chatId, String name, Date taskTime, TaskType taskType) {
-        entity.setChatId(chatId);
-        entity.setName(name);
+        this(chatId, name);
         entity.setTaskTime(taskTime);
         entity.setTaskType(taskType);
+    }
+
+    public Task(String chatId, String name) {
+        entity.setChatId(chatId);
+        entity.setName(name);
     }
 
     public String getChatId() {
@@ -89,5 +93,19 @@ public class Task {
 
     public void setContactNotification(String contactNotification) {
         entity.setContactNotification(contactNotification);
+    }
+
+    public String toString() {
+        if (getTaskType() == null) {
+            String sb = "chatId=" + getChatId() +
+                    ", name=" + getName();
+            return sb;
+        } else {
+            return String.format("Task(chatId=%s, name=%s, taskTime=%s, taskType=%s, contactMethod=%s, contactId=%s, " +
+                            "contactNotification=%s)",
+                    getChatId(), getName(),
+                    getTaskTime(), getTaskType(),
+                    getContactMethod(), getContactId(), getContactNotification());
+        }
     }
 }

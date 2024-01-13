@@ -13,6 +13,7 @@ public class TaskCreateFinishCallback extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-
+        botService.createTask(chatId);
+        sendText("Task was successfully created");
     }
 }

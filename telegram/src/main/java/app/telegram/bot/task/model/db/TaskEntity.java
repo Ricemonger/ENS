@@ -1,6 +1,6 @@
-package app.telegram.task.model.db;
+package app.telegram.bot.task.model.db;
 
-import app.telegram.task.model.TaskType;
+import app.telegram.bot.task.model.TaskType;
 import app.utils.services.contact.Method;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

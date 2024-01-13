@@ -1,7 +1,7 @@
 package app.telegram.task;
 
-import app.telegram.task.model.Task;
-import app.telegram.task.model.TaskType;
+import app.telegram.bot.task.model.Task;
+import app.telegram.bot.task.model.TaskType;
 import app.utils.services.contact.Method;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.task;
+package app.telegram.bot.commands.task.create;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,9 +6,9 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class TaskStage4WriteTimeAskMethod extends AbstractBotCommand {
+public class TaskCreateStage4WriteTimeAskMethod extends AbstractBotCommand {
 
-    public TaskStage4WriteTimeAskMethod(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public TaskCreateStage4WriteTimeAskMethod(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 

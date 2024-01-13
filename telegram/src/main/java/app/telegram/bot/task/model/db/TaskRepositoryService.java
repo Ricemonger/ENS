@@ -1,10 +1,12 @@
-package app.telegram.task.model.db;
+package app.telegram.bot.task.model.db;
 
-import app.telegram.task.model.Task;
-import app.telegram.task.model.TaskAlreadyExistsException;
+import app.telegram.bot.exceptions.user.TaskAlreadyExistsException;
+import app.telegram.bot.task.model.Task;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,10 @@ public class TaskRepositoryService {
             TaskEntity saved = taskRepository.save(entity);
             return toTask(saved);
         }
+    }
+
+    public List<Task> findAllByChatId(String chatId) {
+        return taskRepository.findAllByChatId(chatId).stream().map(this::toTask).toList();
     }
 
     public void deleteByKey(String chatId, String name) {

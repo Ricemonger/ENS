@@ -2,12 +2,12 @@ package app.telegram.bot;
 
 import app.telegram.bot.exceptions.internal.EmptyInputMapException;
 import app.telegram.bot.exceptions.user.InvalidTaskTypeException;
-import app.telegram.bot.exceptions.user.InvalidTimeAndDateFormatInput;
 import app.telegram.bot.feign_client_adapters.ContactFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.NotificationFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.SendFeignClientServiceAdapter;
-import app.telegram.task.model.Task;
-import app.telegram.task.model.TaskType;
+import app.telegram.bot.task.controller.TaskService;
+import app.telegram.bot.task.model.Task;
+import app.telegram.bot.task.model.TaskType;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
 import app.telegram.users.model.TelegramUserService;
@@ -36,6 +36,8 @@ public class BotService {
 
     private final TelegramUserService telegramUserService;
 
+    private final TaskService taskService;
+
     private final ContactFeignClientServiceAdapter contactFeignClientServiceAdapter;
 
     private final NotificationFeignClientServiceAdapter notificationFeignClientServiceAdapter;
@@ -54,12 +56,15 @@ public class BotService {
         StringBuilder stringBuilder = new StringBuilder();
         List<Notification> notificationList = notificationFeignClientServiceAdapter.findAll(chatId);
         List<Contact> contactList = contactFeignClientServiceAdapter.findAll(chatId);
+        List<Task> taskList = taskService.findAllByChatId(chatId);
         String accountInfo = telegramUserService.getAccountInfo(chatId);
 
         stringBuilder.append("Notifications:\n");
         stringBuilder.append(notificationList);
         stringBuilder.append("\nContacts:\n");
         stringBuilder.append(contactList);
+        stringBuilder.append("\nTasks:\n");
+        stringBuilder.append(taskList);
         stringBuilder.append("\nAccount info:\n");
         stringBuilder.append(accountInfo);
 
@@ -104,39 +109,58 @@ public class BotService {
         sendFeignClientServiceAdapter.sendAll(chatId);
     }
 
-    public void addContact(Long chatId) {
-        contactFeignClientServiceAdapter.addOne(chatId, getContactFromInputsMap(chatId));
+    public void createTask(Long chatId) {
+        Task task = getTaskFromInputMap(chatId);
         clearUserInputs(chatId);
+        taskService.create(task);
+    }
+
+    public void deleteTask(Long chatId) {
+        Task task = getTaskKeyFromInputMap(chatId);
+        clearUserInputs(chatId);
+        taskService.deleteByKey(chatId, task.getName());
+    }
+
+    public void addContact(Long chatId) {
+        Contact contact = getContactFromInputsMap(chatId);
+        clearUserInputs(chatId);
+        contactFeignClientServiceAdapter.addOne(chatId, contact);
     }
 
     public void removeOneContact(Long chatId) {
-        contactFeignClientServiceAdapter.removeOne(chatId, getContactFromInputsMap(chatId));
+        Contact contact = getContactFromInputsMap(chatId);
         clearUserInputs(chatId);
+        contactFeignClientServiceAdapter.removeOne(chatId, contact);
     }
 
     public void removeManyContacts(Long chatId) {
-        contactFeignClientServiceAdapter.removeMany(chatId, getContactFromInputsMap(chatId));
+        Contact contact = getContactFromInputsMap(chatId);
         clearUserInputs(chatId);
+        contactFeignClientServiceAdapter.removeMany(chatId, contact);
     }
 
     public void addNotification(Long chatId) {
-        notificationFeignClientServiceAdapter.addOne(chatId, getNotificationFromInputsMap(chatId));
+        Notification notification = getNotificationFromInputsMap(chatId);
         clearUserInputs(chatId);
+        notificationFeignClientServiceAdapter.addOne(chatId, notification);
     }
 
     public void removeOneNotification(Long chatId) {
-        notificationFeignClientServiceAdapter.removeOne(chatId, getNotificationFromInputsMap(chatId));
+        Notification notification = getNotificationFromInputsMap(chatId);
         clearUserInputs(chatId);
+        notificationFeignClientServiceAdapter.removeOne(chatId, notification);
     }
 
     public void removeManyNotifications(Long chatId) {
-        notificationFeignClientServiceAdapter.removeMany(chatId, getNotificationFromInputsMap(chatId));
+        Notification notification = getNotificationFromInputsMap(chatId);
         clearUserInputs(chatId);
+        notificationFeignClientServiceAdapter.removeMany(chatId, notification);
     }
 
     public void setCustomPhraseFromInputMap(Long chatId) {
-        setUserCustomPhrase(chatId, getCustomPhraseFromInputMap(chatId));
+        String customPhrase = getCustomPhraseFromInputMap(chatId);
         clearUserInputs(chatId);
+        setUserCustomPhrase(chatId, customPhrase);
     }
 
     public void cancelInputs(Long chatId) {
@@ -274,9 +298,10 @@ public class BotService {
         SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_AND_DATE_FORMAT);
         try {
             timeDated = dateFormat.parse(time);
-        } catch (ParseException e) {
-            log.info("getTaskFromInputMap throws InvalidTimeAndDateFormat for chatOd-{}, invalid input-{}", chatId, time);
-            throw new InvalidTimeAndDateFormatInput(e);
+        } catch (ParseException | NullPointerException e) {
+            log.info("getTaskFromInputMap throws for chatOd-{}, invalid time input-{}, default time used", chatId, time);
+            timeDated = new Date();
+            timeDated.setTime(timeDated.getTime() + 3_600_000 * 24);
         }
 
         try {
@@ -292,6 +317,12 @@ public class BotService {
         }
 
         return new Task(String.valueOf(chatId), name, timeDated, typed, methoded, contactId, notification);
+    }
+
+    public Task getTaskKeyFromInputMap(Long chatId) {
+        Map<InputState, String> requestMap = getUserInputMapOrThrow(chatId);
+        String name = requestMap.get(InputState.TASK_NAME);
+        return new Task(String.valueOf(chatId), name);
     }
 
     public Map<InputState, String> getUserInputMapOrThrow(Long chatId) {

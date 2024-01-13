@@ -13,6 +13,7 @@ public class TaskDeleteFinishCallback extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-
+        botService.deleteTask(chatId);
+        sendText("Task was successfully deleted");
     }
 }

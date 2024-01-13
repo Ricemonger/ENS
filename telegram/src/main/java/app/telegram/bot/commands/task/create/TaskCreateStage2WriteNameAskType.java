@@ -1,4 +1,4 @@
-package app.telegram.bot.commands.task;
+package app.telegram.bot.commands.task.create;
 
 import app.telegram.bot.BotService;
 import app.telegram.bot.commands.AbstractBotCommand;
@@ -6,14 +6,14 @@ import app.telegram.users.model.InputState;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class TaskStage5WriteMethodAskContactId extends AbstractBotCommand {
+public class TaskCreateStage2WriteNameAskType extends AbstractBotCommand {
 
-    public TaskStage5WriteMethodAskContactId(TelegramLongPollingBot bot, Update update, BotService botService) {
+    public TaskCreateStage2WriteNameAskType(TelegramLongPollingBot bot, Update update, BotService botService) {
         super(bot, update, botService);
     }
 
     @Override
     protected void executeCommand() {
-        processMiddleInput(InputState.CONTACT_METHOD, InputState.CONTACT_ID, "Please input task's contact's method:");
+        processMiddleInput(InputState.TASK_NAME, InputState.TASK_TYPE, "Please input task's type[ONE,MANY,ALL]:");
     }
 }
