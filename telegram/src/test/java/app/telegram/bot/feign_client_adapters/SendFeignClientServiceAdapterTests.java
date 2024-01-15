@@ -1,6 +1,6 @@
 package app.telegram.bot.feign_client_adapters;
 
-import app.telegram.users.model.TelegramUserService;
+import app.telegram.users.controller.TelegramUserService;
 import app.utils.services.sender.dto.SendManyRequest;
 import app.utils.services.sender.dto.SendOneRequest;
 import app.utils.services.sender.feign.SendFeignClientService;

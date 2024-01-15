@@ -8,10 +8,12 @@ import app.telegram.bot.commands.BotCommandsConfig;
 import app.telegram.bot.feign_client_adapters.ContactFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.NotificationFeignClientServiceAdapter;
 import app.telegram.bot.feign_client_adapters.SendFeignClientServiceAdapter;
+import app.telegram.bot.task.model.db.TaskRepository;
+import app.telegram.bot.task.model.db.TaskRepositoryService;
 import app.telegram.users.controller.TelegramUserController;
 import app.telegram.users.controller.TelegramUserControllerService;
+import app.telegram.users.controller.TelegramUserService;
 import app.telegram.users.model.TelegramUserJwtUtil;
-import app.telegram.users.model.TelegramUserService;
 import app.telegram.users.model.db.TelegramUserRepository;
 import app.telegram.users.model.db.TelegramUserRepositoryService;
 import app.utils.logger.AroundLogger;
@@ -101,6 +103,12 @@ class TelegramServerTests {
     @Autowired
     private TelegramUserService telegramUserService;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskRepositoryService taskRepositoryService;
+
     @Test
     void contextLoads() {
         assertNotNull(aroundLogger);
@@ -126,5 +134,7 @@ class TelegramServerTests {
         assertNotNull(securityTelegramUserFeignClientService);
         assertNotNull(telegramUserJwtUtil);
         assertNotNull(telegramUserService);
+        assertNotNull(taskRepository);
+        assertNotNull(taskRepositoryService);
     }
 }

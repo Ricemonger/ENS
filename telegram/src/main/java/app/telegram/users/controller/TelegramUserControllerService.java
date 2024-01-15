@@ -1,6 +1,5 @@
 package app.telegram.users.controller;
 
-import app.telegram.users.model.TelegramUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

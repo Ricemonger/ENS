@@ -1,6 +1,5 @@
 package app.telegram.users.controller;
 
-import app.telegram.users.model.TelegramUserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -23,6 +23,7 @@ public class BotCommandsConfig {
 
     public static final String TASK_HELP_MESSAGE = """
             Tasks methods:
+                Show all my tasks
                 Add task for one contact
                 Add task for many contacts by contact pattern
                 Add task for ALL contacts on account
@@ -32,6 +33,7 @@ public class BotCommandsConfig {
 
     public static final String CONTACT_HELP_MESSAGE = """
             Contact methods:
+               Show all my contacts
                Add one contact
                Add multiple contacts
                Delete one contact
@@ -43,6 +45,7 @@ public class BotCommandsConfig {
 
     public static final String NOTIFICATION_HELP_MESSAGE = """
             Notification methods:
+               Show all my notifications
                Add one notification template
                Add multiple notification templates
                Delete one notification template

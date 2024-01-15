@@ -8,9 +8,9 @@ import app.telegram.bot.feign_client_adapters.SendFeignClientServiceAdapter;
 import app.telegram.bot.task.controller.TaskService;
 import app.telegram.bot.task.model.Task;
 import app.telegram.bot.task.model.TaskType;
+import app.telegram.users.controller.TelegramUserService;
 import app.telegram.users.model.InputGroup;
 import app.telegram.users.model.InputState;
-import app.telegram.users.model.TelegramUserService;
 import app.utils.services.contact.Contact;
 import app.utils.services.contact.Method;
 import app.utils.services.contact.exceptions.InvalidContactMethodException;
@@ -119,6 +119,14 @@ public class BotService {
         Task task = getTaskKeyFromInputMap(chatId);
         clearUserInputs(chatId);
         taskService.deleteByKey(chatId, task.getName());
+    }
+
+    public void deleteAllTasks(Long chatId) {
+        taskService.deleteAllByChatId(chatId);
+    }
+
+    public String showAllTasks(Long chatId) {
+        return taskService.findAllByChatId(chatId).toString();
     }
 
     public void addContact(Long chatId) {

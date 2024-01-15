@@ -1,6 +1,6 @@
 package app.telegram.bot.feign_client_adapters;
 
-import app.telegram.users.model.TelegramUserService;
+import app.telegram.users.controller.TelegramUserService;
 import app.utils.services.notification.Notification;
 import app.utils.services.notification.feign.NotificationFeignClientService;
 import lombok.RequiredArgsConstructor;

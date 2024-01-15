@@ -19,6 +19,11 @@ public class Callbacks {
     public static final String TASK_DELETE = "TASK_DELETE";
     public static final String TASK_DELETE_FINISH = "TASK_DELETE_FINISH";
 
+    public static final String TASK_DELETE_ALL = "TASK_DELETE_ALL";
+    public static final String TASK_DELETE_ALL_FINISH = "TASK_DELETE_ALL_FINISH";
+
+    public static final String TASK_SHOW = "TASK_SHOW";
+
     public static final String CONTACT_ADD = "CONTACT_ADD";
     public static final String CONTACT_ADD_FINISH = "CONTACT_ADD_FINISH";
 

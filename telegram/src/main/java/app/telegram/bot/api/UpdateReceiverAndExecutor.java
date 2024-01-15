@@ -64,6 +64,9 @@ import app.telegram.bot.commands.task.create.TaskCreateFinishCallback;
 import app.telegram.bot.commands.task.delete.TaskDeleteCallback;
 import app.telegram.bot.commands.task.delete.TaskDeleteChain;
 import app.telegram.bot.commands.task.delete.TaskDeleteFinishCallback;
+import app.telegram.bot.commands.task.deleteAll.TaskDeleteAllCallback;
+import app.telegram.bot.commands.task.deleteAll.TaskDeleteAllFinishCallback;
+import app.telegram.bot.commands.task.show.TaskShowCallback;
 import app.telegram.bot.exceptions.internal.InternalErrorException;
 import app.telegram.bot.exceptions.internal.InvalidCallbackException;
 import app.telegram.bot.exceptions.internal.InvalidUserInputGroupException;
@@ -201,11 +204,16 @@ public class UpdateReceiverAndExecutor {
 
             case Callbacks.SEND_ALL -> new SendAllCallback(bot, update, botService).execute();
 
+            case Callbacks.TASK_SHOW -> new TaskShowCallback(bot, update, botService).execute();
+
             case Callbacks.TASK_CREATE -> new TaskCreateCallback(bot, update, botService).execute();
             case Callbacks.TASK_CREATE_FINISH -> new TaskCreateFinishCallback(bot, update, botService).execute();
 
             case Callbacks.TASK_DELETE -> new TaskDeleteCallback(bot, update, botService).execute();
             case Callbacks.TASK_DELETE_FINISH -> new TaskDeleteFinishCallback(bot, update, botService).execute();
+
+            case Callbacks.TASK_DELETE_ALL -> new TaskDeleteAllCallback(bot, update, botService).execute();
+            case Callbacks.TASK_DELETE_ALL_FINISH -> new TaskDeleteAllFinishCallback(bot, update, botService).execute();
 
             case Callbacks.CONTACT_ADD -> new ContactAddCallback(bot, update, botService).execute();
             case Callbacks.CONTACT_ADD_FINISH -> new ContactAddFinishCallback(bot, update, botService).execute();

@@ -5,6 +5,7 @@ import app.telegram.bot.task.model.Task;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,8 +36,9 @@ public class TaskRepositoryService {
         taskRepository.deleteById(key);
     }
 
+    @Transactional
     public void deleteAllByChatId(String chatId) {
-        taskRepository.deleteAllByChatId(chatId);
+        taskRepository.deleteAllInBatchByChatId(chatId);
     }
 
     private TaskEntity toEntity(Task task) {

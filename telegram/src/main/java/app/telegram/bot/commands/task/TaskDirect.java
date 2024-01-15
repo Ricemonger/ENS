@@ -17,10 +17,12 @@ public class TaskDirect extends AbstractBotCommand {
     protected void executeCommand() {
         MyFunctionalInterface function = () -> {
             String question = "What would you like to do?";
+            CallbackButton showTasks = new CallbackButton("Show All Tasks", Callbacks.TASK_SHOW);
             CallbackButton createTask = new CallbackButton("Create Task", Callbacks.TASK_CREATE);
-            CallbackButton removeTask = new CallbackButton("Remove Task", Callbacks.TASK_DELETE);
+            CallbackButton deleteTask = new CallbackButton("Delete Task", Callbacks.TASK_DELETE);
+            CallbackButton deleteAllTasks = new CallbackButton("Delete ALL Tasks", Callbacks.TASK_DELETE_ALL);
             CallbackButton cancel = new CallbackButton("Cancel", Callbacks.CANCEL);
-            askFromInlineKeyboard(question, 1, createTask, removeTask, cancel);
+            askFromInlineKeyboard(question, 1, showTasks, createTask, deleteTask, deleteAllTasks, cancel);
         };
         executeCommandIfUserExistsOrAskToRegister(function);
     }
