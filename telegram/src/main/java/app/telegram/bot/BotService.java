@@ -109,6 +109,10 @@ public class BotService {
         sendFeignClientServiceAdapter.sendAll(chatId);
     }
 
+    public String showAllTasks(Long chatId) {
+        return taskService.findAllByChatId(chatId).toString();
+    }
+
     public void createTask(Long chatId) {
         Task task = getTaskFromInputMap(chatId);
         clearUserInputs(chatId);
@@ -125,8 +129,8 @@ public class BotService {
         taskService.deleteAllByChatId(chatId);
     }
 
-    public String showAllTasks(Long chatId) {
-        return taskService.findAllByChatId(chatId).toString();
+    public String showAllContacts(Long chatId) {
+        return contactFeignClientServiceAdapter.findAll(chatId).toString();
     }
 
     public void addContact(Long chatId) {
@@ -145,6 +149,10 @@ public class BotService {
         Contact contact = getContactFromInputsMap(chatId);
         clearUserInputs(chatId);
         contactFeignClientServiceAdapter.removeMany(chatId, contact);
+    }
+
+    public String showAllNotifications(Long chatId) {
+        return notificationFeignClientServiceAdapter.findAll(chatId).toString();
     }
 
     public void addNotification(Long chatId) {

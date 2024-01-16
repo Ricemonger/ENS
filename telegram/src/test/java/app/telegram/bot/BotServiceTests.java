@@ -214,6 +214,201 @@ public class BotServiceTests {
     }
 
     @Test
+    public void showAllTasks() {
+        botService.showAllTasks(CHAT_ID);
+
+        verify(taskService).findAllByChatId(CHAT_ID);
+    }
+
+    @Test
+    public void getTaskFromInputMapShouldReturnFromMap() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
+        Date date = new Date(0);
+        try {
+            date = simpleDateFormat.parse("10:22:59 04-10-2024");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Task TASK = new Task(
+                String.valueOf(CHAT_ID), "name",
+                date, TaskType.ONE,
+                Method.SMS, "phoneNumber", "notificationText");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
+        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
+        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
+
+        assertEquals(TASK, botService.getTaskFromInputMap(CHAT_ID));
+    }
+
+    @Test
+    public void getTaskFromInputMapShouldUseDefaultTimeIfInvalidTimeFormat() {
+        Date expectedDate = new Date(new Date().getTime() + 3_600_000 * 24);
+
+        Task TASK = new Task(
+                String.valueOf(CHAT_ID), "name",
+                expectedDate, TaskType.ONE,
+                Method.SMS, "phoneNumber", "notificationText");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10-22-59 04-10-2024");//invalid format
+        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
+        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
+
+        Task result = botService.getTaskFromInputMap(CHAT_ID);
+
+        assertTrue(Math.abs(result.getTaskTime().compareTo(expectedDate)) < 1000);
+
+        TASK.setTaskTime(result.getTaskTime());
+
+        assertEquals(TASK, result);
+    }
+
+    @Test
+    public void getTaskFromInputMapShouldThrowInvalidTaskTypeExceptionIfInvalidTaskType() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
+        Date date = new Date(0);
+        try {
+            date = simpleDateFormat.parse("10:22:59 04-10-2024");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Task TASK = new Task(
+                String.valueOf(CHAT_ID), "name",
+                date, TaskType.ONE,
+                Method.SMS, "phoneNumber", "notificationText");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
+        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString() + " ");
+        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
+        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
+
+        Executable executable = () -> {
+            botService.getTaskFromInputMap(CHAT_ID);
+        };
+
+        assertThrows(InvalidTaskTypeException.class, executable);
+    }
+
+    @Test
+    public void getTaskFromInputMapShouldThrowInvalidContactMethodExceptionIfInvalidContactMethod() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
+        Date date = new Date(0);
+        try {
+            date = simpleDateFormat.parse("10:22:59 04-10-2024");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Task TASK = new Task(
+                String.valueOf(CHAT_ID), "name",
+                date, TaskType.ONE,
+                Method.SMS, "phoneNumber", "notificationText");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
+        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString() + " ");
+        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
+        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
+
+        Executable executable = () -> {
+            botService.getTaskFromInputMap(CHAT_ID);
+        };
+
+        assertThrows(InvalidContactMethodException.class, executable);
+    }
+
+    @Test
+    public void getTaskFromInputMapShouldThrowIfEmptyMap() {
+        Executable executable = () -> botService.getTaskFromInputMap(CHAT_ID);
+
+        assertThrows(EmptyInputMapException.class, executable);
+    }
+
+    @Test
+    public void getTaskKeyFromInputMapShouldReturnFromMap() {
+        String NAME = "NAME";
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, NAME);
+
+        Task task = new Task(String.valueOf(CHAT_ID), NAME);
+
+        assertEquals(task, botService.getTaskKeyFromInputMap(CHAT_ID));
+    }
+
+    @Test
+    public void getTaskKeyFromInputMapShouldThrowIfEmptyMap() {
+        Executable executable = () -> botService.getTaskKeyFromInputMap(CHAT_ID);
+
+        assertThrows(EmptyInputMapException.class, executable);
+    }
+
+    @Test
+    public void createTask() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
+        Date date = new Date(0);
+        try {
+            date = simpleDateFormat.parse("10:22:59 04-10-2024");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Task TASK = new Task(
+                String.valueOf(CHAT_ID), "name",
+                date, TaskType.ONE,
+                Method.SMS, "phoneNumber", "notificationText");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
+        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
+        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
+        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
+
+        botService.createTask(CHAT_ID);
+
+        verify(botService).getTaskFromInputMap(CHAT_ID);
+        verify(taskService).create(TASK);
+        verify(botService).clearUserInputs(CHAT_ID);
+    }
+
+    @Test
+    public void deleteTask() {
+        Task TASK = new Task(String.valueOf(CHAT_ID), "name");
+
+        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
+
+        botService.deleteTask(CHAT_ID);
+
+        verify(botService).getTaskKeyFromInputMap(CHAT_ID);
+        verify(taskService).deleteByKey(Long.parseLong(TASK.getChatId()), TASK.getName());
+        verify(botService).clearUserInputs(CHAT_ID);
+    }
+
+    @Test
+    public void deleteAllTasks() {
+        botService.deleteAllTasks(CHAT_ID);
+
+        verify(taskService).deleteAllByChatId(CHAT_ID);
+    }
+
+    @Test
+    public void showAllContacts() {
+        botService.showAllContacts(CHAT_ID);
+
+        verify(contacts).findAll(CHAT_ID);
+    }
+
+    @Test
     public void addContactShouldCallServiceAddContactWithValuesFromInputMapAndClearMap() {
         botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, METHOD.name());
         botService.saveInput(CHAT_ID, InputState.CONTACT_ID, STRING_2);
@@ -310,6 +505,13 @@ public class BotServiceTests {
         Executable executable = () -> botService.removeManyContacts(CHAT_ID);
 
         assertThrows(InvalidContactMethodException.class, executable);
+    }
+
+    @Test
+    public void showAllNotifications() {
+        botService.showAllNotifications(CHAT_ID);
+
+        verify(notifications).findAll(CHAT_ID);
     }
 
     @Test
@@ -647,193 +849,5 @@ public class BotServiceTests {
         Executable executable = () -> botService.getUserInputMapOrThrow(CHAT_ID);
 
         assertThrows(EmptyInputMapException.class, executable);
-    }
-
-    @Test
-    public void getTaskFromInputMapShouldReturnFromMap() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
-        Date date = new Date(0);
-        try {
-            date = simpleDateFormat.parse("10:22:59 04-10-2024");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Task TASK = new Task(
-                String.valueOf(CHAT_ID), "name",
-                date, TaskType.ONE,
-                Method.SMS, "phoneNumber", "notificationText");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
-        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
-        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
-
-        assertEquals(TASK, botService.getTaskFromInputMap(CHAT_ID));
-    }
-
-    @Test
-    public void getTaskFromInputMapShouldUseDefaultTimeIfInvalidTimeFormat() {
-        Date expectedDate = new Date(new Date().getTime() + 3_600_000 * 24);
-
-        Task TASK = new Task(
-                String.valueOf(CHAT_ID), "name",
-                expectedDate, TaskType.ONE,
-                Method.SMS, "phoneNumber", "notificationText");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10-22-59 04-10-2024");//invalid format
-        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
-        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
-
-        Task result = botService.getTaskFromInputMap(CHAT_ID);
-
-        assertTrue(Math.abs(result.getTaskTime().compareTo(expectedDate)) < 1000);
-
-        TASK.setTaskTime(result.getTaskTime());
-
-        assertEquals(TASK, result);
-    }
-
-    @Test
-    public void getTaskFromInputMapShouldThrowInvalidTaskTypeExceptionIfInvalidTaskType() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
-        Date date = new Date(0);
-        try {
-            date = simpleDateFormat.parse("10:22:59 04-10-2024");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Task TASK = new Task(
-                String.valueOf(CHAT_ID), "name",
-                date, TaskType.ONE,
-                Method.SMS, "phoneNumber", "notificationText");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
-        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString() + " ");
-        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
-        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
-
-        Executable executable = () -> {
-            botService.getTaskFromInputMap(CHAT_ID);
-        };
-
-        assertThrows(InvalidTaskTypeException.class, executable);
-    }
-
-    @Test
-    public void getTaskFromInputMapShouldThrowInvalidContactMethodExceptionIfInvalidContactMethod() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
-        Date date = new Date(0);
-        try {
-            date = simpleDateFormat.parse("10:22:59 04-10-2024");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Task TASK = new Task(
-                String.valueOf(CHAT_ID), "name",
-                date, TaskType.ONE,
-                Method.SMS, "phoneNumber", "notificationText");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
-        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString() + " ");
-        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
-        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
-
-        Executable executable = () -> {
-            botService.getTaskFromInputMap(CHAT_ID);
-        };
-
-        assertThrows(InvalidContactMethodException.class, executable);
-    }
-
-    @Test
-    public void getTaskFromInputMapShouldThrowIfEmptyMap() {
-        Executable executable = () -> botService.getTaskFromInputMap(CHAT_ID);
-
-        assertThrows(EmptyInputMapException.class, executable);
-    }
-
-    @Test
-    public void getTaskKeyFromInputMapShouldReturnFromMap() {
-        String NAME = "NAME";
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, NAME);
-
-        Task task = new Task(String.valueOf(CHAT_ID), NAME);
-
-        assertEquals(task, botService.getTaskKeyFromInputMap(CHAT_ID));
-    }
-
-    @Test
-    public void getTaskKeyFromInputMapShouldThrowIfEmptyMap() {
-        Executable executable = () -> botService.getTaskKeyFromInputMap(CHAT_ID);
-
-        assertThrows(EmptyInputMapException.class, executable);
-    }
-
-    @Test
-    public void createTask() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BotService.TIME_AND_DATE_FORMAT);
-        Date date = new Date(0);
-        try {
-            date = simpleDateFormat.parse("10:22:59 04-10-2024");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        Task TASK = new Task(
-                String.valueOf(CHAT_ID), "name",
-                date, TaskType.ONE,
-                Method.SMS, "phoneNumber", "notificationText");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-        botService.saveInput(CHAT_ID, InputState.TASK_TIME, "10:22:59 04-10-2024");
-        botService.saveInput(CHAT_ID, InputState.TASK_TYPE, TASK.getTaskType().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_METHOD, TASK.getContactMethod().toString());
-        botService.saveInput(CHAT_ID, InputState.CONTACT_ID, TASK.getContactId());
-        botService.saveInput(CHAT_ID, InputState.NOTIFICATION_TEXT, TASK.getContactNotification());
-
-        botService.createTask(CHAT_ID);
-
-        verify(botService).getTaskFromInputMap(CHAT_ID);
-        verify(taskService).create(TASK);
-        verify(botService).clearUserInputs(CHAT_ID);
-    }
-
-    @Test
-    public void deleteTask() {
-        Task TASK = new Task(String.valueOf(CHAT_ID), "name");
-
-        botService.saveInput(CHAT_ID, InputState.TASK_NAME, TASK.getName());
-
-        botService.deleteTask(CHAT_ID);
-
-        verify(botService).getTaskKeyFromInputMap(CHAT_ID);
-        verify(taskService).deleteByKey(Long.parseLong(TASK.getChatId()), TASK.getName());
-        verify(botService).clearUserInputs(CHAT_ID);
-    }
-
-    @Test
-    public void deleteAllTasks() {
-        botService.deleteAllTasks(CHAT_ID);
-
-        verify(taskService).deleteAllByChatId(CHAT_ID);
-    }
-
-    @Test
-    public void showAllTasks() {
-        botService.showAllTasks(CHAT_ID);
-
-        verify(taskService).findAllByChatId(CHAT_ID);
     }
 }

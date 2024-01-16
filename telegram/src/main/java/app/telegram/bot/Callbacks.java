@@ -13,6 +13,8 @@ public class Callbacks {
 
     public static final String SEND_ALL = "SEND_ALL";
 
+    public static final String TASK_SHOW = "TASK_SHOW";
+
     public static final String TASK_CREATE = "TASK_CREATE";
     public static final String TASK_CREATE_FINISH = "TASK_CREATE_FINISH";
 
@@ -22,7 +24,7 @@ public class Callbacks {
     public static final String TASK_DELETE_ALL = "TASK_DELETE_ALL";
     public static final String TASK_DELETE_ALL_FINISH = "TASK_DELETE_ALL_FINISH";
 
-    public static final String TASK_SHOW = "TASK_SHOW";
+    public static final String CONTACT_SHOW = "CONTACT_SHOW";
 
     public static final String CONTACT_ADD = "CONTACT_ADD";
     public static final String CONTACT_ADD_FINISH = "CONTACT_ADD_FINISH";
@@ -32,6 +34,8 @@ public class Callbacks {
 
     public static final String CONTACT_REMOVE_MANY = "CONTACT_REMOVE_MANY";
     public static final String CONTACT_REMOVE_MANY_FINISH = "CONTACT_REMOVE_MANY_FINISH";
+
+    public static final String NOTIFICATION_SHOW = "NOTIFICATION_SHOW";
 
     public static final String NOTIFICATION_ADD = "NOTIFICATION_ADD";
     public static final String NOTIFICATION_ADD_FINISH = "NOTIFICATION_ADD_FINISH";

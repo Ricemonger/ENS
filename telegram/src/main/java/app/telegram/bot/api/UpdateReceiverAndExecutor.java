@@ -15,6 +15,7 @@ import app.telegram.bot.commands.contact.removeMany.ContactRemoveManyFinishCallb
 import app.telegram.bot.commands.contact.removeOne.ContactRemoveOneCallback;
 import app.telegram.bot.commands.contact.removeOne.ContactRemoveOneChain;
 import app.telegram.bot.commands.contact.removeOne.ContactRemoveOneFinishCallback;
+import app.telegram.bot.commands.contact.show.ContactShowCallback;
 import app.telegram.bot.commands.data.DataDirect;
 import app.telegram.bot.commands.data.remove.DataRemoveCallback;
 import app.telegram.bot.commands.data.remove.DataRemoveCallbackFinish;
@@ -38,6 +39,7 @@ import app.telegram.bot.commands.notification.removeMany.NotificationRemoveManyF
 import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneCallback;
 import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneChain;
 import app.telegram.bot.commands.notification.removeOne.NotificationRemoveOneFinishCallback;
+import app.telegram.bot.commands.notification.show.NotificationShowCallback;
 import app.telegram.bot.commands.send.SendDirect;
 import app.telegram.bot.commands.send.sendMany.SendManyCallback;
 import app.telegram.bot.commands.send.sendMany.SendManyChain;
@@ -215,6 +217,8 @@ public class UpdateReceiverAndExecutor {
             case Callbacks.TASK_DELETE_ALL -> new TaskDeleteAllCallback(bot, update, botService).execute();
             case Callbacks.TASK_DELETE_ALL_FINISH -> new TaskDeleteAllFinishCallback(bot, update, botService).execute();
 
+            case Callbacks.CONTACT_SHOW -> new ContactShowCallback(bot, update, botService).execute();
+
             case Callbacks.CONTACT_ADD -> new ContactAddCallback(bot, update, botService).execute();
             case Callbacks.CONTACT_ADD_FINISH -> new ContactAddFinishCallback(bot, update, botService).execute();
 
@@ -225,6 +229,8 @@ public class UpdateReceiverAndExecutor {
             case Callbacks.CONTACT_REMOVE_MANY -> new ContactRemoveManyCallback(bot, update, botService).execute();
             case Callbacks.CONTACT_REMOVE_MANY_FINISH ->
                     new ContactRemoveManyFinishCallback(bot, update, botService).execute();
+
+            case Callbacks.NOTIFICATION_SHOW -> new NotificationShowCallback(bot, update, botService).execute();
 
             case Callbacks.NOTIFICATION_ADD -> new NotificationAddCallback(bot, update, botService).execute();
             case Callbacks.NOTIFICATION_ADD_FINISH ->

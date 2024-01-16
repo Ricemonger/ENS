@@ -19,10 +19,11 @@ public class ContactDirect extends AbstractBotCommand {
         MyFunctionalInterface function = () -> {
             sendText(BotCommandsConfig.CONTACT_HELP_MESSAGE);
             String question = "What would you like to do?";
-            CallbackButton[] buttons = new CallbackButton[3];
-            buttons[0] = new CallbackButton("Add one", Callbacks.CONTACT_ADD);
-            buttons[1] = new CallbackButton("Delete one", Callbacks.CONTACT_REMOVE_ONE);
-            buttons[2] = new CallbackButton("Delete many", Callbacks.CONTACT_REMOVE_MANY);
+            CallbackButton[] buttons = new CallbackButton[4];
+            buttons[0] = new CallbackButton("Show All", Callbacks.CONTACT_SHOW);
+            buttons[1] = new CallbackButton("Add one", Callbacks.CONTACT_ADD);
+            buttons[2] = new CallbackButton("Delete one", Callbacks.CONTACT_REMOVE_ONE);
+            buttons[3] = new CallbackButton("Delete many", Callbacks.CONTACT_REMOVE_MANY);
             askFromInlineKeyboard(question, 1, buttons);
         };
         executeCommandIfUserExistsOrAskToRegister(function);
