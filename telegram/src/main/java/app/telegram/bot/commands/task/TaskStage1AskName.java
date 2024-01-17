@@ -14,6 +14,6 @@ public class TaskStage1AskName extends AbstractBotCommand {
 
     @Override
     protected void executeCommand() {
-        processFirstInput(chatId, InputState.TASK_NAME, "Please штзге task's name:");
+        processFirstInput(chatId, InputState.TASK_NAME, "Please input task's name:");
     }
 }

@@ -24,8 +24,8 @@ public class BotCommandsConfig {
     public static final String TASK_HELP_MESSAGE = """
             Tasks methods:
                 Show all my tasks
-                Add task for one contact
-                Add task for many contacts by contact pattern
+                Add task for one not saved before contact
+                Add task for many of yours saved contacts by contact pattern
                 Add task for ALL contacts on account
                 Delete one task by name
                 Delete all tasks

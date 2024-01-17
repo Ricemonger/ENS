@@ -41,6 +41,15 @@ public class TaskRepositoryService {
         taskRepository.deleteAllInBatchByChatId(chatId);
     }
 
+    public List<Task> findAll() {
+        return taskRepository.findAll().stream().map(this::toTask).toList();
+    }
+
+    @Transactional
+    public void deleteAll(List<Task> tasks) {
+        taskRepository.deleteAllInBatch(tasks.stream().map(this::toEntity).toList());
+    }
+
     private TaskEntity toEntity(Task task) {
         return new TaskEntity(task.getChatId(), task.getName(),
                 task.getTaskTime(), task.getTaskType(),
