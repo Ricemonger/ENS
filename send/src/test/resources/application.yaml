@@ -16,6 +16,8 @@ application:
 spring:
   application:
     name: send
+  config:
+    import: optional:configserver:http://localhost:8888
 logging:
   level:
     app: trace

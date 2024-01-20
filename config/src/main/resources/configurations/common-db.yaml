@@ -2,7 +2,7 @@ host-ip: localhost
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${host-ip}:5432/postgres
+    url: jdbc:postgresql://${host-ip}:5432/ens
     username: postgres
     password: 1234
   jpa:

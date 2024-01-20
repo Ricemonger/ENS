@@ -2,7 +2,7 @@ logging:
   level:
     app: trace
   file:
-    path: \logs\
+    path: /logs/
 
 application:
   version: 1.0
