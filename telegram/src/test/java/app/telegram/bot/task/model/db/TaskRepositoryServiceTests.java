@@ -133,4 +133,39 @@ public class TaskRepositoryServiceTests {
 
         assertEquals(Collections.singletonList(ANOTHER_USER_SAME_TASK), result);
     }
+
+    @Test
+    public void findAllShouldReturnAll() {
+        taskRepository.save(ANOTHER_USER_SAME_TASK_ENTITY);
+
+        taskRepository.save(TASK_ENTITY);
+        taskRepository.save(SAME_USER_ANOTHER_TASK_ENTITY);
+
+        List<Task> expected = new ArrayList<>();
+        expected.add(TASK);
+        expected.add(SAME_USER_ANOTHER_TASK);
+        expected.add(ANOTHER_USER_SAME_TASK);
+
+        List<Task> result = taskRepositoryService.findAll();
+
+        assertTrue(expected.containsAll(result) && result.containsAll(expected));
+    }
+
+    @Test
+    public void deleteAllShouldRemoveAllFromList() {
+        taskRepository.save(ANOTHER_USER_SAME_TASK_ENTITY);
+
+        taskRepository.save(TASK_ENTITY);
+        taskRepository.save(SAME_USER_ANOTHER_TASK_ENTITY);
+
+        List<Task> toDelete = new ArrayList<>();
+        toDelete.add(TASK);
+        toDelete.add(ANOTHER_USER_SAME_TASK);
+
+        taskRepositoryService.deleteAll(toDelete);
+
+        assertEquals(SAME_USER_ANOTHER_TASK_ENTITY, taskRepository.findAll().get(0));
+
+        assertEquals(1, taskRepository.findAll().size());
+    }
 }

@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -25,29 +27,35 @@ public class TaskScheduledExecutor {
     @Scheduled(fixedDelay = 60_000)
     @Transactional
     public void executeTasks() {
+        Map<Task, Exception> errorsMap = new HashMap<>();
         List<Task> tasks = getTasksToBeExecuted();
         removeTasksFromDatabase(tasks);
         for (Task task : tasks) {
-            long chatId = Long.parseLong(task.getChatId());
-            TaskType taskType = task.getTaskType();
-            switch (taskType) {
-                case ONE -> {
-                    SendOneRequest request = new SendOneRequest(
-                            task.getContactMethod().name(),
-                            task.getContactId(),
-                            task.getContactNotification());
-                    sender.sendOne(chatId, request);
+            try {
+                long chatId = Long.parseLong(task.getChatId());
+                TaskType taskType = task.getTaskType();
+                switch (taskType) {
+                    case ONE -> {
+                        SendOneRequest request = new SendOneRequest(
+                                task.getContactMethod().name(),
+                                task.getContactId(),
+                                task.getContactNotification());
+                        sender.sendOne(chatId, request);
+                    }
+                    case MANY -> {
+                        SendManyRequest request = new SendManyRequest(
+                                task.getContactMethod().name(),
+                                task.getContactId(),
+                                task.getContactNotification());
+                        sender.sendMany(chatId, request);
+                    }
+                    case ALL -> {
+                        sender.sendAll(chatId);
+                    }
                 }
-                case MANY -> {
-                    SendManyRequest request = new SendManyRequest(
-                            task.getContactMethod().name(),
-                            task.getContactId(),
-                            task.getContactNotification());
-                    sender.sendMany(chatId, request);
-                }
-                case ALL -> {
-                    sender.sendAll(chatId);
-                }
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+                errorsMap.put(task, e);
             }
         }
     }
