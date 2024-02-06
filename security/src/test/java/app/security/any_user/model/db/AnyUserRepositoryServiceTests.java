@@ -42,8 +42,8 @@ public class AnyUserRepositoryServiceTests {
 
     @Test
     public void deleteByIdShouldDeleteRightUser() {
-        String accountId = repository.save(ENTITY).getAccountId();
-        String anotherAccountId = repository.save(ENTITY).getAccountId();
+        String accountId = repository.save(new AnyUserEntity()).getAccountId();
+        String anotherAccountId = repository.save(new AnyUserEntity()).getAccountId();
 
         service.deleteById(accountId);
 

@@ -15,18 +15,30 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>config</module>
+        <module>contact</module>
+        <module>discovery</module>
+        <module>gateway</module>
+        <module>notification</module>
+        <module>security</module>
+        <module>send</module>
+        <module>telegram</module>
+    </modules>
+
     <properties>
         <java.version>17</java.version>
         <spring-boot.version>3.2.2</spring-boot.version>
         <spring-cloud-dependency.version>4.1.0</spring-cloud-dependency.version>
         <utils.version>1.0.0</utils.version>
         <jjwt.version>0.11.5</jjwt.version>
-        <reactor-test.vestion>3.6.2</reactor-test.vestion>
         <telegrambots.version>6.8.0</telegrambots.version>
+        <amazon-aws-sdk.version>1.12.504</amazon-aws-sdk.version>
         <com.sun.jakarta.mail.version>2.0.1</com.sun.jakarta.mail.version>
         <jakarta-activation.version>2.1.2</jakarta-activation.version>
-        <amazon-aws-sdk.version>1.12.504</amazon-aws-sdk.version>
         <twilio.version>9.8.0</twilio.version>
+        <javax-xml-bind.version>2.3.1</javax-xml-bind.version>
+        <reactor-test.vestion>3.6.2</reactor-test.vestion>
         <zipkin-reporter2-brave.version>3.2.1</zipkin-reporter2-brave.version>
         <springdoc.version>2.3.0</springdoc.version>
     </properties>
@@ -38,6 +50,11 @@
                 <artifactId>spring-boot-starter-test</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -170,6 +187,11 @@
                 <groupId>com.twilio.sdk</groupId>
                 <artifactId>twilio</artifactId>
                 <version>${twilio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${javax-xml-bind.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.projectreactor</groupId>

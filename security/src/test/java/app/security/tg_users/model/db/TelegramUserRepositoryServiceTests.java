@@ -37,9 +37,11 @@ public class TelegramUserRepositoryServiceTests {
     public void saveShouldCallSaveOnRepository() {
         service.save(new TelegramUser(CHAT_ID));
 
-        assertEquals(CHAT_ID, repository.findAll().get(0).getChatId());
+        TelegramUserEntity entity = repository.findAll().get(0);
 
-        verify(repository).save(new TelegramUserEntity(CHAT_ID));
+        assertEquals(CHAT_ID, entity.getChatId());
+
+        verify(repository).save(entity);
     }
 
     @Test
