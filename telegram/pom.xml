@@ -6,7 +6,6 @@
         <groupId>app</groupId>
         <artifactId>emergency-notification-system</artifactId>
         <version>1.0.0</version>
-        <relativePath/>
     </parent>
     <artifactId>telegram</artifactId>
 
@@ -51,6 +50,7 @@
         <dependency>
             <groupId>app</groupId>
             <artifactId>utils</artifactId>
+            <version>${utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

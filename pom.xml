@@ -7,7 +7,6 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.2</version>
-        <relativePath/>
     </parent>
 
     <groupId>app</groupId>
@@ -16,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>utils</module>
         <module>config</module>
         <module>contact</module>
         <module>discovery</module>
@@ -27,10 +27,11 @@
     </modules>
 
     <properties>
+        <utils.version>${project.version}</utils.version>
         <java.version>17</java.version>
         <spring-boot.version>3.2.2</spring-boot.version>
         <spring-cloud-dependency.version>4.1.0</spring-cloud-dependency.version>
-        <utils.version>1.0.0</utils.version>
+        <openfeign-core.version>12.4</openfeign-core.version>
         <jjwt.version>0.11.5</jjwt.version>
         <telegrambots.version>6.8.0</telegrambots.version>
         <amazon-aws-sdk.version>1.12.504</amazon-aws-sdk.version>
@@ -117,6 +118,11 @@
                 <version>${spring-cloud-dependency.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-openfeign-core</artifactId>
+                <version>${spring-cloud-dependency.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-test</artifactId>
                 <version>${spring-security.version}</version>
@@ -129,12 +135,6 @@
                 <version>${lombok.version}</version>
             </dependency>
             <dependency>
-                <groupId>app</groupId>
-                <artifactId>utils</artifactId>
-                <version>${utils.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
@@ -145,6 +145,12 @@
                 <artifactId>h2</artifactId>
                 <version>${h2.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
+                <version>${openfeign-core.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>

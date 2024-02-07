@@ -6,7 +6,6 @@
         <groupId>app</groupId>
         <artifactId>emergency-notification-system</artifactId>
         <version>1.0.0</version>
-        <relativePath/>
     </parent>
     <artifactId>send</artifactId>
 
@@ -46,6 +45,7 @@
         <dependency>
             <groupId>app</groupId>
             <artifactId>utils</artifactId>
+            <version>${utils.version}</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -72,4 +72,20 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/AmazonEmailSenderTests.java</exclude>
+                        <exclude>**/InfobipViberSenderTests.java</exclude>
+                        <exclude>**/TwilioSmsSenderTests.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

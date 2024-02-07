@@ -6,7 +6,6 @@
         <groupId>app</groupId>
         <artifactId>emergency-notification-system</artifactId>
         <version>1.0.0</version>
-        <relativePath/>
     </parent>
     <artifactId>config</artifactId>
 
