@@ -27,9 +27,9 @@
     </modules>
 
     <properties>
+        <spring-boot.version>3.2.2</spring-boot.version>
         <utils.version>${project.version}</utils.version>
         <java.version>17</java.version>
-        <spring-boot.version>3.2.2</spring-boot.version>
         <spring-cloud-dependency.version>4.1.0</spring-cloud-dependency.version>
         <openfeign-core.version>12.4</openfeign-core.version>
         <jjwt.version>0.11.5</jjwt.version>

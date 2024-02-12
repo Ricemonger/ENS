@@ -31,7 +31,7 @@ public class TwilioSmsSender implements SmsSender {
             MessageCreator creator = Message.creator(toNumber, fromNumber, text);
             creator.create();
         } catch (ApiException e) {
-            log.info("send throws: {}", e);
+            log.info("send throws: {}", e.toString());
             throw new TwilioApiException(e.getMessage());
         }
     }

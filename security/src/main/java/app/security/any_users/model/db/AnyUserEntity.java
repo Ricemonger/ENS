@@ -4,14 +4,12 @@ import app.security.ens_users.model.db.EnsUserEntity;
 import app.security.tg_users.model.db.TelegramUserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnyUserEntity {
@@ -43,6 +41,10 @@ public class AnyUserEntity {
             }
         }
         return false;
+    }
+
+    public int hasCode(){
+        return accountId.hashCode();
     }
 
     public String toString() {
