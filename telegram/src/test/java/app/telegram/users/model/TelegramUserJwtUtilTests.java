@@ -18,7 +18,7 @@ public class TelegramUserJwtUtilTests {
 
     private final static Long ANOTHER_CHAT_ID = 1111L;
 
-    private final static String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OTk5IiwiaWF0IjoxNzAwNDY1ODg2LCJleHAiOjE3MDA0NjU4ODZ9.Xu4OxSsBTD4j3C0BNvfSr6SUEZKy6xtnq_dJoHuw2vc";
+    private final static String EXPIRED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI5OTk5IiwiaWF0IjoxNzExMzcxMDk3LCJleHAiOjE3MTEzNzQ2OTd9.fxb5L27gFGtq5hLh57ASsgcNvwNrzvgExAENUdBlHGU";
 
     private final static String MALFORMED_TOKEN = "eyJhbGciOiJIUzI1NiJ9.Xu4OxSsBTD4j3C0BNvfSr6SUEZKy6xtnq_dJoHuw2vc";
 
@@ -32,7 +32,6 @@ public class TelegramUserJwtUtilTests {
     @BeforeEach
     public void setUp() {
         JUST_GENERATED_TOKEN = jwtUtil.generateToken(CHAT_ID);
-        System.out.println(JUST_GENERATED_TOKEN);
         JUST_GENERATED_TOKEN_CORRUPTED = JUST_GENERATED_TOKEN.substring(0, JUST_GENERATED_TOKEN.length() - 1);
     }
 

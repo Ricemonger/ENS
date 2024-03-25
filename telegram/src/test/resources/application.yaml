@@ -26,3 +26,6 @@ logging:
   level:
     app:
       contact: trace
+
+jwt:
+  sign_key: JLAtwyz6O8sOJfbfhvzeO3vL6mDhsXMAWrhH3t2I8e3GQxyIULWocTi1s1pf262p

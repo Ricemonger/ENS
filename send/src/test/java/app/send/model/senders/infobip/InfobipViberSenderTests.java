@@ -1,6 +1,7 @@
 package app.send.model.senders.infobip;
 
 import app.send.model.senders.viber.api.infobip.InfobipViberSender;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// Disabled because of the need for Infobip credentials and money spending on send
+@Disabled
 @SpringBootTest
 @TestPropertySource("classpath:authentication.properties")
 public class InfobipViberSenderTests {
