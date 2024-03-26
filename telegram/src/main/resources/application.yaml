@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: telegram
+  config:
+    import: configserver:http://localhost:8888

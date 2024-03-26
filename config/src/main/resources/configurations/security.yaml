@@ -1,0 +1,12 @@
+server:
+  port: ${application.config.ports.security}
+
+logging:
+  file:
+    name: security.log
+
+spring:
+  config:
+    import:
+      - common.yaml
+      - common-db.yaml

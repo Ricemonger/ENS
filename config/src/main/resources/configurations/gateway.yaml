@@ -1,0 +1,40 @@
+server:
+  port: ${application.config.ports.gateway}
+
+logging:
+  file:
+    name: gateway.log
+
+spring:
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: contact
+          uri: http://${application.config.host}:${application.config.ports.contact}
+          predicates:
+            - Path=${application.config.request-mappings.contact}/**
+        - id: notification
+          uri: http://${application.config.host}:${application.config.ports.notification}
+          predicates:
+            - Path=${application.config.request-mappings.notification}/**
+        - id: send
+          uri: http://${application.config.host}:${application.config.ports.send}
+          predicates:
+            - Path=${application.config.request-mappings.sender}/**
+        - id: security
+          uri: http://${application.config.host}:${application.config.ports.security}
+          predicates:
+            - Path=${application.config.request-mappings.ens}/**, ${application.config.request-mappings.abstract}/**, ${application.config.request-mappings.tg}/**
+        - id: telegram
+          uri: http://${application.config.host}:${application.config.ports.telegram}
+          predicates:
+            - Path=${application.config.request-mappings.telegram-security}/**
+  config:
+    import:
+      - common.yaml

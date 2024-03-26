@@ -1,0 +1,18 @@
+server:
+  port: ${application.config.ports.discovery}
+
+logging:
+  file:
+    name: discovery.log
+
+eureka:
+  instance:
+    hostname: ${application.config.host}
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+
+spring:
+  config:
+    import:
+      - common.yaml

@@ -1,0 +1,12 @@
+server:
+  port: ${application.config.ports.telegram}
+
+logging:
+  file:
+    name: telegram.log
+
+spring:
+  config:
+    import:
+      - common.yaml
+      - common-db.yaml

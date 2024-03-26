@@ -1,0 +1,39 @@
+logging:
+  level:
+    app: trace
+  file:
+    path: /logs/
+
+application:
+  version: 1.0
+  config:
+    host: localhost
+    ports:
+      contact: 8090
+      discovery: 8761
+      gateway: 8080
+      notification: 8091
+      security: 8093
+      send: 8092
+      telegram: 8094
+    request-mappings:
+      contact: /api/contacts
+      notification: /api/notifications
+      abstract: /api/security
+      ens: /api/users
+      tg: /api/security-tg-users
+      sender: /api/send
+      telegram-security: /api/telegram/security
+    telegram:
+      url: http://${application.config.host}:${application.config.ports.telegram}${application.config.request-mappings.telegram-security}
+
+eureka:
+  uri: /eureka/
+  client:
+    service-url:
+      defaultZone: http://${application.config.host}:${application.config.ports.discovery}${eureka.uri}
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0

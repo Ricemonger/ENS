@@ -1,0 +1,13 @@
+server:
+  port: ${application.config.ports.contact}
+
+logging:
+  file:
+    name: contact.log
+
+spring:
+  config:
+    import:
+      - common.yaml
+      - common-db.yaml
+

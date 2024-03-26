@@ -1,0 +1,12 @@
+server:
+  port: ${application.config.ports.send}
+
+logging:
+  file:
+    name: send.log
+
+spring:
+  config:
+    import:
+      - common.yaml
+

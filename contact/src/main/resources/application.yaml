@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: contact
+  config:
+    import: configserver:http://localhost:8888
+
